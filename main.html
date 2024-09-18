@@ -1,1 +1,95 @@
-aaaaa
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Villaggio Turistico Sunset</title>
+</head>
+<body>
+    <header>
+        <div class="logo">Villaggio Sunset</div>
+        <nav>
+            <ul>
+                <li><a href="#chi-siamo">Chi Siamo</a></li>
+                <li><a href="#alloggi">Alloggi</a></li>
+                <li><a href="#attivita">Attività</a></li>
+                <li><a href="#ristorazione">Ristorazione</a></li>
+                <li><a href="#testimonianze">Testimonianze</a></li>
+                <li><a href="#prenotazioni">Prenotazioni</a></li>
+                <li>
+                    <a href="javascript:void(0);" class="dropdown-toggle">Altro</a>
+                    <div class="dropdown-content">
+                        <a href="#contatti">Contatti</a>
+                        <a href="#eventi">Eventi</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Benvenuti al Villaggio Sunset</h1>
+        <p>Scopri un paradiso di relax e bellezze naturali.</p>
+        <a href="#prenotazioni" class="btn">Prenota ora</a>
+    </section>
+
+    <section id="chi-siamo">
+        <h2>Chi Siamo</h2>
+        <p>Il Villaggio Sunset è nato per offrire un'esperienza di turismo sostenibile e accogliente.</p>
+    </section>
+
+    <section id="alloggi">
+        <h2>Alloggi</h2>
+        <p>Scopri le nostre camere e appartamenti, perfetti per ogni esigenza.</p>
+    </section>
+
+    <section id="attivita">
+        <h2>Attività</h2>
+        <p>Partecipa a escursioni, sport acquatici e corsi di yoga al tramonto.</p>
+    </section>
+
+    <section id="ristorazione">
+        <h2>Ristorazione</h2>
+        <p>Gusta piatti tipici nei nostri ristoranti e bar.</p>
+    </section>
+
+    <section id="testimonianze">
+        <h2>Testimonianze</h2>
+        <p>Leggi cosa dicono i nostri ospiti del soggiorno al Villaggio Sunset.</p>
+    </section>
+
+    <section id="prenotazioni">
+        <h2>Prenotazioni</h2>
+        <p>Prenota il tuo soggiorno direttamente online.</p>
+    </section>
+
+    <section id="contatti">
+        <h2>Contatti</h2>
+        <p>Per ulteriori informazioni, contattaci via email o telefono.</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Villaggio Turistico Sunset. Tutti i diritti riservati.</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.dropdown-toggle').forEach(item => {
+            item.addEventListener('click', () => {
+                const dropdown = item.nextElementSibling;
+                const isVisible = dropdown.style.display === 'block';
+                dropdown.style.display = isVisible ? 'none' : 'block';
+            });
+        });
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown-toggle')) {
+                const dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    dropdowns[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
