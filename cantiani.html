@@ -1,77 +1,29 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-}
-header {
-    background-color: #003300;
-    color: #fff;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-header .logo {
-    font-size: 24px;
-    font-weight: bold;
-}
-nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-}
-nav ul li {
-    margin: 0 10px;
-}
-nav ul li a {
-    text-decoration: none;
-    color: #fff;
-    font-weight: bold;
-}
-.container {
-    width: 1024px;
-    margin: 20px auto;
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-.banner {
-    width: 100%;
-    height: auto;
-    margin: 20px 0;
-    border-radius: 8px;
-}
-.product {
-    margin: 20px 0;
-    text-align: center;
-}
-.product img {
-    width: 200px;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-.product p {
-    margin-top: 10px;
-    font-size: 16px;
-    font-weight: bold;
-}
-footer {
-    background-color: #003300;
-    color: #fff;
-    text-align: center;
-    padding: 10px 0;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-}
-.button {
-    display: inline-block;
-    background-color: #007BFF;
-    color: #fff;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 4px;
-}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1024, initial-scale=1.0">
+    <title>Alma Fitocosmesi - Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Alma Fitocosmesi</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="prodotti.html">Prodotti</a></li>
+                <li><a href="contatti.html">Contatti</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Benvenuti in Alma Fitocosmesi</h1>
+        <p>Scopri la bellezza naturale con i nostri prodotti, realizzati con ingredienti locali di alta qualità e certificati biologici.</p>
+        <img src="images/home_banner.jpg" alt="Banner Naturale Alma Fitocosmesi" class="banner">
+        <a href="prodotti.html" class="button">Scopri i nostri prodotti</a>
+    </div>
+    <footer>
+        &copy; 2025 Alma Fitocosmesi. Tutti i diritti riservati.
+    </footer>
+</body>
+</html>
