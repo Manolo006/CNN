@@ -14,6 +14,7 @@
       background: #f0f0f0;
       font-family: Arial, sans-serif;
       flex-direction: column;
+      padding: 10px;
     }
     .countdown {
       background: #fff;
@@ -22,12 +23,12 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       text-align: center;
       overflow-x: auto;
-      max-width: 90%;
+      max-width: 100%;
       margin-bottom: 20px;
     }
     .timer-container {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
       gap: 5px;
       margin-top: 10px;
     }
@@ -39,6 +40,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-width: 50px;
     }
     .day-number {
       font-size: 1.2em;
@@ -91,7 +93,7 @@
       const daysContainer = document.getElementById("days-container");
       daysContainer.innerHTML = "";
       
-      const specialDays = ["2025-04-14", "2025-04-15", "2025-04-16", "2025-04-17", "2025-04-18", "2025-04-19", "2025-04-20", "2025-04-21", "2025-04-22", "2025-04-23", "2025-04-24", "2025-04-25", "2025-05-01", "2025-06-02", "2025-06-06"];
+      const specialDays = ["2025-04-14", "2025-04-15", "2025-04-16", "2025-04-17", "2025-04-18", "2025-04-19", "2025-04-20", "2025-04-21", "2025-04-22", "2025-04-23", "2025-04-24", "2025-04-25"];
       const weekdays = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
       
       for (let i = 0; i < 100; i++) {
