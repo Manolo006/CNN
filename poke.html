@@ -1,17 +1,119 @@
-import { useState, useEffect } from "react";
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventario Carte</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f3f4f6;
+      margin: 0;
+      padding: 1rem;
+    }
+    h1 {
+      margin-bottom: 0.5rem;
+    }
+    .card {
+      background: white;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-info {
+      font-size: 14px;
+    }
+    button {
+      padding: 4px 8px;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+    }
+    .minus { background: #ef4444; }
+    .plus { background: #10b981; }
+  </style>
+</head>
+<body>
+  <h1>Inventario Carte</h1>
+  <p id="progress">Completamento: 0%</p>
+  <input type="file" id="csvFile" accept=".csv"><br><br>
+  <div id="cardsContainer"></div>
 
-export default function App() { const [cards, setCards] = useState([]); const [progress, setProgress] = useState(0);
+  <script>
+    let cards = [];
 
-useEffect(() => { const stored = localStorage.getItem("cards"); if (stored) { const parsed = JSON.parse(stored); setCards(parsed); updateProgress(parsed); } }, []);
+    function updateProgress() {
+      const total = cards.length;
+      const owned = cards.filter(c => parseInt(c.quantita || 0) > 0).length;
+      const progress = Math.round((owned / total) * 100);
+      document.getElementById('progress').innerText = 'Completamento: ' + progress + '%';
+    }
 
-const updateProgress = (data) => { const total = data.length; const owned = data.filter((c) => parseInt(c.quantita || 0) > 0).length; setProgress(Math.round((owned / total) * 100)); };
+    function renderCards() {
+      const container = document.getElementById('cardsContainer');
+      container.innerHTML = '';
+      cards.forEach((card, index) => {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'card';
+        cardDiv.innerHTML = `
+          <div class="card-info">
+            <div><strong>#${card.numero}</strong></div>
+            <div>Prezzo: ${card.prezzo}</div>
+            <div>Quantità: ${card.quantita}</div>
+          </div>
+          <div>
+            <button class="minus" onclick="changeQty(${index}, -1)">-1</button>
+            <button class="plus" onclick="changeQty(${index}, 1)">+1</button>
+          </div>
+        `;
+        container.appendChild(cardDiv);
+      });
+    }
 
-const handleFile = (e) => { const file = e.target.files[0]; const reader = new FileReader(); reader.onload = (event) => { const text = event.target.result; const rows = text.split("\n").slice(1); // skip header const parsed = rows.map((row) => { const cols = row.split(","); return { numero: cols[3], prezzo: cols[4]?.trim(), quantita: cols[5]?.trim(), posseduta: cols[0]?.toLowerCase().includes("true"), }; }); setCards(parsed); localStorage.setItem("cards", JSON.stringify(parsed)); updateProgress(parsed); }; reader.readAsText(file); };
+    function changeQty(index, delta) {
+      const current = parseInt(cards[index].quantita || 0);
+      cards[index].quantita = current + delta;
+      localStorage.setItem('cards', JSON.stringify(cards));
+      renderCards();
+      updateProgress();
+    }
 
-const updateQuantity = (index, delta) => { const newCards = [...cards]; const current = parseInt(newCards[index].quantita || 0); newCards[index].quantita = current + delta; setCards(newCards); localStorage.setItem("cards", JSON.stringify(newCards)); updateProgress(newCards); };
+    document.getElementById('csvFile').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const text = event.target.result;
+        const rows = text.split("\n").slice(1);
+        cards = rows.map(row => {
+          const cols = row.split(",");
+          return {
+            posseduta: cols[0]?.toLowerCase().includes("true"),
+            numero: cols[3],
+            prezzo: cols[4]?.trim(),
+            quantita: parseInt(cols[5]?.trim()) || 0
+          };
+        }).filter(c => c.numero);
+        localStorage.setItem('cards', JSON.stringify(cards));
+        renderCards();
+        updateProgress();
+      };
+      reader.readAsText(file);
+    });
 
-return ( <main className="p-4 max-w-xl mx-auto"> <h1 className="text-xl font-bold mb-2">Inventario Carte</h1> <p className="mb-4">Completamento: {progress}%</p> <input type="file" accept=".csv" onChange={handleFile} className="mb-4" /> <div className="space-y-2"> {cards.map((card, index) => ( <div
-key={index}
-className="p-2 rounded-xl bg-white shadow flex justify-between items-center"
-> <div> <div className="font-semibold">#{card.numero}</div> <div className="text-sm text-gray-500">Prezzo: {card.prezzo}</div> <div className="text-sm">Quantità: {card.quantita}</div> </div> <div className="space-x-2"> <button onClick={() => updateQuantity(index, -1)} className="bg-red-500 text-white px-2 py-1 rounded" > -1 </button> <button onClick={() => updateQuantity(index, 1)} className="bg-green-500 text-white px-2 py-1 rounded" > +1 </button> </div> </div> ))} </div> </main> ); }
-
+    // Carica da localStorage se presente
+    window.onload = function () {
+      const stored = localStorage.getItem('cards');
+      if (stored) {
+        cards = JSON.parse(stored);
+        renderCards();
+        updateProgress();
+      }
+    };
+  </script>
+</body>
+</html>
