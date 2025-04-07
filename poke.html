@@ -7,6 +7,37 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
   <script src="carte.js"></script>
+  <style>
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      cursor: pointer;
+      font-size: 20px;
+      color: #999;
+    }
+  </style>
 </head>
 <body class="bg-gray-100 text-gray-900">
   <div class="max-w-7xl mx-auto p-4">
@@ -28,20 +59,58 @@
   </div>
   <input type="file" id="scannerInput" accept="image/*" capture="environment" class="hidden" />
 
+  <!-- Modal -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close-btn" onclick="chiudiModal()">&times;</span>
+      <img id="modal-img" src="" alt="Carta" class="w-full h-64 object-contain mb-4" />
+      <input id="modal-nome" class="border p-1 mb-2 w-full rounded" placeholder="Nome" />
+      <input id="modal-numero" class="border p-1 mb-2 w-full rounded" placeholder="Numero" />
+      <input id="modal-rarita" class="border p-1 mb-2 w-full rounded" placeholder="Rarità" />
+      <button onclick="salvaModifiche()" class="bg-blue-500 text-white px-4 py-2 rounded">Salva</button>
+    </div>
+  </div>
+
   <script>
     let tutteLeCarte = typeof CARTE !== 'undefined' ? CARTE : JSON.parse(localStorage.getItem("carte")) || [];
+    let cartaAttiva = null;
 
     function salvaCarte() {
       localStorage.setItem("carte", JSON.stringify(tutteLeCarte));
     }
 
+    function chiudiModal() {
+      document.getElementById("modal").classList.add("hidden");
+    }
+
+    function mostraModal(carta, index) {
+      cartaAttiva = index;
+      document.getElementById("modal-img").src = carta.immagine;
+      document.getElementById("modal-nome").value = carta.nome;
+      document.getElementById("modal-numero").value = carta.numero;
+      document.getElementById("modal-rarita").value = carta.rarita;
+      document.getElementById("modal").classList.remove("hidden");
+    }
+
+    function salvaModifiche() {
+      if (cartaAttiva !== null) {
+        tutteLeCarte[cartaAttiva].nome = document.getElementById("modal-nome").value;
+        tutteLeCarte[cartaAttiva].numero = document.getElementById("modal-numero").value;
+        tutteLeCarte[cartaAttiva].rarita = document.getElementById("modal-rarita").value;
+        salvaCarte();
+        render(tutteLeCarte);
+        chiudiModal();
+      }
+    }
+
     function render(carte) {
       const container = document.getElementById("carte");
       container.innerHTML = "";
-      carte.forEach(carta => {
+      carte.forEach((carta, index) => {
         container.innerHTML += `
-          <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition">
+          <div onclick="mostraModal(tutteLeCarte[${index}], ${index})" class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition cursor-pointer relative">
             <img src="${carta.immagine}" alt="${carta.nome}" class="w-full h-48 object-contain mb-2" />
+            <div class="absolute top-2 right-2 text-blue-500">✏️</div>
             <h2 class="font-semibold text-lg">${carta.numero} ${carta.nome}</h2>
             <p class="text-sm text-gray-500">${carta.rarita}</p>
             <p class="text-green-600 font-bold mt-1">€${parseFloat(carta.prezzo).toFixed(2)}</p>
