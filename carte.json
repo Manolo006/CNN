@@ -3,7 +3,14 @@
     "nome": "Surskit",
     "numero": "001",
     "rarita": "Comune",
-    "prezzo": 0.1,
+    "prezzo": 0.02,
+    "immagine": "https://images.pokemontcg.io/sv4/1.png"
+  },
+  {
+    "nome": "Surskit",
+    "numero": "001",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.02,
     "immagine": "https://images.pokemontcg.io/sv4/1.png"
   },
   {
