@@ -4,281 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Carte Pokémon - Paradosso Temporale</title>
+  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
-  <script src="carte.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #f9fafb;
-      margin: 0;
-      padding: 1rem;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-    }
-    .card {
-      background: white;
-      padding: 1rem;
-      border-radius: 1rem;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-    }
-    .card img {
-      width: 60px;
-      height: 80px;
-      object-fit: cover;
-      margin-right: 1rem;
-    }
-    .info {
-      flex-grow: 1;
-    }
-    .actions button {
-      background: #10b981;
-      border: none;
-      padding: 5px 10px;
-      color: white;
-      border-radius: 5px;
-      margin: 0 2px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .actions button:first-child {
-      background: #ef4444;
-    }
-    #scanButton {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-      z-index: 1000;
-    }
-
-    #scanButton img {
-      max-width: 100%;
-      max-height: 100%;
-    }
-
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      display: none; /* Modale nascosto per default */
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    .modal-content {
-      background: white;
-      padding: 2rem;
-      border-radius: 1rem;
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-      position: relative;
-    }
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      cursor: pointer;
-      font-size: 20px;
-      color: #999;
-    }
-    .card-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1rem;
-      background-color: white;
-      border-radius: 1rem;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .card-container img {
-      width: 100px;
-      height: 140px;
-      object-fit: contain;
-      cursor: pointer;
-    }
-    .card-actions {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    .card-actions button {
-      background-color: #4CAF50; /* verde */
-      color: white;
-      padding: 0.5rem;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .card-actions button.remove {
-      background-color: #f44336; /* rosso */
-    }
-  </style>
+  <script src="scan.js" defer></script>
 </head>
 <body class="bg-gray-100 text-gray-900">
   <div class="max-w-7xl mx-auto p-4">
     <h1 class="text-3xl font-bold mb-6">Carte Pokémon - Paradosso Temporale</h1>
 
+    <!-- Sezione Filtro -->
     <div class="mb-4">
       <label class="mr-2 font-medium">Filtra per nome:</label>
       <input type="text" id="filtro" class="border p-1 rounded" placeholder="Es. Surskit" />
     </div>
 
+    <!-- Container per le carte -->
     <div id="carte" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
-  </div>
+    
+    <!-- Input per la scansione -->
+    <input id="scannerInput" type="text" placeholder="Scansiona il codice della carta" class="p-2 border rounded mb-4" />
 
-  <!-- Bottone scanner -->
-  <div class="fixed bottom-6 right-6 z-50">
-    <button id="scanBtn" class="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700">
-      📷
-    </button>
-  </div>
-  <input type="file" id="scannerInput" accept="image/*" capture="environment" class="hidden" />
-
-  <!-- Modal -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="chiudiModal()">&times;</span>
-      <img id="modal-img" src="" alt="Carta" class="w-full h-64 object-contain mb-4" />
-      <input id="modal-nome" class="border p-1 mb-2 w-full rounded" placeholder="Nome" />
-      <input id="modal-numero" class="border p-1 mb-2 w-full rounded" placeholder="Numero" />
-      <input id="modal-rarita" class="border p-1 mb-2 w-full rounded" placeholder="Rarità" />
-      <button onclick="salvaModifiche()" class="bg-blue-500 text-white px-4 py-2 rounded">Salva</button>
+    <!-- Modale per la modifica -->
+    <div id="modal" style="display:none;" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+      <div class="bg-white p-4 rounded-xl shadow-lg">
+        <h2 class="text-xl font-semibold mb-4">Modifica Carta</h2>
+        <img id="modal-img" src="" alt="Carta" class="w-32 mb-4" />
+        <label>Nome:</label>
+        <input type="text" id="modal-nome" class="border p-2 mb-4" />
+        <label>Numero:</label>
+        <input type="text" id="modal-numero" class="border p-2 mb-4" />
+        <label>Rarità:</label>
+        <input type="text" id="modal-rarita" class="border p-2 mb-4" />
+        <button onclick="salvaModifiche()" class="bg-blue-500 text-white p-2 rounded">Salva</button>
+        <button onclick="chiudiModal()" class="bg-red-500 text-white p-2 rounded">Chiudi</button>
+      </div>
     </div>
   </div>
-
-  <script>
-    let tutteLeCarte = typeof CARTE !== 'undefined' ? CARTE : JSON.parse(localStorage.getItem("carte")) || [];
-    let cartaAttiva = null;
-
-    function salvaCarte() {
-      localStorage.setItem("carte", JSON.stringify(tutteLeCarte));
-    }
-
-    function chiudiModal() {
-      document.getElementById("modal").style.display = 'none';
-    }
-
-    function mostraModal(carta, index) {
-      cartaAttiva = index;
-      document.getElementById("modal-img").src = carta.immagine;
-      document.getElementById("modal-nome").value = carta.nome;
-      document.getElementById("modal-numero").value = carta.numero;
-      document.getElementById("modal-rarita").value = carta.rarita;
-      document.getElementById("modal").style.display = 'flex';  // Mostra il modal
-    }
-
-    function salvaModifiche() {
-      if (cartaAttiva !== null) {
-        tutteLeCarte[cartaAttiva].nome = document.getElementById("modal-nome").value;
-        tutteLeCarte[cartaAttiva].numero = document.getElementById("modal-numero").value;
-        tutteLeCarte[cartaAttiva].rarita = document.getElementById("modal-rarita").value;
-        salvaCarte();
-        render(tutteLeCarte);
-        chiudiModal();
-      }
-    }
-
-    function aggiornaQuantita(index, delta) {
-      if (tutteLeCarte[index].quantita + delta >= 0) {
-        tutteLeCarte[index].quantita += delta;
-        salvaCarte();
-        render(tutteLeCarte);
-      }
-    }
-
-    function render(carte) {
-      const container = document.getElementById("carte");
-      container.innerHTML = "";
-      carte.forEach((carta, index) => {
-        container.innerHTML += `
-          <div class="card-container" onclick="mostraModal(tutteLeCarte[${index}], ${index})">
-            <img src="${carta.immagine}" alt="${carta.nome}" />
-            <h2 class="font-semibold text-lg">${carta.numero} ${carta.nome}</h2>
-            <p class="text-sm text-gray-500">${carta.rarita}</p>
-            <p class="text-green-600 font-bold mt-1">€${parseFloat(carta.prezzo).toFixed(2)}</p>
-            <p class="text-sm text-gray-600">Quantità: ${carta.quantita || 0}</p>
-            <div class="card-actions">
-              <button onclick="aggiornaQuantita(${index}, 1)" class="bg-green-500">+1</button>
-              <button onclick="aggiornaQuantita(${index}, -1)" class="remove">-1</button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    document.getElementById("filtro").addEventListener("input", e => {
-      const val = e.target.value.toLowerCase();
-      const filtrate = tutteLeCarte.filter(c => c.nome.toLowerCase().includes(val));
-      render(filtrate);
-    });
-
-    if (!localStorage.getItem("carte") && typeof CARTE !== 'undefined') {
-      tutteLeCarte = CARTE;
-      salvaCarte();
-    }
-    render(tutteLeCarte);
-
-    const scanBtn = document.getElementById("scanBtn");
-    const scannerInput = document.getElementById("scannerInput");
-
-    scanBtn.addEventListener("click", () => scannerInput.click());
-
-    scannerInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const img = URL.createObjectURL(file);
-
-      Tesseract.recognize(img, 'eng', { logger: m => console.log(m) })
-        .then(({ data: { text } }) => {
-          const cleaned = text.toLowerCase().replace(/[^a-z0-9\\s]/gi, '').trim();
-          console.log("Testo rilevato:", cleaned);
-
-          const match = tutteLeCarte.find(c => cleaned.includes(c.nome.toLowerCase()));
-
-          if (match) {
-            alert(`✅ Carta trovata: ${match.nome}\n#${match.numero}\nValore: €${match.prezzo}`);
-          } else {
-            const nomeStimato = prompt("Carta non trovata. Inserisci il nome della nuova carta:");
-            if (nomeStimato) {
-              const nuovaCarta = {
-                nome: nomeStimato,
-                numero: "???",
-                rarita: "Sconosciuta",
-                prezzo: 0.00,
-                immagine: img,
-                quantita: 1
-              };
-              tutteLeCarte.push(nuovaCarta);
-              salvaCarte();
-              render(tutteLeCarte);
-              alert(`📦 Nuova carta aggiunta: ${nomeStimato}`);
-            }
-          }
-        })
-        .catch(err => {
-          alert("Errore nella scansione OCR.");
-          console.error(err);
-        });
-    });
-  </script>
 </body>
 </html>
