@@ -6,6 +6,7 @@
   <title>Carte Pokémon - Paradosso Temporale</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
+  <script src="carte.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-900">
   <div class="max-w-7xl mx-auto p-4">
@@ -28,7 +29,7 @@
   <input type="file" id="scannerInput" accept="image/*" capture="environment" class="hidden" />
 
   <script>
-    let tutteLeCarte = JSON.parse(localStorage.getItem("carte")) || [];
+    let tutteLeCarte = typeof CARTE !== 'undefined' ? CARTE : JSON.parse(localStorage.getItem("carte")) || [];
 
     function salvaCarte() {
       localStorage.setItem("carte", JSON.stringify(tutteLeCarte));
@@ -55,18 +56,11 @@
       render(filtrate);
     });
 
-    fetch('carte.json')
-      .then(res => res.json())
-      .then(data => {
-        if (tutteLeCarte.length === 0) {
-          tutteLeCarte = data;
-          salvaCarte();
-        }
-        render(tutteLeCarte);
-      })
-      .catch(err => {
-        console.error("Errore nel caricamento delle carte:", err);
-      });
+    if (!localStorage.getItem("carte") && typeof CARTE !== 'undefined') {
+      tutteLeCarte = CARTE;
+      salvaCarte();
+    }
+    render(tutteLeCarte);
 
     const scanBtn = document.getElementById("scanBtn");
     const scannerInput = document.getElementById("scannerInput");
