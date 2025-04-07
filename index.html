@@ -1,78 +1,107 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Conto alla rovescia</title>
   <style>
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background: #f0f0f0;
-      font-family: Arial, sans-serif;
-      flex-direction: column;
-      padding: 10px;
+    * {
+      box-sizing: border-box;
     }
+
+    body {
+      margin: 0;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+
     .countdown {
       background: #fff;
-      padding: 10px;
-      border-radius: 8px;
+      padding: 20px;
+      border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       text-align: center;
-      overflow-x: auto;
-      max-width: 100%;
-      margin-bottom: 20px;
+      width: 100%;
+      max-width: 800px;
     }
+
+    .school-days-remaining {
+      font-size: 1.2em;
+      color: #007bff;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .live-countdown {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
     .timer-container {
       display: grid;
-      grid-template-columns: repeat(7, minmax(30px, 1fr));
-      gap: 2px;
-      margin-top: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+      gap: 5px;
     }
+
     .day-box {
-      padding: 5px;
-      font-size: 0.8em;
-      border-radius: 3px;
+      padding: 6px;
+      font-size: 0.75em;
+      border-radius: 5px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 30px;
     }
+
     .day-number {
-      font-size: 1em;
+      font-size: 0.9em;
       font-weight: bold;
     }
+
     .day-info {
-      font-size: 0.5em;
+      font-size: 0.6em;
       color: #f0f0f0;
     }
+
     .future-day {
       background: #007bff;
       color: white;
     }
+
     .past-day {
       background: #ccc;
       color: #666;
     }
+
     .special-day {
       background: #ff5733;
       color: white;
     }
-    .live-countdown {
-      font-size: 1.2em;
-      font-weight: bold;
-      color: #333;
-      margin-top: 10px;
-    }
-    .school-days-remaining {
-      font-size: 1em;
-      color: #007bff;
-      font-weight: bold;
-      margin-bottom: 5px;
+
+    @media (max-width: 600px) {
+      .school-days-remaining {
+        font-size: 1em;
+      }
+      .live-countdown {
+        font-size: 1em;
+      }
+      .day-box {
+        padding: 5px;
+      }
+      .day-number {
+        font-size: 0.85em;
+      }
+      .day-info {
+        font-size: 0.5em;
+      }
     }
   </style>
 </head>
@@ -83,7 +112,7 @@
     <div class="live-countdown" id="live-timer">00:00:00:00</div>
     <div class="timer-container" id="days-container"></div>
   </div>
-  
+
   <script>
     function updateCountdown() {
       const now = new Date().getTime();
@@ -105,7 +134,7 @@
         "2025-04-19", "2025-04-20", "2025-04-21", "2025-04-22", "2025-04-23",
         "2025-04-24", "2025-04-25", "2025-05-01", "2025-06-02", "2025-06-06",
         "2025-06-09", "2025-06-10", "2025-06-11", "2025-06-12", "2025-06-13",
-        "2025-06-16", "2025-04-26", "2025-05-02", "2025-06-03" // ponti aggiuntivi
+        "2025-06-16", "2025-04-26", "2025-05-02", "2025-06-03"
       ];
 
       const weekdays = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
@@ -118,7 +147,7 @@
         const currentDate = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
         const formattedDate = currentDate.toISOString().split('T')[0];
         const dayOfWeek = weekdays[currentDate.getDay()];
-        const dayMonth = currentDate.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' });
+        const dayMonth = currentDate.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
 
         const isPast = currentDate < new Date();
         const isWeekendOrSpecial = specialDays.includes(formattedDate) || currentDate.getDay() === 0 || currentDate.getDay() === 6;
@@ -144,7 +173,7 @@
       document.getElementById("live-timer").innerText = `${daysRemaining}d ${hours}h ${minutes}m ${seconds}s`;
     }
 
-    updateCountdown(); 
+    updateCountdown();
     setInterval(updateCountdown, 1000);
   </script>
 </body>
