@@ -32,14 +32,14 @@
     }
 
     .school-days-remaining {
-      font-size: 1.2em;
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
       color: #007bff;
       font-weight: bold;
       margin-bottom: 10px;
     }
 
     .live-countdown {
-      font-size: 1.1em;
+      font-size: clamp(1rem, 2vw, 1.3rem);
       font-weight: bold;
       color: #333;
       margin-bottom: 15px;
@@ -47,7 +47,7 @@
 
     .timer-container {
       display: grid;
-      grid-template-columns: repeat(7, 1fr); /* 7 colonne fisse */
+      grid-template-columns: repeat(7, 1fr);
       gap: 5px;
     }
 
@@ -55,7 +55,7 @@
       aspect-ratio: 1 / 1;
       padding: 5px;
       border-radius: 5px;
-      font-size: 0.7em;
+      font-size: clamp(0.6rem, 1.5vw, 1rem);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -64,12 +64,12 @@
     }
 
     .day-number {
-      font-size: 0.9em;
+      font-size: clamp(0.9rem, 2vw, 1.2rem);
       font-weight: bold;
     }
 
     .day-info {
-      font-size: 0.55em;
+      font-size: clamp(0.5rem, 1vw, 0.8rem);
       color: #f0f0f0;
     }
 
@@ -86,12 +86,6 @@
     .special-day {
       background: #ff5733;
       color: white;
-    }
-
-    @media (max-width: 600px) {
-      .day-box {
-        font-size: 0.6em;
-      }
     }
   </style>
 </head>
