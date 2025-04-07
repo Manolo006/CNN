@@ -19,11 +19,7 @@
   </div>
 
   <script>
-    const tutteLeCarte = [
-      { nome: "Surskit", numero: "001", rarita: "Comune", prezzo: 0.10, immagine: "https://images.pokemontcg.io/sv4/1.png" },
-      { nome: "Froslass ex", numero: "003", rarita: "Rara", prezzo: 9.90, immagine: "https://images.pokemontcg.io/sv4/3.png" },
-      // Altre carte...
-    ];
+    let tutteLeCarte = [];
 
     function render(carte) {
       const container = document.getElementById("carte");
@@ -32,7 +28,7 @@
         container.innerHTML += `
           <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition">
             <img src="${carta.immagine}" alt="${carta.nome}" class="w-full h-48 object-contain mb-2" />
-            <h2 class="font-semibold text-lg">#${carta.numero} ${carta.nome}</h2>
+            <h2 class="font-semibold text-lg">${carta.numero} ${carta.nome}</h2>
             <p class="text-sm text-gray-500">${carta.rarita}</p>
             <p class="text-green-600 font-bold mt-1">€${carta.prezzo.toFixed(2)}</p>
           </div>
@@ -46,7 +42,16 @@
       render(filtrate);
     });
 
-    render(tutteLeCarte);
+    // Carica JSON esterno
+    fetch('carte_paradosso_temporale.json')
+      .then(res => res.json())
+      .then(data => {
+        tutteLeCarte = data;
+        render(tutteLeCarte);
+      })
+      .catch(err => {
+        console.error("Errore nel caricamento delle carte:", err);
+      });
   </script>
 </body>
 </html>
