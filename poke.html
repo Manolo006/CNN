@@ -1,118 +1,52 @@
+<!DOCTYPE html>
 <html lang="it">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Inventario Carte Pokémon</title>
-    <link rel="stylesheet" href="pokestyle.css" />
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
-  </head>
-  <body>
-    <main class="container">
-      <h1>Inventario Carte Pokémon</h1>
-      <input type="text" id="search" placeholder="Cerca carta..." />
-      <p id="progress">Completamento: 0%</p>
-      <div id="cards"></div>
-      <button id="scanButton">
-        <img src="camera-icon.png" alt="Scan" />
-      </button>
-    </main>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carte Pokémon - Paradosso Temporale</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <div class="max-w-7xl mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-6">Carte Pokémon - Paradosso Temporale</h1>
+    
+    <div class="mb-4">
+      <label class="mr-2 font-medium">Filtra per nome:</label>
+      <input type="text" id="filtro" class="border p-1 rounded" placeholder="Es. Surskit" />
+    </div>
 
-    <video id="cameraStream" autoplay playsinline style="display: none;"></video>
-    <canvas id="snapshot" style="display: none;"></canvas>
+    <div id="carte" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+  </div>
 
-    <script>
-      const cards = [
-        { numero: "001", nome: "Bulbasaur", immagine: "https://assets.pokemon.com/assets/cms2/img/cards/web/XY12/XY12_IT_1.png", prezzo: "0.12€", quantita: 1 },
-        { numero: "004", nome: "Charmander", immagine: "https://assets.pokemon.com/assets/cms2/img/cards/web/XY12/XY12_IT_10.png", prezzo: "0.20€", quantita: 0 },
-        { numero: "007", nome: "Squirtle", immagine: "https://assets.pokemon.com/assets/cms2/img/cards/web/EX9/EX9_IT_22.png", prezzo: "0.18€", quantita: 0 }
-      ];
+  <script>
+    const tutteLeCarte = [
+      { nome: "Surskit", numero: "001", rarita: "Comune", prezzo: 0.10, immagine: "https://images.pokemontcg.io/sv4/1.png" },
+      { nome: "Froslass ex", numero: "003", rarita: "Rara", prezzo: 9.90, immagine: "https://images.pokemontcg.io/sv4/3.png" },
+      // Altre carte...
+    ];
 
-      function aggiornaProgress() {
-        const totali = cards.length;
-        const possedute = cards.filter(c => c.quantita > 0).length;
-        const percentuale = ((possedute / totali) * 100).toFixed(2);
-        document.getElementById("progress").innerText = `Completamento: ${percentuale}%`;
-      }
-
-      function aggiornaQuantita(index, delta) {
-        cards[index].quantita += delta;
-        if (cards[index].quantita < 0) cards[index].quantita = 0;
-        localStorage.setItem("carte", JSON.stringify(cards));
-        render();
-      }
-
-      function render(filtro = "") {
-        const container = document.getElementById("cards");
-        container.innerHTML = "";
-        cards
-          .filter(c => c.nome.toLowerCase().includes(filtro.toLowerCase()))
-          .forEach((card, i) => {
-            const div = document.createElement("div");
-            div.className = "card" + (card.quantita > 0 ? " posseduta" : "");
-            div.innerHTML = `
-              <img src="${card.immagine}" alt="${card.nome}" />
-              <div class="info">
-                <strong>#${card.numero} ${card.nome}</strong><br />
-                Prezzo: ${card.prezzo}<br />
-                Quantità: ${card.quantita}
-              </div>
-              <div class="actions">
-                <button onclick="aggiornaQuantita(${i}, -1)">-1</button>
-                <button onclick="aggiornaQuantita(${i}, 1)">+1</button>
-              </div>
-            `;
-            container.appendChild(div);
-          });
-        aggiornaProgress();
-      }
-
-      function startCameraAndScan() {
-        const video = document.getElementById("cameraStream");
-        const canvas = document.getElementById("snapshot");
-        const ctx = canvas.getContext("2d");
-
-        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-          video.style.display = "block";
-          video.srcObject = stream;
-
-          setTimeout(() => {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            stream.getTracks().forEach(track => track.stop());
-            video.style.display = "none";
-
-            Tesseract.recognize(canvas, 'eng').then(({ data: { text } }) => {
-              const trovato = cards.find(c => text.toLowerCase().includes(c.nome.toLowerCase()));
-              if (trovato) {
-                alert(`Carta riconosciuta: ${trovato.nome}\nValore: ${trovato.prezzo}`);
-              } else {
-                alert("Carta non riconosciuta. Prova di nuovo!");
-              }
-            });
-          }, 3000);
-        }).catch(err => {
-          alert("Errore nell'accesso alla fotocamera.");
-          console.error(err);
-        });
-      }
-
-      window.onload = () => {
-        const salvate = localStorage.getItem("carte");
-        if (salvate) {
-          const parsed = JSON.parse(salvate);
-          parsed.forEach(c => cards.push(c));
-        }
-        render();
-      };
-
-      document.getElementById("search").addEventListener("input", e => {
-        render(e.target.value);
+    function render(carte) {
+      const container = document.getElementById("carte");
+      container.innerHTML = "";
+      carte.forEach(carta => {
+        container.innerHTML += `
+          <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition">
+            <img src="${carta.immagine}" alt="${carta.nome}" class="w-full h-48 object-contain mb-2" />
+            <h2 class="font-semibold text-lg">#${carta.numero} ${carta.nome}</h2>
+            <p class="text-sm text-gray-500">${carta.rarita}</p>
+            <p class="text-green-600 font-bold mt-1">€${carta.prezzo.toFixed(2)}</p>
+          </div>
+        `;
       });
+    }
 
-      document.getElementById("scanButton").addEventListener("click", () => {
-        startCameraAndScan();
-      });
-    </script>
-  </body>
+    document.getElementById("filtro").addEventListener("input", e => {
+      const val = e.target.value.toLowerCase();
+      const filtrate = tutteLeCarte.filter(c => c.nome.toLowerCase().includes(val));
+      render(filtrate);
+    });
+
+    render(tutteLeCarte);
+  </script>
+</body>
 </html>
