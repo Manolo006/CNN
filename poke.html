@@ -4,25 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Carte Pokémon - Paradosso Temporale</title>
-  <link rel="stylesheet" href="pokestyle.css">
+  <!-- Link a TailwindCSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
+  <!-- Link al CSS personalizzato (pokestyle.css) -->
+  <link rel="stylesheet" href="pokestyle.css">
   <script src="scan.js" defer></script>
 </head>
 <body class="bg-gray-100 text-gray-900">
   <div class="max-w-7xl mx-auto p-4">
     <h1 class="text-3xl font-bold mb-6">Carte Pokémon - Paradosso Temporale</h1>
 
-    <!-- Sezione Filtro -->
+    <!-- Sezione Filtro e scansione unificata -->
     <div class="mb-4">
-      <label class="mr-2 font-medium">Filtra per nome:</label>
-      <input type="text" id="filtro" class="border p-1 rounded" placeholder="Es. Surskit" />
+      <label class="mr-2 font-medium">Cerca o scansiona il codice della carta:</label>
+      <input type="text" id="filtro" class="border p-1 rounded" placeholder="Es. Surskit o codice della carta" />
+    </div>
+
+    <!-- Barra di completamento -->
+    <div class="mb-4">
+      <label class="font-medium">Completamento collezione:</label>
+      <div class="w-full bg-gray-300 rounded-full h-2 mb-2">
+        <div id="completion-bar" class="bg-green-500 h-2 rounded-full" style="width: 0%;"></div>
+      </div>
+      <p id="completion-text" class="text-sm text-gray-600">0% completato</p>
+    </div>
+
+    <!-- Valore collezione e totale speso -->
+    <div class="mb-4">
+      <p id="total-value" class="text-lg font-semibold">Valore della collezione: €0.00</p>
+      <p id="total-spent" class="text-lg font-semibold">Totale speso: €0.00</p>
     </div>
 
     <!-- Container per le carte -->
     <div id="carte" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
-    
-    <!-- Input per la scansione -->
-    <input id="scannerInput" type="text" placeholder="Scansiona il codice della carta" class="p-2 border rounded mb-4" />
 
     <!-- Modale per la modifica -->
     <div id="modal" style="display:none;" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
@@ -35,6 +49,8 @@
         <input type="text" id="modal-numero" class="border p-2 mb-4" />
         <label>Rarità:</label>
         <input type="text" id="modal-rarita" class="border p-2 mb-4" />
+        <label>Quantità:</label>
+        <input type="number" id="modal-quantita" class="border p-2 mb-4" min="0" />
         <button onclick="salvaModifiche()" class="bg-blue-500 text-white p-2 rounded">Salva</button>
         <button onclick="chiudiModal()" class="bg-red-500 text-white p-2 rounded">Chiudi</button>
       </div>
