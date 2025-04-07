@@ -4,10 +4,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inventario Carte Pokémon</title>
     <link rel="stylesheet" href="pokestyle.css" />
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
   </head>
   <body>
     <main class="container">
       <h1>Inventario Carte Pokémon</h1>
+      <input type="text" id="search" placeholder="Cerca carta..." />
       <p id="progress">Completamento: 0%</p>
       <div id="cards"></div>
       <button id="scanButton">
@@ -15,8 +17,15 @@
       </button>
     </main>
 
+    <video id="cameraStream" autoplay playsinline style="display: none;"></video>
+    <canvas id="snapshot" style="display: none;"></canvas>
+
     <script>
-      const cards = []; // Questo array verrà popolato con i dati estratti dal CSV
+      const cards = [
+        { numero: "001", nome: "Bulbasaur", immagine: "https://assets.pokemon.com/assets/cms2/img/cards/web/XY12/XY12_IT_1.png", prezzo: "0.12€", quantita: 1 },
+        { numero: "004", nome: "Charmander", immagine: "https://assets.pokemon.com/assets/cms2/img/cards/web/XY12/XY12_IT_10.png", prezzo: "0.20€", quantita: 0 },
+        { numero: "007", nome: "Squirtle", immagine: "https://assets.pokemon.com/assets/cms2/img/cards/web/EX9/EX9_IT_22.png", prezzo: "0.18€", quantita: 0 }
+      ];
 
       function aggiornaProgress() {
         const totali = cards.length;
@@ -32,27 +41,60 @@
         render();
       }
 
-      function render() {
+      function render(filtro = "") {
         const container = document.getElementById("cards");
         container.innerHTML = "";
-        cards.forEach((card, i) => {
-          const div = document.createElement("div");
-          div.className = "card";
-          div.innerHTML = `
-            <img src="${card.immagine}" alt="${card.nome}" />
-            <div class="info">
-              <strong>#${card.numero} ${card.nome}</strong><br />
-              Prezzo: ${card.prezzo}<br />
-              Quantità: ${card.quantita}
-            </div>
-            <div class="actions">
-              <button onclick="aggiornaQuantita(${i}, -1)\">-1</button>
-              <button onclick="aggiornaQuantita(${i}, 1)\">+1</button>
-            </div>
-          `;
-          container.appendChild(div);
-        });
+        cards
+          .filter(c => c.nome.toLowerCase().includes(filtro.toLowerCase()))
+          .forEach((card, i) => {
+            const div = document.createElement("div");
+            div.className = "card" + (card.quantita > 0 ? " posseduta" : "");
+            div.innerHTML = `
+              <img src="${card.immagine}" alt="${card.nome}" />
+              <div class="info">
+                <strong>#${card.numero} ${card.nome}</strong><br />
+                Prezzo: ${card.prezzo}<br />
+                Quantità: ${card.quantita}
+              </div>
+              <div class="actions">
+                <button onclick="aggiornaQuantita(${i}, -1)">-1</button>
+                <button onclick="aggiornaQuantita(${i}, 1)">+1</button>
+              </div>
+            `;
+            container.appendChild(div);
+          });
         aggiornaProgress();
+      }
+
+      function startCameraAndScan() {
+        const video = document.getElementById("cameraStream");
+        const canvas = document.getElementById("snapshot");
+        const ctx = canvas.getContext("2d");
+
+        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+          video.style.display = "block";
+          video.srcObject = stream;
+
+          setTimeout(() => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            stream.getTracks().forEach(track => track.stop());
+            video.style.display = "none";
+
+            Tesseract.recognize(canvas, 'eng').then(({ data: { text } }) => {
+              const trovato = cards.find(c => text.toLowerCase().includes(c.nome.toLowerCase()));
+              if (trovato) {
+                alert(`Carta riconosciuta: ${trovato.nome}\nValore: ${trovato.prezzo}`);
+              } else {
+                alert("Carta non riconosciuta. Prova di nuovo!");
+              }
+            });
+          }, 3000);
+        }).catch(err => {
+          alert("Errore nell'accesso alla fotocamera.");
+          console.error(err);
+        });
       }
 
       window.onload = () => {
@@ -60,14 +102,17 @@
         if (salvate) {
           const parsed = JSON.parse(salvate);
           parsed.forEach(c => cards.push(c));
-          render();
-        } else {
-          // Qui verranno inseriti i dati statici in formato JS
-          // Esempio:
-          // cards.push({ numero: "001\", nome: \"Bulbasaur\", immagine: \"url\", prezzo: \"0.12\", quantita: 1 });
-          render();
         }
+        render();
       };
+
+      document.getElementById("search").addEventListener("input", e => {
+        render(e.target.value);
+      });
+
+      document.getElementById("scanButton").addEventListener("click", () => {
+        startCameraAndScan();
+      });
     </script>
   </body>
 </html>
