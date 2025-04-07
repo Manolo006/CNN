@@ -8,6 +8,68 @@
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
   <script src="carte.js"></script>
   <style>
+    body {
+      font-family: sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 1rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    .card {
+      background: white;
+      padding: 1rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+    .card img {
+      width: 60px;
+      height: 80px;
+      object-fit: cover;
+      margin-right: 1rem;
+    }
+    .info {
+      flex-grow: 1;
+    }
+    .actions button {
+      background: #10b981;
+      border: none;
+      padding: 5px 10px;
+      color: white;
+      border-radius: 5px;
+      margin: 0 2px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .actions button:first-child {
+      background: #ef4444;
+    }
+    #scanButton {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+
+    #scanButton img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
     .modal {
       position: fixed;
       top: 0;
@@ -36,6 +98,37 @@
       cursor: pointer;
       font-size: 20px;
       color: #999;
+    }
+    .card-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      background-color: white;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .card-container img {
+      width: 100px;
+      height: 140px;
+      object-fit: contain;
+      cursor: pointer;
+    }
+    .card-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .card-actions button {
+      background-color: #4CAF50; /* verde */
+      color: white;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .card-actions button.remove {
+      background-color: #f44336; /* rosso */
     }
   </style>
 </head>
@@ -94,4 +187,98 @@
 
     function salvaModifiche() {
       if (cartaAttiva !== null) {
-        tutteLeCarte[cartaAttiva].nome = document.getElementById
+        tutteLeCarte[cartaAttiva].nome = document.getElementById("modal-nome").value;
+        tutteLeCarte[cartaAttiva].numero = document.getElementById("modal-numero").value;
+        tutteLeCarte[cartaAttiva].rarita = document.getElementById("modal-rarita").value;
+        salvaCarte();
+        render(tutteLeCarte);
+        chiudiModal();
+      }
+    }
+
+    function aggiornaQuantita(index, delta) {
+      if (tutteLeCarte[index].quantita + delta >= 0) {
+        tutteLeCarte[index].quantita += delta;
+        salvaCarte();
+        render(tutteLeCarte);
+      }
+    }
+
+    function render(carte) {
+      const container = document.getElementById("carte");
+      container.innerHTML = "";
+      carte.forEach((carta, index) => {
+        container.innerHTML += `
+          <div class="card-container" onclick="mostraModal(tutteLeCarte[${index}], ${index})">
+            <img src="${carta.immagine}" alt="${carta.nome}" />
+            <h2 class="font-semibold text-lg">${carta.numero} ${carta.nome}</h2>
+            <p class="text-sm text-gray-500">${carta.rarita}</p>
+            <p class="text-green-600 font-bold mt-1">€${parseFloat(carta.prezzo).toFixed(2)}</p>
+            <p class="text-sm text-gray-600">Quantità: ${carta.quantita || 0}</p>
+            <div class="card-actions">
+              <button onclick="aggiornaQuantita(${index}, 1)" class="bg-green-500">+1</button>
+              <button onclick="aggiornaQuantita(${index}, -1)" class="remove">-1</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById("filtro").addEventListener("input", e => {
+      const val = e.target.value.toLowerCase();
+      const filtrate = tutteLeCarte.filter(c => c.nome.toLowerCase().includes(val));
+      render(filtrate);
+    });
+
+    if (!localStorage.getItem("carte") && typeof CARTE !== 'undefined') {
+      tutteLeCarte = CARTE;
+      salvaCarte();
+    }
+    render(tutteLeCarte);
+
+    const scanBtn = document.getElementById("scanBtn");
+    const scannerInput = document.getElementById("scannerInput");
+
+    scanBtn.addEventListener("click", () => scannerInput.click());
+
+    scannerInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const img = URL.createObjectURL(file);
+
+      Tesseract.recognize(img, 'eng', { logger: m => console.log(m) })
+        .then(({ data: { text } }) => {
+          const cleaned = text.toLowerCase().replace(/[^a-z0-9\\s]/gi, '').trim();
+          console.log("Testo rilevato:", cleaned);
+
+          const match = tutteLeCarte.find(c => cleaned.includes(c.nome.toLowerCase()));
+
+          if (match) {
+            alert(`✅ Carta trovata: ${match.nome}\n#${match.numero}\nValore: €${match.prezzo}`);
+          } else {
+            const nomeStimato = prompt("Carta non trovata. Inserisci il nome della nuova carta:");
+            if (nomeStimato) {
+              const nuovaCarta = {
+                nome: nomeStimato,
+                numero: "???",
+                rarita: "Sconosciuta",
+                prezzo: 0.00,
+                immagine: img,
+                quantita: 1
+              };
+              tutteLeCarte.push(nuovaCarta);
+              salvaCarte();
+              render(tutteLeCarte);
+              alert(`📦 Nuova carta aggiunta: ${nomeStimato}`);
+            }
+          }
+        })
+        .catch(err => {
+          alert("Errore nella scansione OCR.");
+          console.error(err);
+        });
+    });
+  </script>
+</body>
+</html>
