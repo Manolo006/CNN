@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Carte Pokémon - Paradosso Temporale</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-900">
   <div class="max-w-7xl mx-auto p-4">
@@ -17,6 +18,14 @@
 
     <div id="carte" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
   </div>
+
+  <!-- Bottone scanner -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <button id="scanBtn" class="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700">
+      📷
+    </button>
+  </div>
+  <input type="file" id="scannerInput" accept="image/*" capture="environment" class="hidden" />
 
   <script>
     let tutteLeCarte = [];
@@ -42,7 +51,6 @@
       render(filtrate);
     });
 
-    // Carica JSON esterno
     fetch('carte.json')
       .then(res => res.json())
       .then(data => {
@@ -52,6 +60,53 @@
       .catch(err => {
         console.error("Errore nel caricamento delle carte:", err);
       });
+
+    // === FOTOCAMERA & OCR ===
+    const scanBtn = document.getElementById("scanBtn");
+    const scannerInput = document.getElementById("scannerInput");
+
+    scanBtn.addEventListener("click", () => scannerInput.click());
+
+    scannerInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const img = URL.createObjectURL(file);
+
+      Tesseract.recognize(
+        img,
+        'eng',
+        { logger: m => console.log(m) }
+      ).then(({ data: { text } }) => {
+        const cleaned = text.toLowerCase().replace(/[^a-z0-9\s]/gi, '').trim();
+        console.log("Testo rilevato:", cleaned);
+
+        const match = tutteLeCarte.find(c =>
+          cleaned.includes(c.nome.toLowerCase())
+        );
+
+        if (match) {
+          alert(`✅ Carta trovata: ${match.nome}\n#${match.numero}\nValore: €${match.prezzo}`);
+        } else {
+          const nomeStimato = prompt("Carta non trovata. Inserisci il nome della nuova carta:");
+          if (nomeStimato) {
+            const nuovaCarta = {
+              nome: nomeStimato,
+              numero: "???",
+              rarita: "Sconosciuta",
+              prezzo: 0.00,
+              immagine: img
+            };
+            tutteLeCarte.push(nuovaCarta);
+            render(tutteLeCarte);
+            alert(`📦 Nuova carta aggiunta: ${nomeStimato}`);
+          }
+        }
+      }).catch(err => {
+        alert("Errore nella scansione OCR.");
+        console.error(err);
+      });
+    });
   </script>
 </body>
 </html>
