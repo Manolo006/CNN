@@ -4,6 +4,17 @@ let cartaAttiva = null;
 // Funzione per caricare e salvare le carte in localStorage
 function salvaCarte() {
   localStorage.setItem("carte", JSON.stringify(tutteLeCarte));
+  aggiornaStatistiche();
+}
+
+// Funzione per caricare le carte da localStorage
+function caricaCarte() {
+  const carteSalvate = localStorage.getItem("carte");
+  if (carteSalvate) {
+    tutteLeCarte = JSON.parse(carteSalvate);
+  } else {
+    tutteLeCarte = []; // Se non ci sono carte salvate, inizializza un array vuoto
+  }
 }
 
 // Funzione per chiudere la modale
@@ -18,6 +29,7 @@ function mostraModal(carta, index) {
   document.getElementById("modal-nome").value = carta.nome;
   document.getElementById("modal-numero").value = carta.numero;
   document.getElementById("modal-rarita").value = carta.rarita;
+  document.getElementById("modal-quantita").value = carta.quantita || 0;
   document.getElementById("modal").style.display = 'flex';  // Mostra la modale
 }
 
@@ -27,6 +39,7 @@ function salvaModifiche() {
     tutteLeCarte[cartaAttiva].nome = document.getElementById("modal-nome").value;
     tutteLeCarte[cartaAttiva].numero = document.getElementById("modal-numero").value;
     tutteLeCarte[cartaAttiva].rarita = document.getElementById("modal-rarita").value;
+    tutteLeCarte[cartaAttiva].quantita = parseInt(document.getElementById("modal-quantita").value);
     salvaCarte();
     render(tutteLeCarte);
     chiudiModal();
@@ -41,6 +54,23 @@ function aggiornaQuantita(index, delta, event) {
     salvaCarte();
     render(tutteLeCarte);
   }
+}
+
+// Funzione per aggiornare la barra di completamento e le statistiche
+function aggiornaStatistiche() {
+  const totaleCarte = tutteLeCarte.length;
+  const carteCompletate = tutteLeCarte.filter(c => c.quantita > 0).length;
+  const percentualeCompletamento = (carteCompletate / totaleCarte) * 100;
+
+  const valoreCollezione = tutteLeCarte.reduce((acc, carta) => acc + (carta.prezzo * carta.quantita), 0);
+
+  // Aggiorna la barra di completamento
+  document.getElementById("completion-bar").style.width = `${percentualeCompletamento}%`;
+  // Visualizza la percentuale con 2 decimali
+  document.getElementById("completion-text").textContent = `${percentualeCompletamento.toFixed(2)}% completato`;
+
+  // Aggiorna i valori totali
+  document.getElementById("total-value").textContent = `Valore della collezione: €${valoreCollezione.toFixed(2)}`;
 }
 
 // Funzione per renderizzare le carte nella pagina
@@ -65,6 +95,8 @@ function render(carte) {
       </div>
     `;
   });
+
+  aggiornaStatistiche();
 }
 
 // Funzione per gestire il filtro per nome delle carte
@@ -78,7 +110,13 @@ document.getElementById("filtro").addEventListener("input", e => {
 fetch('carte.json')
   .then(res => res.json())
   .then(data => {
-    tutteLeCarte = data.map(c => ({ ...c, quantita: 0 }));  // Inizializza la quantità a 0
+    // Carica le carte da localStorage
+    caricaCarte();
+    // Se non ci sono carte salvate, inizializza con i dati dal file JSON
+    if (tutteLeCarte.length === 0) {
+      tutteLeCarte = data.map(c => ({ ...c, quantita: 0 }));  // Inizializza la quantità a 0
+      salvaCarte(); // Salva inizialmente i dati
+    }
     render(tutteLeCarte);
   })
   .catch(err => console.error("Errore nel caricamento dei dati delle carte:", err));
@@ -101,9 +139,3 @@ scannerInput.addEventListener("input", () => {
     scannerInput.value = "";
   }
 });
-
-// Scansione tramite bottone
-document.getElementById("scanButton").addEventListener("click", () => {
-  document.getElementById("scannerInput").click();
-});
-
