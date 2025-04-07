@@ -28,7 +28,7 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       text-align: center;
       width: 100%;
-      max-width: 800px;
+      max-width: 1000px;
     }
 
     .school-days-remaining {
@@ -47,18 +47,20 @@
 
     .timer-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+      grid-template-columns: repeat(7, 1fr); /* 7 colonne fisse */
       gap: 5px;
     }
 
     .day-box {
-      padding: 6px;
-      font-size: 0.75em;
+      aspect-ratio: 1 / 1;
+      padding: 5px;
       border-radius: 5px;
-      text-align: center;
+      font-size: 0.7em;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
+      text-align: center;
     }
 
     .day-number {
@@ -67,7 +69,7 @@
     }
 
     .day-info {
-      font-size: 0.6em;
+      font-size: 0.55em;
       color: #f0f0f0;
     }
 
@@ -87,20 +89,8 @@
     }
 
     @media (max-width: 600px) {
-      .school-days-remaining {
-        font-size: 1em;
-      }
-      .live-countdown {
-        font-size: 1em;
-      }
       .day-box {
-        padding: 5px;
-      }
-      .day-number {
-        font-size: 0.85em;
-      }
-      .day-info {
-        font-size: 0.5em;
+        font-size: 0.6em;
       }
     }
   </style>
