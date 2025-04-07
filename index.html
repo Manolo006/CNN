@@ -68,11 +68,18 @@
       color: #333;
       margin-top: 10px;
     }
+    .school-days-remaining {
+      font-size: 1em;
+      color: #007bff;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
   <div class="countdown">
     <h1>Conto alla rovescia</h1>
+    <div class="school-days-remaining" id="school-days">Giorni di scuola rimanenti: 0</div>
     <div class="live-countdown" id="live-timer">00:00:00:00</div>
     <div class="timer-container" id="days-container"></div>
   </div>
@@ -94,42 +101,49 @@
       daysContainer.innerHTML = "";
       
       const specialDays = [
-  "2025-04-14", "2025-04-15", "2025-04-16", "2025-04-17", "2025-04-18", 
-  "2025-04-19", "2025-04-20", "2025-04-21", "2025-04-22", "2025-04-23", 
-  "2025-04-24", "2025-04-25", "2025-05-01", "2025-06-02", "2025-06-06", 
-  "2025-06-09", "2025-06-10", "2025-06-11", "2025-06-12", "2025-06-13", 
-  "2025-06-16"
-];
-
+        "2025-04-14", "2025-04-15", "2025-04-16", "2025-04-17", "2025-04-18",
+        "2025-04-19", "2025-04-20", "2025-04-21", "2025-04-22", "2025-04-23",
+        "2025-04-24", "2025-04-25", "2025-05-01", "2025-06-02", "2025-06-06",
+        "2025-06-09", "2025-06-10", "2025-06-11", "2025-06-12", "2025-06-13",
+        "2025-06-16"
+      ];
+      
       const weekdays = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+      let schoolDaysRemaining = 0;
       
       for (let i = 0; i < 100; i++) {
         const dayBox = document.createElement("div");
         dayBox.className = "day-box";
-        
+
         const currentDate = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
         const formattedDate = currentDate.toISOString().split('T')[0];
         const dayOfWeek = weekdays[currentDate.getDay()];
         const dayMonth = currentDate.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' });
-        
-        if (i < 100 - daysRemaining) {
+
+        const isPast = i < 100 - daysRemaining;
+        const isWeekendOrSpecial = specialDays.includes(formattedDate) || currentDate.getDay() === 0 || currentDate.getDay() === 6;
+
+        if (isPast) {
           dayBox.classList.add("past-day");
-        } else if (specialDays.includes(formattedDate) || currentDate.getDay() === 0 || currentDate.getDay() === 6) {
+        } else if (isWeekendOrSpecial) {
           dayBox.classList.add("special-day");
         } else {
           dayBox.classList.add("future-day");
+          schoolDaysRemaining++;
         }
-        
+
         dayBox.innerHTML = `<div class='day-number'>${100 - i}</div><div class='day-info'>${dayOfWeek}<br>${dayMonth}</div>`;
         daysContainer.appendChild(dayBox);
       }
-      
+
+      document.getElementById("school-days").innerText = `Giorni di scuola rimanenti: ${schoolDaysRemaining}`;
+
       const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
       document.getElementById("live-timer").innerText = `${daysRemaining}d ${hours}h ${minutes}m ${seconds}s`;
     }
-    
+
     updateCountdown(); 
     setInterval(updateCountdown, 1000);
   </script>
