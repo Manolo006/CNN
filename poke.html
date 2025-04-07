@@ -15,7 +15,7 @@
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.7);
-      display: flex;
+      display: none; /* Modale nascosto per default */
       justify-content: center;
       align-items: center;
       z-index: 9999;
@@ -60,7 +60,7 @@
   <input type="file" id="scannerInput" accept="image/*" capture="environment" class="hidden" />
 
   <!-- Modal -->
-  <div id="modal" class="modal hidden">
+  <div id="modal" class="modal">
     <div class="modal-content">
       <span class="close-btn" onclick="chiudiModal()">&times;</span>
       <img id="modal-img" src="" alt="Carta" class="w-full h-64 object-contain mb-4" />
@@ -80,7 +80,7 @@
     }
 
     function chiudiModal() {
-      document.getElementById("modal").classList.add("hidden");
+      document.getElementById("modal").style.display = 'none';
     }
 
     function mostraModal(carta, index) {
@@ -89,90 +89,9 @@
       document.getElementById("modal-nome").value = carta.nome;
       document.getElementById("modal-numero").value = carta.numero;
       document.getElementById("modal-rarita").value = carta.rarita;
-      document.getElementById("modal").classList.remove("hidden");
+      document.getElementById("modal").style.display = 'flex';  // Mostra il modal
     }
 
     function salvaModifiche() {
       if (cartaAttiva !== null) {
-        tutteLeCarte[cartaAttiva].nome = document.getElementById("modal-nome").value;
-        tutteLeCarte[cartaAttiva].numero = document.getElementById("modal-numero").value;
-        tutteLeCarte[cartaAttiva].rarita = document.getElementById("modal-rarita").value;
-        salvaCarte();
-        render(tutteLeCarte);
-        chiudiModal();
-      }
-    }
-
-    function render(carte) {
-      const container = document.getElementById("carte");
-      container.innerHTML = "";
-      carte.forEach((carta, index) => {
-        container.innerHTML += `
-          <div onclick="mostraModal(tutteLeCarte[${index}], ${index})" class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition cursor-pointer relative">
-            <img src="${carta.immagine}" alt="${carta.nome}" class="w-full h-48 object-contain mb-2" />
-            <div class="absolute top-2 right-2 text-blue-500">✏️</div>
-            <h2 class="font-semibold text-lg">${carta.numero} ${carta.nome}</h2>
-            <p class="text-sm text-gray-500">${carta.rarita}</p>
-            <p class="text-green-600 font-bold mt-1">€${parseFloat(carta.prezzo).toFixed(2)}</p>
-          </div>
-        `;
-      });
-    }
-
-    document.getElementById("filtro").addEventListener("input", e => {
-      const val = e.target.value.toLowerCase();
-      const filtrate = tutteLeCarte.filter(c => c.nome.toLowerCase().includes(val));
-      render(filtrate);
-    });
-
-    if (!localStorage.getItem("carte") && typeof CARTE !== 'undefined') {
-      tutteLeCarte = CARTE;
-      salvaCarte();
-    }
-    render(tutteLeCarte);
-
-    const scanBtn = document.getElementById("scanBtn");
-    const scannerInput = document.getElementById("scannerInput");
-
-    scanBtn.addEventListener("click", () => scannerInput.click());
-
-    scannerInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const img = URL.createObjectURL(file);
-
-      Tesseract.recognize(img, 'eng', { logger: m => console.log(m) })
-        .then(({ data: { text } }) => {
-          const cleaned = text.toLowerCase().replace(/[^a-z0-9\s]/gi, '').trim();
-          console.log("Testo rilevato:", cleaned);
-
-          const match = tutteLeCarte.find(c => cleaned.includes(c.nome.toLowerCase()));
-
-          if (match) {
-            alert(`✅ Carta trovata: ${match.nome}\n#${match.numero}\nValore: €${match.prezzo}`);
-          } else {
-            const nomeStimato = prompt("Carta non trovata. Inserisci il nome della nuova carta:");
-            if (nomeStimato) {
-              const nuovaCarta = {
-                nome: nomeStimato,
-                numero: "???",
-                rarita: "Sconosciuta",
-                prezzo: 0.00,
-                immagine: img
-              };
-              tutteLeCarte.push(nuovaCarta);
-              salvaCarte();
-              render(tutteLeCarte);
-              alert(`📦 Nuova carta aggiunta: ${nomeStimato}`);
-            }
-          }
-        })
-        .catch(err => {
-          alert("Errore nella scansione OCR.");
-          console.error(err);
-        });
-    });
-  </script>
-</body>
-</html>
+        tutteLeCarte[cartaAttiva].nome = document.getElementById
