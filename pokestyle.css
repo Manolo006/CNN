@@ -4,18 +4,12 @@ body {
   margin: 0;
   padding: 1rem;
 }
+
 .container {
   max-width: 600px;
   margin: auto;
 }
-#search {
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-}
+
 .card {
   background: white;
   padding: 1rem;
@@ -24,23 +18,19 @@ body {
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
-  transition: transform 0.2s ease;
 }
-.card.posseduta {
-  border-left: 5px solid #10b981;
-}
-.card:hover {
-  transform: scale(1.01);
-}
+
 .card img {
   width: 60px;
   height: 80px;
   object-fit: cover;
   margin-right: 1rem;
 }
+
 .info {
   flex-grow: 1;
 }
+
 .actions button {
   background: #10b981;
   border: none;
@@ -51,10 +41,12 @@ body {
   font-size: 16px;
   cursor: pointer;
 }
+
 .actions button:first-child {
   background: #ef4444;
 }
-#scanButton {
+
+#scanBtn {
   position: fixed;
   bottom: 20px;
   left: 50%;
@@ -69,7 +61,76 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   z-index: 1000;
 }
-#scanButton img {
+
+#scanBtn img {
   max-width: 100%;
   max-height: 100%;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none; /* Modale nascosto per default */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #999;
+}
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-container img {
+  width: 100px;
+  height: 140px;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.card-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.card-actions button {
+  background-color: #4CAF50; /* verde */
+  color: white;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.card-actions button.remove {
+  background-color: #f44336; /* rosso */
 }
