@@ -1,0 +1,61 @@
+body {
+    font-family: sans-serif;
+    background: #f9fafb;
+    margin: 0;
+    padding: 1rem;
+  }
+  .container {
+    max-width: 600px;
+    margin: auto;
+  }
+  .card {
+    background: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+  }
+  .card img {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    margin-right: 1rem;
+  }
+  .info {
+    flex-grow: 1;
+  }
+  .actions button {
+    background: #10b981;
+    border: none;
+    padding: 5px 10px;
+    color: white;
+    border-radius: 5px;
+    margin: 0 2px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .actions button:first-child {
+    background: #ef4444;
+  }
+  #scanButton {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+  }
+
+  #scanButton img {
+    max-width: 100%;
+    max-height: 100%;
+  }
