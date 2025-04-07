@@ -1,0 +1,142 @@
+[
+  {
+    "nome": "Surskit",
+    "numero": "001",
+    "rarita": "Comune",
+    "prezzo": 0.1,
+    "immagine": "https://images.pokemontcg.io/sv4/1.png"
+  },
+  {
+    "nome": "Masquerain",
+    "numero": "002",
+    "rarita": "Non Comune",
+    "prezzo": 0.25,
+    "immagine": "https://images.pokemontcg.io/sv4/2.png"
+  },
+  {
+    "nome": "Froslass ex",
+    "numero": "003",
+    "rarita": "EX",
+    "prezzo": 9.9,
+    "immagine": "https://images.pokemontcg.io/sv4/3.png"
+  },
+  {
+    "nome": "Pansage",
+    "numero": "004",
+    "rarita": "Comune",
+    "prezzo": 0.1,
+    "immagine": "https://images.pokemontcg.io/sv4/4.png"
+  },
+  {
+    "nome": "Simisage",
+    "numero": "005",
+    "rarita": "Non Comune",
+    "prezzo": 0.25,
+    "immagine": "https://images.pokemontcg.io/sv4/5.png"
+  },
+  {
+    "nome": "Dwebble",
+    "numero": "006",
+    "rarita": "Comune",
+    "prezzo": 0.1,
+    "immagine": "https://images.pokemontcg.io/sv4/6.png"
+  },
+  {
+    "nome": "Crustle",
+    "numero": "007",
+    "rarita": "Comune",
+    "prezzo": 0.1,
+    "immagine": "https://images.pokemontcg.io/sv4/7.png"
+  },
+  {
+    "nome": "Bounsweet",
+    "numero": "008",
+    "rarita": "Comune",
+    "prezzo": 0.1,
+    "immagine": "https://images.pokemontcg.io/sv4/8.png"
+  },
+  {
+    "nome": "Steenee",
+    "numero": "009",
+    "rarita": "Non Comune",
+    "prezzo": 0.25,
+    "immagine": "https://images.pokemontcg.io/sv4/9.png"
+  },
+  {
+    "nome": "Tsareena",
+    "numero": "010",
+    "rarita": "Rara",
+    "prezzo": 0.35,
+    "immagine": "https://images.pokemontcg.io/sv4/10.png"
+  },
+  {
+    "nome": "Iron Hands ex",
+    "numero": "070",
+    "rarita": "EX",
+    "prezzo": 4.9,
+    "immagine": "https://images.pokemontcg.io/sv4/70.png"
+  },
+  {
+    "nome": "Iron Jugulis",
+    "numero": "116",
+    "rarita": "Non Comune",
+    "prezzo": 0.2,
+    "immagine": "https://images.pokemontcg.io/sv4/116.png"
+  },
+  {
+    "nome": "Roaring Moon ex",
+    "numero": "124",
+    "rarita": "EX",
+    "prezzo": 5.5,
+    "immagine": "https://images.pokemontcg.io/sv4/124.png"
+  },
+  {
+    "nome": "Brute Bonnet",
+    "numero": "122",
+    "rarita": "Rara",
+    "prezzo": 1.5,
+    "immagine": "https://images.pokemontcg.io/sv4/122.png"
+  },
+  {
+    "nome": "Flutter Mane",
+    "numero": "091",
+    "rarita": "Rara",
+    "prezzo": 1.5,
+    "immagine": "https://images.pokemontcg.io/sv4/91.png"
+  },
+  {
+    "nome": "Miraidon",
+    "numero": "079",
+    "rarita": "Olografica",
+    "prezzo": 0.5,
+    "immagine": "https://images.pokemontcg.io/sv4/79.png"
+  },
+  {
+    "nome": "Iron Valiant",
+    "numero": "072",
+    "rarita": "Rara",
+    "prezzo": 1.2,
+    "immagine": "https://images.pokemontcg.io/sv4/72.png"
+  },
+  {
+    "nome": "Glimmora",
+    "numero": "108",
+    "rarita": "Non Comune",
+    "prezzo": 0.2,
+    "immagine": "https://images.pokemontcg.io/sv4/108.png"
+  },
+  {
+    "nome": "Iron Treads ex",
+    "numero": "103",
+    "rarita": "EX",
+    "prezzo": 2.4,
+    "immagine": "https://images.pokemontcg.io/sv4/103.png"
+  },
+  {
+    "nome": "Great Tusk ex",
+    "numero": "120",
+    "rarita": "EX",
+    "prezzo": 2.2,
+    "immagine": "https://images.pokemontcg.io/sv4/120.png"
+  }
+]
