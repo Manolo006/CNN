@@ -90,27 +90,27 @@
       const targetDate = new Date("June 18, 2025 08:30:00").getTime();
       const startDate = new Date(targetDate - 100 * 24 * 60 * 60 * 1000);
       const distance = targetDate - now;
-      
+
       if (distance < 0) {
         document.querySelector(".countdown").innerHTML = "Il conto alla rovescia è terminato!";
         return;
       }
-      
+
       const daysRemaining = Math.floor(distance / (1000 * 60 * 60 * 24));
       const daysContainer = document.getElementById("days-container");
       daysContainer.innerHTML = "";
-      
+
       const specialDays = [
         "2025-04-14", "2025-04-15", "2025-04-16", "2025-04-17", "2025-04-18",
         "2025-04-19", "2025-04-20", "2025-04-21", "2025-04-22", "2025-04-23",
         "2025-04-24", "2025-04-25", "2025-05-01", "2025-06-02", "2025-06-06",
         "2025-06-09", "2025-06-10", "2025-06-11", "2025-06-12", "2025-06-13",
-        "2025-06-16"
+        "2025-06-16", "2025-04-26", "2025-05-02", "2025-06-03" // ponti aggiuntivi
       ];
-      
+
       const weekdays = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
       let schoolDaysRemaining = 0;
-      
+
       for (let i = 0; i < 100; i++) {
         const dayBox = document.createElement("div");
         dayBox.className = "day-box";
@@ -120,7 +120,7 @@
         const dayOfWeek = weekdays[currentDate.getDay()];
         const dayMonth = currentDate.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' });
 
-        const isPast = i < 100 - daysRemaining;
+        const isPast = currentDate < new Date();
         const isWeekendOrSpecial = specialDays.includes(formattedDate) || currentDate.getDay() === 0 || currentDate.getDay() === 6;
 
         if (isPast) {
