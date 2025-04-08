@@ -4,10 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Carte Pokémon - Paradosso Temporale</title>
-  <!-- Link a manifest -->
-  <link rel="manifest" href="/manifest.json">
-<!-- Link al loghetto in alto -->
-  <link rel="icon" href="/icon-192x192.png" type="image/x-icon">
   <!-- Link a TailwindCSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
   <!-- Link al CSS personalizzato (pokestyle.css) -->
@@ -21,9 +17,18 @@
     <!-- Sezione Filtro e scansione unificata -->
     <div class="mb-4">
       <label class="mr-2 font-medium">Cerca o scansiona il codice della carta:</label>
-      <input type="text" id="filtro" class="border p-1 rounded" placeholder="Es. Surskit o codice della carta" />
+      <input type="text" id="filtro" class="border p-2 rounded w-full" placeholder="Es. Surskit, 1234 o codice della carta" />
     </div>
-
+    
+    <!-- Sezione per mostrare la carta in sovrimpressione -->
+    <div id="card-preview" style="display:none; position: absolute; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); z-index: 10;">
+      <img id="preview-img" src="" alt="" style="width: 100px; height: 140px; object-fit: contain; margin-bottom: 10px;" />
+      <h3 id="preview-name" class="font-bold"></h3>
+      <p id="preview-number"></p>
+      <p id="preview-rarity"></p>
+      <p id="preview-quantity"></p>
+    </div>
+    
     <!-- Barra di completamento -->
     <div class="mb-4">
       <label class="font-medium">Completamento collezione:</label>
