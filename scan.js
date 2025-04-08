@@ -139,3 +139,43 @@ scannerInput.addEventListener("input", () => {
     scannerInput.value = "";
   }
 });
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registrato con successo:', registration);
+        })
+        .catch(error => {
+          console.log('Errore durante la registrazione del Service Worker:', error);
+        });
+    });
+  }
+  
+  self.addEventListener('sync', event => {
+    if (event.tag === 'syncData') {
+      event.waitUntil(syncData());
+    }
+  });
+  
+  function syncData() {
+    return fetch('/api/sync', {  // Questo endpoint dovrebbe esistere sul tuo server
+      method: 'POST',
+      body: JSON.stringify({
+        // Qui dovresti aggiungere i dati che desideri sincronizzare
+        carte: tutteLeCarte  // Per esempio, potresti voler inviare la lista delle carte
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Sincronizzazione completata', data);
+    })
+    .catch(error => {
+      console.error('Errore durante la sincronizzazione:', error);
+    });
+  }
+  
+  
