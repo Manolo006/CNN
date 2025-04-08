@@ -64,6 +64,7 @@ function mostraModal(carta, index) {
 // Aggiunge o rimuove quantità da una carta
 function aggiornaQuantita(index, delta, event) {
   event.stopPropagation();
+  const attuale = tutteLeCarte[index].quantita || 0;
   if (tutteLeCarte[index].quantita + delta >= 0) {
     tutteLeCarte[index].quantita += delta;
     salvaCarte();
@@ -116,7 +117,7 @@ function render(carte) {
   // Aggiunge gli event listener per i nuovi bottoni creati dinamicamente
   document.querySelectorAll(".aggiungi").forEach(btn => {
     btn.addEventListener("click", e => aggiornaQuantita(+btn.dataset.index, 1, e));
-  });
+  });  
 
   document.querySelectorAll(".rimuovi").forEach(btn => {
     btn.addEventListener("click", e => aggiornaQuantita(+btn.dataset.index, -1, e));
