@@ -33,19 +33,6 @@ function mostraModal(carta, index) {
   document.getElementById("modal").style.display = 'flex';  // Mostra la modale
 }
 
-// Funzione per salvare le modifiche alla carta
-function salvaModifiche() {
-  if (cartaAttiva !== null) {
-    tutteLeCarte[cartaAttiva].nome = document.getElementById("modal-nome").value;
-    tutteLeCarte[cartaAttiva].numero = document.getElementById("modal-numero").value;
-    tutteLeCarte[cartaAttiva].rarita = document.getElementById("modal-rarita").value;
-    tutteLeCarte[cartaAttiva].quantita = parseInt(document.getElementById("modal-quantita").value);
-    salvaCarte();
-    render(tutteLeCarte);
-    chiudiModal();
-  }
-}
-
 // Funzione per aggiornare la quantità della carta
 function aggiornaQuantita(index, delta, event) {
   event.stopPropagation();  // Impedisce che il clic propaghi al click della carta
@@ -75,107 +62,88 @@ function aggiornaStatistiche() {
 
 // Funzione per renderizzare le carte nella pagina
 function render(carte) {
-  // Ordina le carte per numero del set (in ordine crescente)
-  carte.sort((a, b) => parseInt(a.numero) - parseInt(b.numero));
+  // Ordina le carte per numero in modo numerico
+  carte.sort((a, b) => {
+    const numeroA = parseInt(a.numero); // Converti a numero
+    const numeroB = parseInt(b.numero); // Converti b numero
+    return numeroA - numeroB; // Confronta come numeri
+  });
 
   const container = document.getElementById("carte");
-  container.innerHTML = "";
+  container.innerHTML = ''; // Rimuovi i vecchi elementi
+
   carte.forEach((carta, index) => {
-    container.innerHTML += `
-      <div class="card-container" onclick="mostraModal(tutteLeCarte[${index}], ${index})">
-        <img src="${carta.immagine}" alt="${carta.nome}" />
-        <h2 class="font-semibold text-lg">${carta.numero} ${carta.nome}</h2>
-        <p class="text-sm text-gray-500">${carta.rarita}</p>
-        <p class="text-green-600 font-bold mt-1">€${parseFloat(carta.prezzo).toFixed(2)}</p>
-        <p class="text-sm text-gray-600">Quantità: ${carta.quantita || 0}</p>
-        <div class="card-actions">
-          <button onclick="aggiornaQuantita(${index}, 1, event)" class="bg-green-500">+1</button>
-          <button onclick="aggiornaQuantita(${index}, -1, event)" class="remove" ${carta.quantita <= 0 ? 'disabled' : ''}>-1</button>
-        </div>
+    const div = document.createElement('div');
+    div.classList.add('card-container');
+    div.id = `card-${index}`;  // Aggiungi ID univoco alla carta
+    div.onclick = () => mostraModal(carta, index);
+
+    div.innerHTML = `
+      <img src="${carta.immagine}" alt="${carta.nome}" />
+      <div class="info">
+        <h2>${carta.nome}</h2>
+        <p>${carta.numero}</p>
+        <p class="text-sm text-gray-600">Rarità: ${carta.rarita}</p>
+        <p>Quantità: ${carta.quantita || 0}</p>
+      </div>
+      <div class="card-actions">
+        <button onclick="aggiornaQuantita(${index}, 1, event)">Aggiungi</button>
+        <button onclick="aggiornaQuantita(${index}, -1, event)" class="remove">Rimuovi</button>
       </div>
     `;
+    container.appendChild(div);
   });
 
   aggiornaStatistiche();
 }
 
-// Funzione per gestire il filtro per nome delle carte
-document.getElementById("filtro").addEventListener("input", e => {
-  const val = e.target.value.toLowerCase();
-  const filtrate = tutteLeCarte.filter(c => c.nome.toLowerCase().includes(val));
-  render(filtrate);
-});
-
-// Carica i dati da carte.json
-fetch('carte.json')
-  .then(res => res.json())
-  .then(data => {
-    // Carica le carte da localStorage
-    caricaCarte();
-    // Se non ci sono carte salvate, inizializza con i dati dal file JSON
-    if (tutteLeCarte.length === 0) {
-      tutteLeCarte = data.map(c => ({ ...c, quantita: 0 }));  // Inizializza la quantità a 0
-      salvaCarte(); // Salva inizialmente i dati
-    }
-    render(tutteLeCarte);
-  })
-  .catch(err => console.error("Errore nel caricamento dei dati delle carte:", err));
-
-// Funzione per la scansione (aggiungi carta manualmente)
-const scannerInput = document.getElementById("scannerInput");
-scannerInput.addEventListener("input", () => {
-  const barcode = scannerInput.value.trim();
-
-  if (barcode.length > 0) {
-    // Logica di scansione (gestione della carta trovata)
-    const carta = tutteLeCarte.find(c => c.numero === barcode || c.nome.toLowerCase() === barcode.toLowerCase());
-    
-    if (carta) {
-      mostraModal(carta, tutteLeCarte.indexOf(carta));
-    } else {
-      alert("Carta non trovata!");
-    }
-    
-    scannerInput.value = "";
+// Funzione per scrollare alla carta selezionata
+function scrollToCarta(cartaIndex) {
+  const cartaElement = document.getElementById(`card-${cartaIndex}`);
+  if (cartaElement) {
+    cartaElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-});
+}
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(registration => {
-          console.log('Service Worker registrato con successo:', registration);
-        })
-        .catch(error => {
-          console.log('Errore durante la registrazione del Service Worker:', error);
-        });
-    });
-  }
+// Funzione per la ricerca delle carte in tempo reale
+function cercaCarte() {
+  const filtro = document.getElementById("filtro").value.toLowerCase();
   
-  self.addEventListener('sync', event => {
-    if (event.tag === 'syncData') {
-      event.waitUntil(syncData());
-    }
+  // Trova tutte le carte che il nome o il numero contiene la stringa della ricerca
+  const carteTrovate = tutteLeCarte.filter(carta => {
+    return carta.nome.toLowerCase().includes(filtro) || carta.numero.includes(filtro);
   });
-  
-  function syncData() {
-    return fetch('/api/sync', {  // Questo endpoint dovrebbe esistere sul tuo server
-      method: 'POST',
-      body: JSON.stringify({
-        // Qui dovresti aggiungere i dati che desideri sincronizzare
-        carte: tutteLeCarte  // Per esempio, potresti voler inviare la lista delle carte
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Sincronizzazione completata', data);
-    })
-    .catch(error => {
-      console.error('Errore durante la sincronizzazione:', error);
-    });
+
+  // Mostra tutte le carte nella vetrina, indipendentemente dalla ricerca
+  const cardPreview = document.getElementById("card-preview");
+  if (filtro === "") {
+    cardPreview.style.display = 'none'; // Nascondi la preview se il campo è vuoto
+    render(tutteLeCarte); // Mostra tutte le carte nella vetrina
+  } else if (carteTrovate.length > 0) {
+    // Mostra la preview con la prima carta trovata
+    const cartaTrovata = carteTrovate[0]; // Puoi modificare questo per mostrare altre carte se vuoi
+    cardPreview.style.display = 'block';
+    document.getElementById("preview-img").src = cartaTrovata.immagine;
+    document.getElementById("preview-name").textContent = cartaTrovata.nome;
+    document.getElementById("preview-number").textContent = `Numero: ${cartaTrovata.numero}`;
+    document.getElementById("preview-rarity").textContent = `Rarità: ${cartaTrovata.rarita}`;
+    document.getElementById("preview-quantity").textContent = `Quantità: ${cartaTrovata.quantita || 0}`;
+
+    // Aggiungi un evento per il clic sulla preview
+    document.getElementById("card-preview").onclick = () => {
+      scrollToCarta(tutteLeCarte.indexOf(cartaTrovata));  // Scorri fino alla carta trovata
+    };
+  } else {
+    cardPreview.style.display = 'none'; // Se nessuna carta è trovata, nascondi la preview
+    render([]); // Nascondi le carte
   }
-  
-  
+}
+
+// Event listener per la ricerca in tempo reale
+document.getElementById("filtro").addEventListener("input", cercaCarte);
+
+// Carica le carte al caricamento della pagina
+window.onload = () => {
+  caricaCarte();
+  render(tutteLeCarte);
+};
