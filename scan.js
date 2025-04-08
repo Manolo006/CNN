@@ -147,3 +147,25 @@ window.onload = () => {
   caricaCarte();
   render(tutteLeCarte);
 };
+
+async function caricaCarteDaFile() {
+  try {
+    const response = await fetch('carte.json');
+    if (!response.ok) throw new Error("Impossibile caricare il file JSON.");
+    tutteLeCarte = await response.json();
+    salvaCarte();
+    render(tutteLeCarte);
+  } catch (error) {
+    console.error("Errore:", error);
+  }
+}
+
+window.onload = () => {
+  if (localStorage.getItem("carte")) {
+    caricaCarte();
+    render(tutteLeCarte);
+  } else {
+    caricaCarteDaFile();
+  }
+};
+
