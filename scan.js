@@ -24,7 +24,7 @@ function caricaCarte() {
     }
   } else {
     console.log("Nessuna carta in localStorage, carico da JSON");
-    fetch('data/carte.json')
+    fetch('carte.json')
       .then(response => response.json())
       .then(data => {
         tutteLeCarte = data;
