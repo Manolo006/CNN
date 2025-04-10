@@ -11,7 +11,7 @@ function caricaCarte() {
       console.log("Caricate carte da localStorage");
     } catch (e) {
       console.error("Errore nel parsing delle carte salvate, usando fallback", e);
-      fetch('data/carte.json')
+      fetch('carte.json')
         .then(response => response.json())
         .then(data => {
           tutteLeCarte = data;
