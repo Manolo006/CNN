@@ -4,146 +4,923 @@
     "numero": "1",
     "rarita": "Comune",
     "prezzo": 0.02,
-    "immagine": "https://images.pokemontcg.io/sv4/1.png"
+    "immagine": ""
   },
   {
     "nome": "Surskit",
     "numero": "1",
     "rarita": "Comune Reverse",
     "prezzo": 0.02,
-    "immagine": "https://images.pokemontcg.io/sv4/1.png"
+    "immagine": ""
   },
   {
     "nome": "Masquerain",
     "numero": "2",
     "rarita": "Non Comune",
-    "prezzo": 0.25,
-    "immagine": "https://images.pokemontcg.io/sv4/2.png"
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Masquerain",
+    "numero": "2",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.17,
+    "immagine": ""
   },
   {
     "nome": "Froslass ex",
     "numero": "3",
     "rarita": "EX",
-    "prezzo": 9.9,
-    "immagine": "https://images.pokemontcg.io/sv4/3.png"
+    "prezzo": 0.76,
+    "immagine": ""
   },
   {
     "nome": "Pansage",
     "numero": "4",
     "rarita": "Comune",
-    "prezzo": 0.1,
-    "immagine": "https://images.pokemontcg.io/sv4/4.png"
+    "prezzo": 0.02,
+    "immagine": ""
+  },
+  {
+    "nome": "Pansage",
+    "numero": "4",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.10,
+    "immagine": ""
   },
   {
     "nome": "Simisage",
     "numero": "5",
     "rarita": "Non Comune",
-    "prezzo": 0.25,
-    "immagine": "https://images.pokemontcg.io/sv4/5.png"
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Simisage",
+    "numero": "5",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.14,
+    "immagine": ""
   },
   {
     "nome": "Dwebble",
     "numero": "6",
     "rarita": "Comune",
-    "prezzo": 0.1,
-    "immagine": "https://images.pokemontcg.io/sv4/6.png"
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Dwebble",
+    "numero": "6",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.10,
+    "immagine": ""
   },
   {
     "nome": "Crustle",
     "numero": "7",
     "rarita": "Comune",
-    "prezzo": 0.1,
-    "immagine": "https://images.pokemontcg.io/sv4/7.png"
+    "prezzo": 0.03,
+    "immagine": ""
   },
   {
-    "nome": "Bounsweet",
+    "nome": "Crustle",
+    "numero": "7",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.09,
+    "immagine": ""
+  },
+  {
+    "nome": "Bountsweet",
     "numero": "8",
     "rarita": "Comune",
-    "prezzo": 0.1,
-    "immagine": "https://images.pokemontcg.io/sv4/8.png"
+    "prezzo": 0.05,
+    "immagine": ""
+  },
+  {
+    "nome": "Bountsweet",
+    "numero": "8",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.07,
+    "immagine": ""
   },
   {
     "nome": "Steenee",
     "numero": "9",
     "rarita": "Non Comune",
-    "prezzo": 0.25,
-    "immagine": "https://images.pokemontcg.io/sv4/9.png"
+    "prezzo": 0.05,
+    "immagine": ""
   },
   {
-    "nome": "Tsareena",
+    "nome": "Steenee",
+    "numero": "9",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.16,
+    "immagine": ""
+  },
+  {
+    "nome": "Bilpbug",
     "numero": "10",
-    "rarita": "Rara",
-    "prezzo": 0.35,
-    "immagine": "https://images.pokemontcg.io/sv4/10.png"
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
   },
   {
-    "nome": "Iron Hands ex",
+    "nome": "Bilpbug",
+    "numero": "10",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.08,
+    "immagine": ""
+  },
+  {
+    "nome": "Dottler",
+    "numero": "11",
+    "rarita": "Comune",
+    "prezzo": 0.02,
+    "immagine": ""
+  },
+  {
+    "nome": "Dottler",
+    "numero": "11",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.06,
+    "immagine": ""
+  },
+  {
+    "nome": "Orbeetle",
+    "numero": "12",
+    "rarita": "Non Comune",
+    "prezzo": 0.04,
+    "immagine": ""
+  },
+  {
+    "nome": "Orbeetle",
+    "numero": "12",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.11,
+    "immagine": ""
+  },
+  {
+    "nome": "Nymble",
+    "numero": "13",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Nymble",
+    "numero": "13",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.11,
+    "immagine": ""
+  },
+  {
+    "nome": "Nymble",
+    "numero": "14",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Nymble",
+    "numero": "14",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.10,
+    "immagine": ""
+  },
+  {
+    "nome": "Toedscool",
+    "numero": "15",
+    "rarita": "Comune",
+    "prezzo": 0.05,
+    "immagine": ""
+  },
+  {
+    "nome": "Toedscool",
+    "numero": "15",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.09,
+    "immagine": ""
+  },
+  {
+    "nome": "Toedscool",
+    "numero": "16",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Toedscool",
+    "numero": "16",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.09,
+    "immagine": ""
+  },
+  {
+    "nome": "Toedscruel",
+    "numero": "17",
+    "rarita": "Non Comune",
+    "prezzo": 0.04,
+    "immagine": ""
+  },
+  {
+    "nome": "Teodscool",
+    "numero": "17",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.15,
+    "immagine": ""
+  },
+  {
+    "nome": "We-Chien",
+    "numero": "18",
+    "rarita": "Holo",
+    "prezzo": 0.06,
+    "immagine": ""
+  },
+  {
+    "nome": "We-Chien",
+    "numero": "18",
+    "rarita": "Rara Reverse",
+    "prezzo": 0.11,
+    "immagine": ""
+  },
+  {
+    "nome": "Magby",
+    "numero": "19",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Magby",
+    "numero": "19",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.10,
+    "immagine": ""
+  },
+  {
+    "nome": "Pansear",
+    "numero": "20",
+    "rarita": "Comune",
+    "prezzo": 0.02,
+    "immagine": ""
+  },
+  {
+    "nome": "Pansear",
+    "numero": "20",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.06,
+    "immagine": ""
+  },
+  {
+    "nome": "Simisear",
+    "numero": "21",
+    "rarita": "Non Comune",
+    "prezzo": 0.04,
+    "immagine": ""
+  },
+  {
+    "nome": "Simisear",
+    "numero": "21",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.12,
+    "immagine": ""
+  },
+  {
+    "nome": "Volcanion",
+    "numero": "22",
+    "rarita": "Holo",
+    "prezzo": 0.07,
+    "immagine": ""
+  },
+  {
+    "nome": "Volcanion",
+    "numero": "22",
+    "rarita": "Rara Reverse",
+    "prezzo": 0.14,
+    "immagine": ""
+  },
+  {
+    "nome": "Fuecoco",
+    "numero": "23",
+    "rarita": "Comune",
+    "prezzo": 0.02,
+    "immagine": ""
+  },
+  {
+    "nome": "Fuecoco",
+    "numero": "23",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.10,
+    "immagine": ""
+  },
+  {
+    "nome": "Crocalor",
+    "numero": "24",
+    "rarita": "Non Comune",
+    "prezzo": 0.04,
+    "immagine": ""
+  },
+  {
+    "nome": "Crocalor",
+    "numero": "24",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.15,
+    "immagine": ""
+  },
+  {
+    "nome": "Charcadet",
+    "numero": "25",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Charcadet",
+    "numero": "25",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.10,
+    "immagine": ""
+  },
+  {
+    "nome": "Charcadet",
+    "numero": "26",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Charcadet",
+    "numero": "26",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.08,
+    "immagine": ""
+  },
+  {
+    "nome": "Armarouge",
+    "numero": "27",
+    "rarita": "EX",
+    "prezzo": 0.92,
+    "immagine": ""
+  },
+  {
+    "nome": "Falenaferrea",
+    "numero": "28",
+    "rarita": "Holo",
+    "prezzo": 0.06,
+    "immagine": ""
+  },
+  {
+    "nome": "Falenaferrea",
+    "numero": "28",
+    "rarita": "Rara Reverse",
+    "prezzo": 0.13,
+    "immagine": ""
+  },
+  {
+    "nome": "Chi-Yu",
+    "numero": "29",
+    "rarita": "Holo",
+    "prezzo": 0.09,
+    "immagine": ""
+  },
+  {
+    "nome": "Chi-Yu",
+    "numero": "29",
+    "rarita": "Rara Reverse",
+    "prezzo": 0.17,
+    "immagine": ""
+  },
+  {
+    "nome": "Horsea",
+    "numero": "30",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Horsea",
+    "numero": "30",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.12,
+    "immagine": ""
+  },
+  {
+    "nome": "Seadra",
+    "numero": "31",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Seadra",
+    "numero": "31",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.12,
+    "immagine": ""
+  },
+  {
+    "nome": "Kingdra",
+    "numero": "32",
+    "rarita": "Holo",
+    "prezzo": 0.10,
+    "immagine": ""
+  },
+  {
+    "nome": "Kingdra",
+    "numero": "32",
+    "rarita": "Rara Reverse",
+    "prezzo": 0.18,
+    "immagine": ""
+  },
+  {
+    "nome": "Remoraid",
+    "numero": "33",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Remoraid",
+    "numero": "33",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.12,
+    "immagine": ""
+  },
+  {
+    "nome": "Octillery",
+    "numero": "34",
+    "rarita": "Comune",
+    "prezzo": 0.05,
+    "immagine": ""
+  },
+  {
+    "nome": "Octillery",
+    "numero": "34",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.10,
+    "immagine": ""
+  },
+  {
+    "nome": "Feebas",
+    "numero": "35",
+    "rarita": "Comune",
+    "prezzo": 0.06,
+    "immagine": ""
+  },
+  {
+    "nome": "Feebas",
+    "numero": "35",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.08,
+    "immagine": ""
+  },
+  {
+    "nome": "Milotic",
+    "numero": "36",
+    "rarita": "Holo",
+    "prezzo": 0.07,
+    "immagine": ""
+  },
+  {
+    "nome": "Milotic",
+    "numero": "36",
+    "rarita": "Rara Reverse",
+    "prezzo": 0.15,
+    "immagine": ""
+  },
+  {
+    "nome": "Searunt",
+    "numero": "37",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Searunt",
+    "numero": "37",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.01,
+    "immagine": ""
+  },
+  {
+    "nome": "Garchomp ex",
+    "numero": "38",
+    "rarita": "EX",
+    "prezzo": 1.58,
+    "immagine": ""
+  },
+  {
+    "nome": "Mantyke",
+    "numero": "39",
+    "rarita": "Comune",
+    "prezzo": 0.04,
+    "immagine": ""
+  },
+  {
+    "nome": "Mantyke",
+    "numero": "39",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.08,
+    "immagine": ""
+  },
+  {
+    "nome": "Palkia",
+    "numero": "40",
+    "rarita": "Holo",
+    "prezzo": 0.10,
+    "immagine": ""
+  },
+  {
+    "nome": "Palkia",
+    "numero": "40",
+    "rarita": "Rara Reverse",
+    "prezzo": 0.16,
+    "immagine": ""
+  },
+  {
+    "nome": "Panpour",
+    "numero": "41",
+    "rarita": "Comune",
+    "prezzo": 0.02,
+    "immagine": ""
+  },
+  {
+    "nome": "Panpour",
+    "numero": "41",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.08,
+    "immagine": ""
+  },
+  {
+    "nome": "Simpour",
+    "numero": "42",
+    "rarita": "Non Comune",
+    "prezzo": 0.02,
+    "immagine": ""
+  },
+  {
+    "nome": "Simpour",
+    "numero": "42",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.16,
+    "immagine": ""
+  },
+  {
+    "nome": "Vanillate",
+    "numero": "43",
+    "rarita": "Comune",
+    "prezzo": 0.02,
+    "immagine": ""
+  },
+  {
+    "nome": "Vanillate",
+    "numero": "43",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.11,
+    "immagine": ""
+  },
+  {
+    "nome": "Vanillish",
+    "numero": "44",
+    "rarita": "Comune",
+    "prezzo": 0.07,
+    "immagine": ""
+  },
+  {
+    "nome": "Vanillish",
+    "numero": "44",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.07,
+    "immagine": ""
+  },
+  {
+    "nome": "Vanilluxe",
+    "numero": "45",
+    "rarita": "Non Comune",
+    "prezzo": 0.06,
+    "immagine": ""
+  },
+  {
+    "nome": "Vanilluxe",
+    "numero": "45",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.18,
+    "immagine": ""
+  },
+  {
+    "nome": "Tsareena ex",
+    "numero": "46",
+    "rarita": "EX",
+    "prezzo": 0.89,
+    "immagine": ""
+  },
+  {
+    "nome": "Wimpod",
+    "numero": "47",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Wimpod",
+    "numero": "47",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.06,
+    "immagine": ""
+  },
+  {
+    "nome": "Wimpod",
+    "numero": "48",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Wimpod",
+    "numero": "48",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.09,
+    "immagine": ""
+  },
+  {
+    "nome": "Golisoped",
+    "numero": "49",
+    "rarita": "Holo",
+    "prezzo": 0.07,
+    "immagine": ""
+  },
+  {
+    "nome": "Golisoped",
+    "numero": "49",
+    "rarita": "Rara Reverse",
+    "prezzo": 0.16,
+    "immagine": ""
+  },
+  {
+    "nome": "Golisoped ex",
+    "numero": "50",
+    "rarita": "EX",
+    "prezzo": 0.75,
+    "immagine": ""
+  },
+  {
+    "nome": "wiglett",
+    "numero": "51",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Wiglett",
+    "numero": "51",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.13,
+    "immagine": ""
+  },
+  {
+    "nome": "Wiglett",
+    "numero": "52",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Wiglett",
+    "numero": "52",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.11,
+    "immagine": ""
+  },
+  {
+    "nome": "Wugtrio",
+    "numero": "53",
+    "rarita": "Non Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Wugtrio",
+    "numero": "53",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.13,
+    "immagine": ""
+  },
+  {
+    "nome": "Valuza",
+    "numero": "54",
+    "rarita": "Non Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Valuza",
+    "numero": "54",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.10,
+    "immagine": ""
+  },
+  {
+    "nome": "Dondozo",
+    "numero": "55",
+    "rarita": "Non Comune",
+    "prezzo": 0.02,
+    "immagine": ""
+  },
+  {
+    "nome": "Dondozo",
+    "numero": "55",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.17,
+    "immagine": ""
+  },
+  {
+    "nome": "Saccoferreo",
+    "numero": "56",
+    "rarita": "Non Comune",
+    "prezzo": 0.08,
+    "immagine": ""
+  },
+  {
+    "nome": "Saccoferreo",
+    "numero": "56",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.29,
+    "immagine": ""
+  },
+  {
+    "nome": "Chien-Pao",
+    "numero": "57",
+    "rarita": "Holo",
+    "prezzo": 0.11,
+    "immagine": ""
+  },
+  {
+    "nome": "Chien-Pao",
+    "numero": "57",
+    "rarita": "Rara Reverse",
+    "prezzo": 0.15,
+    "immagine": ""
+  },
+  {
+    "nome": "Mewtwo ex",
+    "numero": "58",
+    "rarita": "EX",
+    "prezzo": 2.44,
+    "immagine": ""
+  },
+  {
+    "nome": "Elekid",
+    "numero": "59",
+    "rarita": "Comune",
+    "prezzo": 0.04,
+    "immagine": ""
+  },
+  {
+    "nome": "Elekid",
+    "numero": "59",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.10,
+    "immagine": ""
+  },
+  {
+    "nome": "Plusle",
+    "numero": "60",
+    "rarita": "Comune",
+    "prezzo": 0.02,
+    "immagine": ""
+  },
+  {
+    "nome": "Plusle",
+    "numero": "60",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.11,
+    "immagine": ""
+  },
+  {
+    "nome": "Miniun",
+    "numero": "61",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Miniun",
+    "numero": "61",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.11,
+    "immagine": ""
+  },
+  {
+    "nome": "Blitzle",
+    "numero": "62",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Blitzle",
+    "numero": "62",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.09,
+    "immagine": ""
+  },
+  {
+    "nome": "Zebstrika",
+    "numero": "63",
+    "rarita": "Non Comune",
+    "prezzo": 0.02,
+    "immagine": ""
+  },
+  {
+    "nome": "Zebstrika",
+    "numero": "63",
+    "rarita": "Non Comune Reverse",
+    "prezzo": 0.15,
+    "immagine": ""
+  },
+  {
+    "nome": "Joltik",
+    "numero": "64",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Joltik",
+    "numero": "64",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.09,
+    "immagine": ""
+  },
+  {
+    "nome": "Galavantula",
+    "numero": "65",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Galavantula",
+    "numero": "65",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.07,
+    "immagine": ""
+  },
+  {
+    "nome": "Zekrom",
+    "numero": "66",
+    "rarita": "Holo",
+    "prezzo": 0.11,
+    "immagine": ""
+  },
+  {
+    "nome": "Zekrom",
+    "numero": "66",
+    "rarita": "Rara Reverse",
+    "prezzo": 0.15,
+    "immagine": ""
+  },
+  {
+    "nome": "Oricorio",
+    "numero": "67",
+    "rarita": "Comune",
+    "prezzo": 0.03,
+    "immagine": ""
+  },
+  {
+    "nome": "Oricorio",
+    "numero": "67",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.07,
+    "immagine": ""
+  },
+  {
+    "nome": "Tapu Koko ex",
+    "numero": "68",
+    "rarita": "EX",
+    "prezzo": 0.85,
+    "immagine": ""
+  },
+  {
+    "nome": "Toxel",
+    "numero": "69",
+    "rarita": "Comune",
+    "prezzo": 0.04,
+    "immagine": ""
+  },
+  {
+    "nome": "Toxel",
+    "numero": "69",
+    "rarita": "Comune Reverse",
+    "prezzo": 0.09,
+    "immagine": ""
+  },
+  {
+    "nome": "Mano ferrea ex",
     "numero": "70",
     "rarita": "EX",
-    "prezzo": 4.9,
-    "immagine": "https://images.pokemontcg.io/sv4/70.png"
-  },
-  {
-    "nome": "Iron Jugulis",
-    "numero": "116",
-    "rarita": "Non Comune",
-    "prezzo": 0.2,
-    "immagine": "https://images.pokemontcg.io/sv4/116.png"
-  },
-  {
-    "nome": "Roaring Moon ex",
-    "numero": "124",
-    "rarita": "EX",
-    "prezzo": 5.5,
-    "immagine": "https://images.pokemontcg.io/sv4/124.png"
-  },
-  {
-    "nome": "Brute Bonnet",
-    "numero": "122",
-    "rarita": "Rara",
-    "prezzo": 1.5,
-    "immagine": "https://images.pokemontcg.io/sv4/122.png"
-  },
-  {
-    "nome": "Flutter Mane",
-    "numero": "91",
-    "rarita": "Rara",
-    "prezzo": 1.5,
-    "immagine": "https://images.pokemontcg.io/sv4/91.png"
-  },
-  {
-    "nome": "Miraidon",
-    "numero": "79",
-    "rarita": "Olografica",
-    "prezzo": 0.5,
-    "immagine": "https://images.pokemontcg.io/sv4/79.png"
-  },
-  {
-    "nome": "Iron Valiant",
-    "numero": "72",
-    "rarita": "Rara",
-    "prezzo": 1.2,
-    "immagine": "https://images.pokemontcg.io/sv4/72.png"
-  },
-  {
-    "nome": "Glimmora",
-    "numero": "108",
-    "rarita": "Non Comune",
-    "prezzo": 0.2,
-    "immagine": "https://images.pokemontcg.io/sv4/108.png"
-  },
-  {
-    "nome": "Iron Treads ex",
-    "numero": "103",
-    "rarita": "EX",
-    "prezzo": 2.4,
-    "immagine": "https://images.pokemontcg.io/sv4/103.png"
-  },
-  {
-    "nome": "Great Tusk ex",
-    "numero": "120",
-    "rarita": "EX",
-    "prezzo": 2.2,
-    "immagine": "https://images.pokemontcg.io/sv4/120.png"
+    "prezzo": 1.65,
+    "immagine": ""
   }
 ]
