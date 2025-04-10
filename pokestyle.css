@@ -1,58 +1,3 @@
-body {
-  font-family: sans-serif;
-  background: #f9fafb;
-  margin: 0;
-  padding: 1rem;
-}
-
-.container {
-  max-width: 600px;
-  margin: auto;
-}
-
-.card {
-  background: white;
-  padding: 1rem;
-  border-radius: 1rem;
-  box-shadow: 0 0 8px rgba(0,0,0,0.1);
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-}
-
-.card img {
-  width: 60px;
-  height: 80px;
-  object-fit: cover;
-  margin-right: 1rem;
-}
-
-.info {
-  flex-grow: 1;
-}
-
-.actions button {
-  background: #10b981;
-  border: none;
-  padding: 5px 10px;
-  color: white;
-  border-radius: 5px;
-  margin: 0 2px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.actions button:first-child {
-  background: #ef4444;
-}
-
-@media (max-width: 500px) {
-  #carte {
-    transform: scale(0.8);
-    transform-origin: top left;
-  }
-}
-
 .card-container {
   display: flex;
   flex-direction: column;
@@ -61,16 +6,14 @@ body {
   background-color: white;
   border-radius: 1rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: white;
-  border-radius: 0.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
-  font-size: 1.2rem;
 }
 
 .card-container:hover {
-  transform: scale(1.02);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .card-container img {
@@ -78,38 +21,83 @@ body {
   height: auto;
   object-fit: cover;
   cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.card-container:hover img {
+  transform: scale(1.05);
 }
 
 .card-actions {
   display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
 }
 
 .card-actions button {
-  background-color: #4CAF50; /* verde */
+  flex: 1;
+  min-width: 0;
+}
+
+.rarity-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: bold;
   color: white;
-  padding: 0.5rem 0.75rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  flex: 1 1 auto; /* si adatta allo spazio disponibile */
-  min-width: 80px;
-  font-size: 1rem;
 }
 
-.card-actions button.remove {
-  background-color: #f44336; /* rosso */
+/* Colori per le rarità */
+.rarity-common { background-color: #6b7280; }
+.rarity-uncommon { background-color: #10b981; }
+.rarity-rare { background-color: #3b82f6; }
+.rarity-holo { background-color: #8b5cf6; }
+.rarity-ex { background-color: #ef4444; }
+
+/* Animazione per la card preview */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-/* Ottimizzazione per schermi piccoli */
-@media (max-width: 600px) {
+#card-preview {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Stili per la modale */
+#modal {
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+/* Stili per la barra di completamento */
+.completion-bar-container {
+  position: relative;
+}
+
+.completion-percent {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: white;
+  text-shadow: 0 0 2px rgba(0,0,0,0.5);
+}
+
+/* Ottimizzazione mobile */
+@media (max-width: 640px) {
+  .card-container {
+    padding: 0.75rem;
+  }
+  
   .card-actions {
     flex-direction: column;
   }
-
+  
   .card-actions button {
     width: 100%;
-    font-size: 1rem;
   }
 }
