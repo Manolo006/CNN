@@ -4,923 +4,933 @@
     "numero": "1",
     "rarita": "Comune",
     "prezzo": 0.02,
-    "immagine": ""
+    "quantita": 5,
+    "immagine": "https://images.pokemontcg.io/sv4/1.png"
   },
   {
     "nome": "Surskit",
     "numero": "1",
     "rarita": "Comune Reverse",
     "prezzo": 0.02,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/1.png"
   },
   {
     "nome": "Masquerain",
     "numero": "2",
     "rarita": "Non Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 4,
+    "immagine": "https://images.pokemontcg.io/sv4/2.png"
   },
   {
     "nome": "Masquerain",
     "numero": "2",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.17,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/2.png"
   },
   {
     "nome": "Froslass ex",
     "numero": "3",
     "rarita": "EX",
     "prezzo": 0.76,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/3.png"
   },
   {
     "nome": "Pansage",
     "numero": "4",
     "rarita": "Comune",
     "prezzo": 0.02,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/4.png"
   },
   {
     "nome": "Pansage",
     "numero": "4",
     "rarita": "Comune Reverse",
     "prezzo": 0.10,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/4.png"
   },
   {
     "nome": "Simisage",
     "numero": "5",
     "rarita": "Non Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 4,
+    "immagine": "https://images.pokemontcg.io/sv4/5.png"
   },
   {
     "nome": "Simisage",
     "numero": "5",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.14,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/5.png"
   },
   {
     "nome": "Dwebble",
     "numero": "6",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 5,
+    "immagine": "https://images.pokemontcg.io/sv4/6.png"
   },
   {
     "nome": "Dwebble",
     "numero": "6",
     "rarita": "Comune Reverse",
     "prezzo": 0.10,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/6.png"
   },
   {
     "nome": "Crustle",
     "numero": "7",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/7.png"
   },
   {
     "nome": "Crustle",
     "numero": "7",
     "rarita": "Comune Reverse",
     "prezzo": 0.09,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/7.png"
   },
   {
     "nome": "Bountsweet",
     "numero": "8",
     "rarita": "Comune",
     "prezzo": 0.05,
-    "immagine": ""
+    "quantita": 7,
+    "immagine": "https://images.pokemontcg.io/sv4/8.png"
   },
   {
     "nome": "Bountsweet",
     "numero": "8",
     "rarita": "Comune Reverse",
     "prezzo": 0.07,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/8.png"
   },
   {
     "nome": "Steenee",
     "numero": "9",
     "rarita": "Non Comune",
     "prezzo": 0.05,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/9.png"
   },
   {
     "nome": "Steenee",
     "numero": "9",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.16,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/9.png"
   },
   {
     "nome": "Bilpbug",
     "numero": "10",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/10.png"
   },
   {
     "nome": "Bilpbug",
     "numero": "10",
     "rarita": "Comune Reverse",
     "prezzo": 0.08,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/10.png"
   },
   {
     "nome": "Dottler",
     "numero": "11",
     "rarita": "Comune",
     "prezzo": 0.02,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/11.png"
   },
   {
     "nome": "Dottler",
     "numero": "11",
     "rarita": "Comune Reverse",
     "prezzo": 0.06,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/11.png"
   },
   {
     "nome": "Orbeetle",
     "numero": "12",
     "rarita": "Non Comune",
     "prezzo": 0.04,
-    "immagine": ""
+    "quantita": 5,
+    "immagine": "https://images.pokemontcg.io/sv4/12.png"
   },
   {
     "nome": "Orbeetle",
     "numero": "12",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.11,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/12.png"
   },
   {
     "nome": "Nymble",
     "numero": "13",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/13.png"
   },
   {
     "nome": "Nymble",
     "numero": "13",
     "rarita": "Comune Reverse",
     "prezzo": 0.11,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/13.png"
   },
   {
     "nome": "Nymble",
     "numero": "14",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/14.png"
   },
   {
     "nome": "Nymble",
     "numero": "14",
     "rarita": "Comune Reverse",
     "prezzo": 0.10,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/14.png"
   },
   {
     "nome": "Toedscool",
     "numero": "15",
     "rarita": "Comune",
     "prezzo": 0.05,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/15.png"
   },
   {
     "nome": "Toedscool",
     "numero": "15",
     "rarita": "Comune Reverse",
     "prezzo": 0.09,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/15.png"
   },
   {
     "nome": "Toedscool",
     "numero": "16",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/16.png"
   },
   {
     "nome": "Toedscool",
     "numero": "16",
     "rarita": "Comune Reverse",
     "prezzo": 0.09,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/16.png"
   },
   {
     "nome": "Toedscruel",
     "numero": "17",
     "rarita": "Non Comune",
     "prezzo": 0.04,
-    "immagine": ""
+    "quantita": 4,
+    "immagine": "https://images.pokemontcg.io/sv4/17.png"
   },
   {
-    "nome": "Teodscool",
+    "nome": "Toedscool",
     "numero": "17",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.15,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/17.png"
   },
   {
     "nome": "We-Chien",
     "numero": "18",
     "rarita": "Holo",
     "prezzo": 0.06,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/18.png"
   },
   {
     "nome": "We-Chien",
     "numero": "18",
     "rarita": "Rara Reverse",
     "prezzo": 0.11,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/18.png"
   },
   {
     "nome": "Magby",
     "numero": "19",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/19.png"
   },
   {
     "nome": "Magby",
     "numero": "19",
     "rarita": "Comune Reverse",
     "prezzo": 0.10,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/19.png"
   },
   {
     "nome": "Pansear",
     "numero": "20",
     "rarita": "Comune",
     "prezzo": 0.02,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/20.png"
   },
   {
     "nome": "Pansear",
     "numero": "20",
     "rarita": "Comune Reverse",
     "prezzo": 0.06,
-    "immagine": ""
+    "quantita": 4,
+    "immagine": "https://images.pokemontcg.io/sv4/20.png"
   },
   {
     "nome": "Simisear",
     "numero": "21",
     "rarita": "Non Comune",
     "prezzo": 0.04,
-    "immagine": ""
+    "quantita": 4,
+    "immagine": "https://images.pokemontcg.io/sv4/21.png"
   },
   {
     "nome": "Simisear",
     "numero": "21",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.12,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/21.png"
   },
   {
     "nome": "Volcanion",
     "numero": "22",
     "rarita": "Holo",
     "prezzo": 0.07,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/22.png"
   },
   {
     "nome": "Volcanion",
     "numero": "22",
     "rarita": "Rara Reverse",
     "prezzo": 0.14,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/22.png"
   },
   {
     "nome": "Fuecoco",
     "numero": "23",
     "rarita": "Comune",
     "prezzo": 0.02,
-    "immagine": ""
+    "quantita": 4,
+    "immagine": "https://images.pokemontcg.io/sv4/23.png"
   },
   {
     "nome": "Fuecoco",
     "numero": "23",
     "rarita": "Comune Reverse",
     "prezzo": 0.10,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/23.png"
   },
   {
     "nome": "Crocalor",
     "numero": "24",
     "rarita": "Non Comune",
     "prezzo": 0.04,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/24.png"
   },
   {
     "nome": "Crocalor",
     "numero": "24",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.15,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/24.png"
   },
   {
     "nome": "Charcadet",
     "numero": "25",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/25.png"
   },
   {
     "nome": "Charcadet",
     "numero": "25",
     "rarita": "Comune Reverse",
     "prezzo": 0.10,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/25.png"
   },
   {
     "nome": "Charcadet",
     "numero": "26",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/26.png"
   },
   {
     "nome": "Charcadet",
     "numero": "26",
     "rarita": "Comune Reverse",
     "prezzo": 0.08,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/26.png"
   },
   {
     "nome": "Armarouge",
     "numero": "27",
     "rarita": "EX",
     "prezzo": 0.92,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/27.png"
   },
   {
     "nome": "Falenaferrea",
     "numero": "28",
     "rarita": "Holo",
     "prezzo": 0.06,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/28.png"
   },
   {
     "nome": "Falenaferrea",
     "numero": "28",
     "rarita": "Rara Reverse",
     "prezzo": 0.13,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/28.png"
   },
   {
     "nome": "Chi-Yu",
     "numero": "29",
     "rarita": "Holo",
     "prezzo": 0.09,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/29.png"
   },
   {
     "nome": "Chi-Yu",
     "numero": "29",
     "rarita": "Rara Reverse",
     "prezzo": 0.17,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/29.png"
   },
   {
     "nome": "Horsea",
     "numero": "30",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 7,
+    "immagine": "https://images.pokemontcg.io/sv4/30.png"
   },
   {
     "nome": "Horsea",
     "numero": "30",
     "rarita": "Comune Reverse",
     "prezzo": 0.12,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/30.png"
   },
   {
     "nome": "Seadra",
     "numero": "31",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/31.png"
   },
   {
     "nome": "Seadra",
     "numero": "31",
     "rarita": "Comune Reverse",
     "prezzo": 0.12,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/31.png"
   },
   {
     "nome": "Kingdra",
     "numero": "32",
     "rarita": "Holo",
     "prezzo": 0.10,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/32.png"
   },
   {
     "nome": "Kingdra",
     "numero": "32",
     "rarita": "Rara Reverse",
     "prezzo": 0.18,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/32.png"
   },
   {
     "nome": "Remoraid",
     "numero": "33",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 5,
+    "immagine": "https://images.pokemontcg.io/sv4/33.png"
   },
   {
     "nome": "Remoraid",
     "numero": "33",
     "rarita": "Comune Reverse",
     "prezzo": 0.12,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/33.png"
   },
   {
     "nome": "Octillery",
     "numero": "34",
     "rarita": "Comune",
     "prezzo": 0.05,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/34.png"
   },
   {
     "nome": "Octillery",
     "numero": "34",
     "rarita": "Comune Reverse",
     "prezzo": 0.10,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/34.png"
   },
   {
     "nome": "Feebas",
     "numero": "35",
     "rarita": "Comune",
     "prezzo": 0.06,
-    "immagine": ""
+    "quantita": 4,
+    "immagine": "https://images.pokemontcg.io/sv4/35.png"
   },
   {
     "nome": "Feebas",
     "numero": "35",
     "rarita": "Comune Reverse",
     "prezzo": 0.08,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/35.png"
   },
   {
     "nome": "Milotic",
     "numero": "36",
     "rarita": "Holo",
     "prezzo": 0.07,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/36.png"
   },
   {
     "nome": "Milotic",
     "numero": "36",
     "rarita": "Rara Reverse",
     "prezzo": 0.15,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/36.png"
   },
   {
     "nome": "Searunt",
     "numero": "37",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 4,
+    "immagine": "https://images.pokemontcg.io/sv4/37.png"
   },
   {
     "nome": "Searunt",
     "numero": "37",
     "rarita": "Comune Reverse",
     "prezzo": 0.01,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/37.png"
   },
   {
     "nome": "Garchomp ex",
     "numero": "38",
     "rarita": "EX",
     "prezzo": 1.58,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/38.png"
   },
   {
     "nome": "Mantyke",
     "numero": "39",
     "rarita": "Comune",
     "prezzo": 0.04,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/39.png"
   },
   {
     "nome": "Mantyke",
     "numero": "39",
     "rarita": "Comune Reverse",
     "prezzo": 0.08,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/39.png"
   },
   {
     "nome": "Palkia",
     "numero": "40",
     "rarita": "Holo",
     "prezzo": 0.10,
-    "immagine": ""
+    "quantita": 4,
+    "immagine": "https://images.pokemontcg.io/sv4/40.png"
   },
   {
     "nome": "Palkia",
     "numero": "40",
     "rarita": "Rara Reverse",
     "prezzo": 0.16,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/40.png"
   },
   {
     "nome": "Panpour",
     "numero": "41",
     "rarita": "Comune",
     "prezzo": 0.02,
-    "immagine": ""
+    "quantita": 5,
+    "immagine": "https://images.pokemontcg.io/sv4/41.png"
   },
   {
     "nome": "Panpour",
     "numero": "41",
     "rarita": "Comune Reverse",
     "prezzo": 0.08,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/41.png"
   },
   {
     "nome": "Simpour",
     "numero": "42",
     "rarita": "Non Comune",
     "prezzo": 0.02,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/42.png"
   },
   {
     "nome": "Simpour",
     "numero": "42",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.16,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/42.png"
   },
   {
     "nome": "Vanillate",
     "numero": "43",
     "rarita": "Comune",
     "prezzo": 0.02,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/43.png"
   },
   {
     "nome": "Vanillate",
     "numero": "43",
     "rarita": "Comune Reverse",
     "prezzo": 0.11,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/43.png"
   },
   {
     "nome": "Vanillish",
     "numero": "44",
     "rarita": "Comune",
     "prezzo": 0.07,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/44.png"
   },
   {
     "nome": "Vanillish",
     "numero": "44",
     "rarita": "Comune Reverse",
     "prezzo": 0.07,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/44.png"
   },
   {
     "nome": "Vanilluxe",
     "numero": "45",
     "rarita": "Non Comune",
     "prezzo": 0.06,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/45.png"
   },
   {
     "nome": "Vanilluxe",
     "numero": "45",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.18,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/45.png"
   },
   {
     "nome": "Tsareena ex",
     "numero": "46",
     "rarita": "EX",
     "prezzo": 0.89,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/46.png"
   },
   {
     "nome": "Wimpod",
     "numero": "47",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 4,
+    "immagine": "https://images.pokemontcg.io/sv4/47.png"
   },
   {
     "nome": "Wimpod",
     "numero": "47",
     "rarita": "Comune Reverse",
     "prezzo": 0.06,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/47.png"
   },
   {
     "nome": "Wimpod",
     "numero": "48",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/48.png"
   },
   {
     "nome": "Wimpod",
     "numero": "48",
     "rarita": "Comune Reverse",
     "prezzo": 0.09,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/48.png"
   },
   {
     "nome": "Golisoped",
     "numero": "49",
     "rarita": "Holo",
     "prezzo": 0.07,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/49.png"
   },
   {
     "nome": "Golisoped",
     "numero": "49",
     "rarita": "Rara Reverse",
     "prezzo": 0.16,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/49.png"
   },
   {
     "nome": "Golisoped ex",
     "numero": "50",
     "rarita": "EX",
     "prezzo": 0.75,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/50.png"
   },
   {
     "nome": "wiglett",
     "numero": "51",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/51.png"
   },
   {
     "nome": "Wiglett",
     "numero": "51",
     "rarita": "Comune Reverse",
     "prezzo": 0.13,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/51.png"
   },
   {
     "nome": "Wiglett",
     "numero": "52",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/52.png"
   },
   {
     "nome": "Wiglett",
     "numero": "52",
     "rarita": "Comune Reverse",
     "prezzo": 0.11,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/52.png"
   },
   {
     "nome": "Wugtrio",
     "numero": "53",
     "rarita": "Non Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/53.png"
   },
   {
     "nome": "Wugtrio",
     "numero": "53",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.13,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/53.png"
   },
   {
     "nome": "Valuza",
     "numero": "54",
     "rarita": "Non Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 5,
+    "immagine": "https://images.pokemontcg.io/sv4/54.png"
   },
   {
     "nome": "Valuza",
     "numero": "54",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.10,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/54.png"
   },
   {
     "nome": "Dondozo",
     "numero": "55",
     "rarita": "Non Comune",
     "prezzo": 0.02,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/55.png"
   },
   {
     "nome": "Dondozo",
     "numero": "55",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.17,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/55.png"
   },
   {
     "nome": "Saccoferreo",
     "numero": "56",
     "rarita": "Non Comune",
     "prezzo": 0.08,
-    "immagine": ""
+    "quantita": 5,
+    "immagine": "https://images.pokemontcg.io/sv4/56.png"
   },
   {
     "nome": "Saccoferreo",
     "numero": "56",
     "rarita": "Non Comune Reverse",
     "prezzo": 0.29,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/56.png"
   },
   {
     "nome": "Chien-Pao",
     "numero": "57",
     "rarita": "Holo",
     "prezzo": 0.11,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/57.png"
   },
   {
     "nome": "Chien-Pao",
     "numero": "57",
     "rarita": "Rara Reverse",
     "prezzo": 0.15,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/57.png"
   },
   {
     "nome": "Mewtwo ex",
     "numero": "58",
     "rarita": "EX",
     "prezzo": 2.44,
-    "immagine": ""
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/58.png"
   },
   {
     "nome": "Elekid",
     "numero": "59",
     "rarita": "Comune",
     "prezzo": 0.04,
-    "immagine": ""
+    "quantita": 6,
+    "immagine": "https://images.pokemontcg.io/sv4/59.png"
   },
   {
     "nome": "Elekid",
     "numero": "59",
     "rarita": "Comune Reverse",
     "prezzo": 0.10,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/59.png"
   },
   {
     "nome": "Plusle",
     "numero": "60",
     "rarita": "Comune",
     "prezzo": 0.02,
-    "immagine": ""
+    "quantita": 5,
+    "immagine": "https://images.pokemontcg.io/sv4/60.png"
   },
   {
     "nome": "Plusle",
     "numero": "60",
     "rarita": "Comune Reverse",
     "prezzo": 0.11,
-    "immagine": ""
+    "quantita": 2,
+    "immagine": "https://images.pokemontcg.io/sv4/60.png"
   },
   {
     "nome": "Miniun",
     "numero": "61",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
+    "quantita": 3,
+    "immagine": "https://images.pokemontcg.io/sv4/61.png"
   },
   {
     "nome": "Miniun",
     "numero": "61",
     "rarita": "Comune Reverse",
     "prezzo": 0.11,
-    "immagine": ""
+    "quantita": 1,
+    "immagine": "https://images.pokemontcg.io/sv4/61.png"
   },
   {
     "nome": "Blitzle",
     "numero": "62",
     "rarita": "Comune",
     "prezzo": 0.03,
-    "immagine": ""
-  },
-  {
-    "nome": "Blitzle",
-    "numero": "62",
-    "rarita": "Comune Reverse",
-    "prezzo": 0.09,
-    "immagine": ""
-  },
-  {
-    "nome": "Zebstrika",
-    "numero": "63",
-    "rarita": "Non Comune",
-    "prezzo": 0.02,
-    "immagine": ""
-  },
-  {
-    "nome": "Zebstrika",
-    "numero": "63",
-    "rarita": "Non Comune Reverse",
-    "prezzo": 0.15,
-    "immagine": ""
-  },
-  {
-    "nome": "Joltik",
-    "numero": "64",
-    "rarita": "Comune",
-    "prezzo": 0.03,
-    "immagine": ""
-  },
-  {
-    "nome": "Joltik",
-    "numero": "64",
-    "rarita": "Comune Reverse",
-    "prezzo": 0.09,
-    "immagine": ""
-  },
-  {
-    "nome": "Galavantula",
-    "numero": "65",
-    "rarita": "Comune",
-    "prezzo": 0.03,
-    "immagine": ""
-  },
-  {
-    "nome": "Galavantula",
-    "numero": "65",
-    "rarita": "Comune Reverse",
-    "prezzo": 0.07,
-    "immagine": ""
-  },
-  {
-    "nome": "Zekrom",
-    "numero": "66",
-    "rarita": "Holo",
-    "prezzo": 0.11,
-    "immagine": ""
-  },
-  {
-    "nome": "Zekrom",
-    "numero": "66",
-    "rarita": "Rara Reverse",
-    "prezzo": 0.15,
-    "immagine": ""
-  },
-  {
-    "nome": "Oricorio",
-    "numero": "67",
-    "rarita": "Comune",
-    "prezzo": 0.03,
-    "immagine": ""
-  },
-  {
-    "nome": "Oricorio",
-    "numero": "67",
-    "rarita": "Comune Reverse",
-    "prezzo": 0.07,
-    "immagine": ""
-  },
-  {
-    "nome": "Tapu Koko ex",
-    "numero": "68",
-    "rarita": "EX",
-    "prezzo": 0.85,
-    "immagine": ""
-  },
-  {
-    "nome": "Toxel",
-    "numero": "69",
-    "rarita": "Comune",
-    "prezzo": 0.04,
-    "immagine": ""
-  },
-  {
-    "nome": "Toxel",
-    "numero": "69",
-    "rarita": "Comune Reverse",
-    "prezzo": 0.09,
-    "immagine": ""
-  },
-  {
-    "nome": "Mano ferrea ex",
-    "numero": "70",
-    "rarita": "EX",
-    "prezzo": 1.65,
-    "immagine": ""
-  }
-]
+    "quantita": 7,
+    "immagine": "https://images.pokemontcg
