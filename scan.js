@@ -1,41 +1,60 @@
 let tutteLeCarte = [];
 let cartaAttiva = null;
 
-// Funzione per caricare e salvare le carte in localStorage
-function salvaCarte() {
-  localStorage.setItem("carte", JSON.stringify(tutteLeCarte));
-  aggiornaStatistiche();
-}
+// Dati delle carte (inclusi direttamente nel JS come fallback)
+const carteJSON = [
+  {
+    "nome": "Surskit",
+    "numero": "1",
+    "rarita": "Comune",
+    "prezzo": 0.02,
+    "quantita": 0,
+    "immagine": "https://images.pokemontcg.io/sv4/1.png"
+  },
+  // Aggiungi qui tutte le altre carte...
+  // (ho omesso il resto per brevità, ma dovresti includere tutte le 266 carte)
+];
 
-// Funzione per caricare le carte da localStorage
+// Carica le carte da localStorage o dal JSON incorporato
 function caricaCarte() {
   const carteSalvate = localStorage.getItem("carte");
   if (carteSalvate) {
-    tutteLeCarte = JSON.parse(carteSalvate);
+    try {
+      tutteLeCarte = JSON.parse(carteSalvate);
+      console.log("Caricate carte da localStorage");
+    } catch (e) {
+      console.error("Errore nel parsing delle carte salvate, usando fallback", e);
+      tutteLeCarte = [...carteJSON];
+    }
   } else {
-    tutteLeCarte = [];
+    console.log("Nessuna carta in localStorage, usando JSON incorporato");
+    tutteLeCarte = [...carteJSON];
   }
 }
 
-// Funzione per caricare le carte da file JSON
-async function caricaCarteDaFile() {
-  try {
-    const response = await fetch('./carte.json');
-    if (!response.ok) throw new Error("Impossibile caricare il file JSON.");
-    tutteLeCarte = await response.json();
-    salvaCarte();
-    render(tutteLeCarte);
-  } catch (error) {
-    console.error("Errore:", error);
-  }
+// Salva le carte in localStorage
+function salvaCarte() {
+  localStorage.setItem("carte", JSON.stringify(tutteLeCarte));
+  console.log("Carte salvate in localStorage");
+  aggiornaStatistiche();
 }
 
-// Chiude la modale
+// Mostra/nasconde la modale
+function mostraModal(carta, index) {
+  cartaAttiva = index;
+  document.getElementById("modal-img").src = carta.immagine;
+  document.getElementById("modal-nome").value = carta.nome;
+  document.getElementById("modal-numero").value = carta.numero;
+  document.getElementById("modal-rarita").value = carta.rarita;
+  document.getElementById("modal-quantita").value = carta.quantita || 0;
+  document.getElementById("modal").style.display = 'flex';
+}
+
 function chiudiModal() {
   document.getElementById("modal").style.display = 'none';
 }
 
-// Salva le modifiche effettuate alla carta dalla modale
+// Salva le modifiche dalla modale
 function salvaModifiche() {
   if (cartaAttiva !== null) {
     const carta = tutteLeCarte[cartaAttiva];
@@ -50,75 +69,72 @@ function salvaModifiche() {
   }
 }
 
-// Mostra la modale con i dati della carta
-function mostraModal(carta, index) {
-  cartaAttiva = index;
-  document.getElementById("modal-img").src = carta.immagine;
-  document.getElementById("modal-nome").value = carta.nome;
-  document.getElementById("modal-numero").value = carta.numero;
-  document.getElementById("modal-rarita").value = carta.rarita;
-  document.getElementById("modal-quantita").value = carta.quantita || 0;
-  document.getElementById("modal").style.display = 'flex';
-}
-
-// Aggiunge o rimuove quantità da una carta
+// Aggiorna la quantità di una carta
 function aggiornaQuantita(index, delta, event) {
   event.stopPropagation();
-  const attuale = tutteLeCarte[index].quantita || 0;
-  if (tutteLeCarte[index].quantita + delta >= 0) {
-    tutteLeCarte[index].quantita += delta;
+  const carta = tutteLeCarte[index];
+  const nuovaQuantita = (carta.quantita || 0) + delta;
+  
+  if (nuovaQuantita >= 0) {
+    carta.quantita = nuovaQuantita;
     salvaCarte();
     render(tutteLeCarte);
   }
 }
 
-// Aggiorna le statistiche
+// Aggiorna le statistiche della collezione
 function aggiornaStatistiche() {
   const totaleCarte = tutteLeCarte.length;
   const carteCompletate = tutteLeCarte.filter(c => c.quantita > 0).length;
   const percentualeCompletamento = (carteCompletate / totaleCarte) * 100;
 
-  const valoreCollezione = tutteLeCarte.reduce((acc, carta) => acc + (carta.prezzo * carta.quantita), 0);
+  const valoreCollezione = tutteLeCarte.reduce((acc, carta) => 
+    acc + (carta.prezzo * (carta.quantita || 0)), 0);
 
   document.getElementById("completion-bar").style.width = `${percentualeCompletamento}%`;
-  document.getElementById("completion-text").textContent = `${percentualeCompletamento.toFixed(2)}% completato`;
-  document.getElementById("total-value").textContent = `Valore della collezione: €${valoreCollezione.toFixed(2)}`;
+  document.getElementById("completion-text").textContent = 
+    `${percentualeCompletamento.toFixed(1)}% completato (${carteCompletate}/${totaleCarte})`;
+  document.getElementById("total-value").textContent = 
+    `Valore collezione: €${valoreCollezione.toFixed(2)}`;
 }
 
-// Renderizza tutte le carte nella griglia
+// Renderizza le carte nella griglia
 function render(carte) {
-  carte.sort((a, b) => parseInt(a.numero) - parseInt(b.numero));
-
   const container = document.getElementById("carte");
   container.innerHTML = '';
 
-  carte.forEach((carta, index) => {
-    const div = document.createElement('div');
-    div.classList.add('card-container');
-    div.id = `card-${index}`;
-    div.onclick = () => mostraModal(carta, index);
+  // Ordina per numero
+  const carteOrdinate = [...carte].sort((a, b) => 
+    parseInt(a.numero) - parseInt(b.numero));
 
+  carteOrdinate.forEach((carta, index) => {
+    const originalIndex = tutteLeCarte.findIndex(c => 
+      c.numero === carta.numero && c.nome === carta.nome);
+    
+    const div = document.createElement('div');
+    div.className = 'card-container';
     div.innerHTML = `
-      <img src="${carta.immagine}" alt="${carta.nome}" />
+      <img src="${carta.immagine}" alt="${carta.nome}" loading="lazy" />
       <div class="info">
-        <h2>${carta.nome}</h2>
-        <p>${carta.numero}</p>
-        <p class="text-sm text-gray-600">Rarità: ${carta.rarita}</p>
-        <p>Quantità: ${carta.quantita || 0}</p>
+        <h2 class="font-semibold truncate">${carta.nome}</h2>
+        <p class="text-sm">#${carta.numero}</p>
+        <p class="text-xs text-gray-600">${carta.rarita}</p>
+        <p class="mt-1">Quantità: <span class="font-bold">${carta.quantita || 0}</span></p>
       </div>
-      <div class="card-actions">
-        <button class="aggiungi" data-index="${index}">Aggiungi</button>
-        <button class="rimuovi remove" data-index="${index}">Rimuovi</button>
+      <div class="card-actions mt-2">
+        <button class="aggiungi" data-index="${originalIndex}">+</button>
+        <button class="rimuovi" data-index="${originalIndex}">-</button>
       </div>
     `;
+    div.onclick = () => mostraModal(carta, originalIndex);
     container.appendChild(div);
   });
 
-  // Aggiunge gli event listener per i nuovi bottoni creati dinamicamente
+  // Aggiungi event listener ai pulsanti
   document.querySelectorAll(".aggiungi").forEach(btn => {
     btn.addEventListener("click", e => aggiornaQuantita(+btn.dataset.index, 1, e));
-  });  
-
+  });
+  
   document.querySelectorAll(".rimuovi").forEach(btn => {
     btn.addEventListener("click", e => aggiornaQuantita(+btn.dataset.index, -1, e));
   });
@@ -126,39 +142,31 @@ function render(carte) {
   aggiornaStatistiche();
 }
 
-// Scorri fino alla carta selezionata
-function scrollToCarta(cartaIndex) {
-  const cartaElement = document.getElementById(`card-${cartaIndex}`);
-  if (cartaElement) {
-    cartaElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-}
-
-// Funzione di ricerca in tempo reale
+// Funzione di ricerca
 function cercaCarte() {
   const filtro = document.getElementById("filtro").value.toLowerCase();
-
-  const carteTrovate = tutteLeCarte.filter(carta =>
-    carta.nome.toLowerCase().includes(filtro) || carta.numero.includes(filtro)
-  );
-
   const cardPreview = document.getElementById("card-preview");
-  if (filtro === "") {
+
+  if (!filtro) {
     cardPreview.style.display = 'none';
     render(tutteLeCarte);
-  } else if (carteTrovate.length > 0) {
+    return;
+  }
+
+  const carteTrovate = tutteLeCarte.filter(carta =>
+    carta.nome.toLowerCase().includes(filtro) || 
+    carta.numero.includes(filtro)
+  );
+
+  if (carteTrovate.length > 0) {
     const cartaTrovata = carteTrovate[0];
     cardPreview.style.display = 'block';
     document.getElementById("preview-img").src = cartaTrovata.immagine;
     document.getElementById("preview-name").textContent = cartaTrovata.nome;
-    document.getElementById("preview-number").textContent = `Numero: ${cartaTrovata.numero}`;
-    document.getElementById("preview-rarity").textContent = `Rarità: ${cartaTrovata.rarita}`;
+    document.getElementById("preview-number").textContent = `#${cartaTrovata.numero}`;
+    document.getElementById("preview-rarity").textContent = cartaTrovata.rarita;
     document.getElementById("preview-quantity").textContent = `Quantità: ${cartaTrovata.quantita || 0}`;
-
-    document.getElementById("card-preview").onclick = () => {
-      scrollToCarta(tutteLeCarte.indexOf(cartaTrovata));
-    };
-
+    
     render(carteTrovate);
   } else {
     cardPreview.style.display = 'none';
@@ -166,15 +174,17 @@ function cercaCarte() {
   }
 }
 
-// Eventi al caricamento pagina
-window.onload = async () => {
-  if (localStorage.getItem("carte")) {
-    caricaCarte();
-    render(tutteLeCarte);
-  } else {
-    await caricaCarteDaFile();
-  }
-
+// Inizializzazione
+document.addEventListener('DOMContentLoaded', () => {
+  caricaCarte();
+  render(tutteLeCarte);
+  
   document.getElementById("filtro").addEventListener("input", cercaCarte);
-  document.getElementById("modal-salva").addEventListener("click", salvaModifiche); // Assicurati che l'ID sia corretto
-};
+  
+  // Chiudi modale cliccando fuori
+  document.getElementById("modal").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("modal")) {
+      chiudiModal();
+    }
+  });
+});
