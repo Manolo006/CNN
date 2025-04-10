@@ -20,7 +20,7 @@ function caricaCarte() {
 // Funzione per caricare le carte da file JSON
 async function caricaCarteDaFile() {
   try {
-    const response = await fetch('carte.json');
+    const response = await fetch('./carte.json');
     if (!response.ok) throw new Error("Impossibile caricare il file JSON.");
     tutteLeCarte = await response.json();
     salvaCarte();
