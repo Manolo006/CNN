@@ -3,115 +3,162 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Carte Pokémon - Paradosso Temporale</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
+  <title>Conto alla rovescia</title>
   <style>
-    .card-container {
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 12px;
-      background: white;
-      transition: transform 0.2s;
+    * {
+      box-sizing: border-box;
     }
-    .card-container:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    body {
+      margin: 0;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
     }
-    .card-container img {
+
+    .countdown {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
       width: 100%;
-      height: 180px;
-      object-fit: contain;
-      margin-bottom: 8px;
+      max-width: 1000px;
     }
-    .card-actions button {
-      padding: 4px 8px;
-      margin: 4px;
-      border-radius: 4px;
-      cursor: pointer;
+
+    .school-days-remaining {
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      color: #007bff;
+      font-weight: bold;
+      margin-bottom: 10px;
     }
-    .aggiungi {
-      background-color: #4CAF50;
+
+    .live-countdown {
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .timer-container {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+
+    .day-box {
+      aspect-ratio: 1 / 1;
+      padding: 5px;
+      border-radius: 5px;
+      font-size: clamp(0.6rem, 1.5vw, 1rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .day-number {
+      font-size: clamp(0.9rem, 2vw, 1.2rem);
+      font-weight: bold;
+    }
+
+    .day-info {
+      font-size: clamp(0.5rem, 1vw, 0.8rem);
+      color: #f0f0f0;
+    }
+
+    .future-day {
+      background: #007bff;
       color: white;
     }
-    .rimuovi {
-      background-color: #f44336;
-      color: white;
+
+    .past-day {
+      background: #ccc;
+      color: #666;
     }
-    #card-preview {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: white;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      z-index: 100;
-      max-width: 200px;
+
+    .special-day {
+      background: #ff5733;
+      color: white;
     }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
-  <div class="max-w-7xl mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6">Carte Pokémon - Paradosso Temporale</h1>
-
-    <div class="mb-4">
-      <label class="mr-2 font-medium">Cerca o scansiona il codice della carta:</label>
-      <input type="text" id="filtro" class="border p-2 rounded w-full" placeholder="Es. Surskit, 1234 o codice della carta" />
-    </div>
-    
-    <div id="card-preview" style="display:none;">
-      <img id="preview-img" src="" alt="" class="w-full h-32 object-contain mb-2" />
-      <h3 id="preview-name" class="font-bold"></h3>
-      <p id="preview-number" class="text-sm"></p>
-      <p id="preview-rarity" class="text-sm text-gray-600"></p>
-      <p id="preview-quantity" class="text-sm"></p>
-    </div>
-    
-    <div class="mb-4">
-      <label class="font-medium">Completamento collezione:</label>
-      <div class="w-full bg-gray-300 rounded-full h-2 mb-2">
-        <div id="completion-bar" class="bg-green-500 h-2 rounded-full" style="width: 0%;"></div>
-      </div>
-      <p id="completion-text" class="text-sm text-gray-600">0% completato</p>
-    </div>
-
-    <div class="mb-4 flex gap-4">
-      <p id="total-value" class="text-lg font-semibold">Valore collezione: €0.00</p>
-      <p id="total-spent" class="text-lg font-semibold">Totale speso: €0.00</p>
-    </div>
-
-    <div id="carte" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
-
-    <div id="modal" style="display:none;" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-      <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-        <h2 class="text-xl font-semibold mb-4">Modifica Carta</h2>
-        <img id="modal-img" src="" alt="Carta" class="w-32 mx-auto mb-4" />
-        <div class="space-y-3">
-          <div>
-            <label class="block mb-1">Nome:</label>
-            <input type="text" id="modal-nome" class="border p-2 w-full rounded" />
-          </div>
-          <div>
-            <label class="block mb-1">Numero:</label>
-            <input type="text" id="modal-numero" class="border p-2 w-full rounded" />
-          </div>
-          <div>
-            <label class="block mb-1">Rarità:</label>
-            <input type="text" id="modal-rarita" class="border p-2 w-full rounded" />
-          </div>
-          <div>
-            <label class="block mb-1">Quantità:</label>
-            <input type="number" id="modal-quantita" class="border p-2 w-full rounded" min="0" />
-          </div>
-        </div>
-        <div class="flex justify-end gap-2 mt-4">
-          <button onclick="chiudiModal()" class="bg-gray-500 text-white px-4 py-2 rounded">Chiudi</button>
-          <button onclick="salvaModifiche()" class="bg-blue-500 text-white px-4 py-2 rounded">Salva</button>
-        </div>
-      </div>
-    </div>
+<body>
+  <div class="countdown">
+    <h1>Conto alla rovescia</h1>
+    <div class="school-days-remaining" id="school-days">Giorni di scuola rimanenti: 0</div>
+    <div class="live-countdown" id="live-timer">00:00:00:00</div>
+    <div class="timer-container" id="days-container"></div>
   </div>
 
-  <script src="scan.js"></script>
+  <script>
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const targetDate = new Date("June 18, 2025 08:30:00").getTime();
+      const startDate = new Date(targetDate - 100 * 24 * 60 * 60 * 1000);
+      const distance = targetDate - now;
+
+      if (distance < 0) {
+        document.querySelector(".countdown").innerHTML = "Il conto alla rovescia è terminato!";
+        return;
+      }
+
+      const daysRemaining = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const daysContainer = document.getElementById("days-container");
+      daysContainer.innerHTML = "";
+
+      const specialDays = [
+        "2025-04-14", "2025-04-15", "2025-04-16", "2025-04-17", "2025-04-18",
+        "2025-04-19", "2025-04-20", "2025-04-21", "2025-04-22", "2025-04-23",
+        "2025-04-24", "2025-04-25", "2025-05-01", "2025-06-02", "2025-06-06",
+        "2025-06-09", "2025-06-10", "2025-06-11", "2025-06-12", "2025-06-13",
+        "2025-06-16", "2025-04-26", "2025-05-02", "2025-06-03"
+      ];
+
+      const weekdays = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+      let schoolDaysRemaining = 0;
+
+      for (let i = 0; i < 100; i++) {
+        const dayBox = document.createElement("div");
+        dayBox.className = "day-box";
+
+        const currentDate = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
+        const formattedDate = currentDate.toISOString().split('T')[0];
+        const dayOfWeek = weekdays[currentDate.getDay()];
+        const dayMonth = currentDate.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
+
+        const isPast = currentDate < new Date();
+        const isWeekendOrSpecial = specialDays.includes(formattedDate) || currentDate.getDay() === 0 || currentDate.getDay() === 6;
+
+        if (isPast) {
+          dayBox.classList.add("past-day");
+        } else if (isWeekendOrSpecial) {
+          dayBox.classList.add("special-day");
+        } else {
+          dayBox.classList.add("future-day");
+          schoolDaysRemaining++;
+        }
+
+        dayBox.innerHTML = `<div class='day-number'>${100 - i}</div><div class='day-info'>${dayOfWeek}<br>${dayMonth}</div>`;
+        daysContainer.appendChild(dayBox);
+      }
+
+      document.getElementById("school-days").innerText = `Giorni di scuola rimanenti: ${schoolDaysRemaining}`;
+
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      document.getElementById("live-timer").innerText = `${daysRemaining}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
 </body>
 </html>
