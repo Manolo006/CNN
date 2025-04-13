@@ -6,6 +6,7 @@
     "prezzo": 0.02,
     "quantita": 5,
     "immagine": "https://images.pokemontcg.io/sv4/1.png"
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Paradox-Rift/Surskit-PAR001?sellerCountry=17&sellerType=1,2&sellerReputation=1&language=5&minCondition=2"
   },
   {
     "nome": "Surskit",
@@ -14,6 +15,7 @@
     "prezzo": 0.02,
     "quantita": 1,
     "immagine": "https://images.pokemontcg.io/sv4/1.png"
+    "cardmarket_url": "https://www.cardmarket.com/it/Pokemon/Products/Singles/Paradox-Rift/Surskit-PAR001?sellerCountry=17&sellerType=1,2&sellerReputation=1&language=5&minCondition=2&isReverseHolo=Y"
   },
   {
     "nome": "Masquerain",
