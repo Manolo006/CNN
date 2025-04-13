@@ -1,103 +1,57 @@
-.card-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
-  background-color: white;
-  border-radius: 1rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  position: relative;
-  overflow: hidden;
+/* Stili Base */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.card-container:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+/* Card */
+.card {
+  @apply bg-white rounded-xl p-4 shadow-lg relative transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
 }
 
-.card-container img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-
-.card-container:hover img {
-  transform: scale(1.05);
-}
-
-.card-actions {
-  display: flex;
-  gap: 0.5rem;
-  width: 100%;
-  justify-content: center;
-}
-
-.card-actions button {
-  flex: 1;
-  min-width: 0;
+.card img {
+  @apply w-full h-48 object-contain mb-4 cursor-pointer;
 }
 
 .rarity-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  padding: 2px 6px;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: bold;
-  color: white;
+  @apply absolute top-2 right-2 px-3 py-1 rounded-full text-xs font-bold text-white;
 }
 
-/* Colori per le rarità */
-.rarity-common { background-color: #6b7280; }
-.rarity-uncommon { background-color: #10b981; }
-.rarity-rare { background-color: #3b82f6; }
-.rarity-holo { background-color: #8b5cf6; }
-.rarity-ex { background-color: #ef4444; }
+.common { background-color: #6b7280; }
+.uncommon { background-color: #10b981; }
+.holo { background-color: #3b82f6; }
+.ex { background-color: #ef4444; }
+.full-art { background-color: #8b5cf6; }
 
-/* Animazione per la card preview */
+/* Statistiche */
+.stats-grid {
+  @apply grid grid-cols-2 gap-4;
+}
+
+.stat {
+  @apply bg-gray-50 p-4 rounded-lg;
+}
+
+.completion-bar {
+  @apply h-4 bg-gray-200 rounded-full overflow-hidden;
+}
+
+#completion-bar {
+  @apply h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all duration-500;
+}
+
+/* Animazioni */
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-#card-preview {
-  animation: fadeIn 0.2s ease-out;
+.card {
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* Stili per la modale */
-#modal {
-  transition: opacity 0.2s, visibility 0.2s;
-}
-
-/* Stili per la barra di completamento */
-.completion-bar-container {
-  position: relative;
-}
-
-.completion-percent {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.75rem;
-  color: white;
-  text-shadow: 0 0 2px rgba(0,0,0,0.5);
-}
-
-/* Ottimizzazione mobile */
+/* Responsive */
 @media (max-width: 640px) {
-  .card-container {
-    padding: 0.75rem;
-  }
-  
-  .card-actions {
-    flex-direction: column;
-  }
-  
-  .card-actions button {
-    width: 100%;
+  #carte {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
