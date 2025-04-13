@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Carte Pokémon - Paradosso Temporale</title>
+  <title>Master Set Paradosso Temporale</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="pokestyle.css">
@@ -11,169 +11,43 @@
 <body class="bg-gray-100 text-gray-900 min-h-screen">
   <div class="max-w-7xl mx-auto p-4 pb-16">
     <header class="mb-6">
-      <h1 class="text-3xl font-bold text-center mb-2 text-blue-600">Carte Pokémon - Paradosso Temporale</h1>
-      <p class="text-center text-gray-600">Colleziona e gestisci la tua collezione di carte</p>
+      <h1 class="text-3xl font-bold text-center mb-2 text-blue-600">Master Set Paradosso Temporale</h1>
+      <div class="flex justify-center gap-4 mb-4">
+        <button onclick="aggiornaPrezzi()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+          <i class="fas fa-sync-alt mr-2"></i> Aggiorna Prezzi
+        </button>
+        <button onclick="esportaJSON()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+          <i class="fas fa-download mr-2"></i> Esporta
+        </button>
+      </div>
     </header>
 
-    <!-- Sezione Filtro e scansione -->
-    <div class="bg-white p-4 rounded-lg shadow-md mb-6">
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Cerca o scansiona il codice della carta:</label>
-        <div class="relative">
-          <input type="text" id="filtro" class="border p-2 rounded w-full pl-10" placeholder="Es. Surskit, 1234 o codice della carta" />
-          <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-        </div>
-      </div>
-      
-      <div class="flex flex-wrap gap-4">
-        <!-- Filtri rapidi -->
-        <button onclick="filtraRarita('Comune')" class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-sm flex items-center">
-          <i class="fas fa-circle text-gray-500 mr-1 text-xs"></i> Comuni
-        </button>
-        <button onclick="filtraRarita('Non Comune')" class="bg-green-100 hover:bg-green-200 px-3 py-1 rounded text-sm flex items-center">
-          <i class="fas fa-circle text-green-500 mr-1 text-xs"></i> Non Comuni
-        </button>
-        <button onclick="filtraRarita('Holo')" class="bg-blue-100 hover:bg-blue-200 px-3 py-1 rounded text-sm flex items-center">
-          <i class="fas fa-circle text-blue-500 mr-1 text-xs"></i> Holo
-        </button>
-        <button onclick="filtraRarita('EX')" class="bg-red-100 hover:bg-red-200 px-3 py-1 rounded text-sm flex items-center">
-          <i class="fas fa-star text-red-500 mr-1 text-xs"></i> EX
-        </button>
-        <button onclick="filtraRarita('Full Art')" class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-sm flex items-center">
-          <i class="fas fa-circle text-gray-500 mr-1 text-xs"></i> Full Art
-        </button>
-        <button onclick="filtraPossedute()" class="bg-purple-100 hover:bg-purple-200 px-3 py-1 rounded text-sm flex items-center">
-          <i class="fas fa-check text-purple-500 mr-1"></i> Possedute
-        </button>
-        <button onclick="resettaFiltri()" class="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded text-sm flex items-center">
-          <i class="fas fa-times text-gray-500 mr-1"></i> Reset
-        </button>
-      </div>
-    </div>
-    
-    <!-- Sezione per mostrare la carta in sovrimpressione -->
-    <div id="card-preview" class="hidden fixed bg-white p-4 rounded-xl shadow-xl z-50 max-w-xs border border-gray-200">
-      <button onclick="nascondiAnteprima()" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
-        <i class="fas fa-times"></i>
-      </button>
-      <img id="preview-img" src="" alt="" class="w-full h-48 object-contain mb-3" />
-      <div class="grid grid-cols-2 gap-2 text-sm">
-        <div>
-          <p class="font-semibold">Nome:</p>
-          <p id="preview-name" class="truncate"></p>
-        </div>
-        <div>
-          <p class="font-semibold">Numero:</p>
-          <p id="preview-number"></p>
-        </div>
-        <div>
-          <p class="font-semibold">Rarità:</p>
-          <p id="preview-rarity"></p>
-        </div>
-        <div>
-          <p class="font-semibold">Quantità:</p>
-          <p id="preview-quantity"></p>
-        </div>
-        <div class="col-span-2">
-          <p class="font-semibold">Valore:</p>
-          <p id="preview-value"></p>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Statistiche collezione -->
-    <div class="bg-white p-4 rounded-lg shadow-md mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-      <!-- Barra di completamento -->
+    <!-- Sezione Filtri e Statistiche -->
+    <div class="bg-white p-4 rounded-lg shadow-md mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Completamento collezione:</label>
-        <div class="completion-bar-container w-full bg-gray-200 rounded-full h-4 mb-1">
-          <div id="completion-bar" class="bg-gradient-to-r from-blue-500 to-green-500 h-4 rounded-full relative" style="width: 0%;">
-            <span id="completion-percent" class="completion-percent">0%</span>
+        <input type="text" id="filtro" class="border p-2 rounded w-full" placeholder="Cerca carta...">
+      </div>
+      <div class="stats-grid">
+        <div class="stat">
+          <h3>Completamento</h3>
+          <div class="completion-bar">
+            <div id="completion-bar"></div>
+            <span id="completion-text"></span>
           </div>
         </div>
-        <p id="completion-text" class="text-sm text-gray-600 text-center">0% completato (0/0 carte)</p>
-      </div>
-
-      <!-- Valore collezione -->
-      <div>
-        <p class="text-sm font-medium text-gray-700">Valore della collezione:</p>
-        <p id="total-value" class="text-2xl font-bold text-green-600">€0.00</p>
-      </div>
-
-      <!-- Totale speso -->
-      <div>
-        <p class="text-sm font-medium text-gray-700">Totale speso:</p>
-        <p id="total-spent" class="text-2xl font-bold text-red-600">€0.00</p>
+        <div class="stat">
+          <h3>Valore Totale</h3>
+          <p id="total-value">€0.00</p>
+        </div>
       </div>
     </div>
 
-    <!-- Container per le carte -->
+    <!-- Container Carte -->
     <div id="carte" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"></div>
 
-    <!-- Modale per la modifica -->
-    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-      <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold">Modifica Carta</h2>
-          <button onclick="chiudiModal()" class="text-gray-500 hover:text-gray-700">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        
-        <div class="flex flex-col md:flex-row gap-4 mb-4">
-          <img id="modal-img" src="" alt="Carta" class="w-32 h-44 object-contain mx-auto" />
-          
-          <div class="flex-1">
-            <div class="mb-3">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Nome:</label>
-              <input type="text" id="modal-nome" class="border p-2 rounded w-full" />
-            </div>
-            
-            <div class="mb-3">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Numero:</label>
-              <input type="text" id="modal-numero" class="border p-2 rounded w-full" />
-            </div>
-            
-            <div class="mb-3">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Rarità:</label>
-              <select id="modal-rarita" class="border p-2 rounded w-full">
-                <option value="Comune">Comune</option>
-                <option value="Non Comune">Non Comune</option>
-                <option value="Holo">Holo</option>
-                <option value="EX">EX</option>
-                <option value="Altro">Altro</option>
-              </select>
-            </div>
-            
-            <div class="mb-3">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Quantità:</label>
-              <div class="flex items-center">
-                <button onclick="modificaQuantita(-1)" class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded-l">
-                  <i class="fas fa-minus"></i>
-                </button>
-                <input type="number" id="modal-quantita" class="border-t border-b border-gray-300 p-2 w-12 text-center" min="0" />
-                <button onclick="modificaQuantita(1)" class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded-r">
-                  <i class="fas fa-plus"></i>
-                </button>
-              </div>
-            </div>
-            
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Prezzo (€):</label>
-              <input type="number" id="modal-prezzo" class="border p-2 rounded w-full" min="0" step="0.01" />
-            </div>
-          </div>
-        </div>
-        
-        <div class="flex justify-end gap-2">
-          <button onclick="eliminaCarta()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded flex items-center">
-            <i class="fas fa-trash mr-2"></i> Elimina
-          </button>
-          <button onclick="salvaModifiche()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center">
-            <i class="fas fa-save mr-2"></i> Salva
-          </button>
-        </div>
-      </div>
+    <!-- Modale Modifica -->
+    <div id="modal" class="modal">
+      <!-- Contenuto modale -->
     </div>
   </div>
 
