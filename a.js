@@ -1,15 +1,17 @@
-// Funzione per convertire minuti in ore/giorni
-function formatTime(minutes) {
-    if (minutes < 60) return `${minutes} min`;
+// Funzione per convertire secondi in giorni/ore/minuti/secondi
+function formatTime(totalSeconds) {
+    if (totalSeconds < 60) return `${totalSeconds}s`;
 
-    const days = Math.floor(minutes / 1440); // 1440 min in un giorno
-    const hours = Math.floor((minutes % 1440) / 60);
-    const mins = minutes % 60;
+    const days = Math.floor(totalSeconds / 86400); // 86400 sec in un giorno
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
 
     let result = '';
     if (days > 0) result += `${days}d `;
     if (hours > 0) result += `${hours}h `;
-    if (mins > 0) result += `${mins}m`;
+    if (minutes > 0) result += `${minutes}m `;
+    if (seconds > 0) result += `${seconds}s`;
 
     return result.trim();
 }
@@ -17,25 +19,22 @@ function formatTime(minutes) {
 fetch("https://discord-live-stats-default-rtdb.firebaseio.com/voicetime.json")
     .then(res => res.json())
     .then(data => {
-        // data = { user_id: { seconds: ..., username: ..., avatar: ... } }
         const users = [];
 
         for (const [userId, info] of Object.entries(data)) {
             users.push({
-                name: info.username || `User ${userId}`,   // usa il nome salvato
-                time: Math.floor(info.seconds / 60),       // converti secondi in minuti
-                avatar: info.avatar || `https://i.pravatar.cc/50?img=${Math.floor(Math.random()*70)}` // fallback
+                name: info.username || `User ${userId}`,
+                time: info.seconds || 0,
+                avatar: info.avatar || `https://i.pravatar.cc/50?img=${Math.floor(Math.random()*70)}`
             });
         }
 
         // Ordina per tempo decrescente
         users.sort((a, b) => b.time - a.time);
 
-        // Trova il massimo tempo
         const maxTime = Math.max(...users.map(u => u.time));
-
         const leaderboard = document.getElementById("leaderboard");
-        leaderboard.innerHTML = ''; // pulisce eventuali dati precedenti
+        leaderboard.innerHTML = '';
 
         users.forEach((user, index) => {
             const percent = (user.time / maxTime) * 100;
