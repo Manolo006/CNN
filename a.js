@@ -2,7 +2,7 @@
 function formatTime(totalSeconds) {
     if (totalSeconds < 60) return `${totalSeconds}s`;
 
-    const days = Math.floor(totalSeconds / 86400); // 86400 sec in un giorno
+    const days = Math.floor(totalSeconds / 86400);
     const hours = Math.floor((totalSeconds % 86400) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
@@ -16,6 +16,7 @@ function formatTime(totalSeconds) {
     return result.trim();
 }
 
+// Caricamento dati da Firebase
 fetch("https://discord-live-stats-default-rtdb.firebaseio.com/voicetime.json")
     .then(res => res.json())
     .then(data => {
@@ -37,23 +38,25 @@ fetch("https://discord-live-stats-default-rtdb.firebaseio.com/voicetime.json")
         leaderboard.innerHTML = '';
 
         users.forEach((user, index) => {
-            const percent = (user.time / maxTime) * 100;
+        const percent = (user.time / maxTime) * 100;
+        const offset = 5;
 
-            const row = document.createElement("div");
-            row.classList.add("user-row");
+const row = document.createElement("div");
+row.classList.add("user-row");
 
-            row.innerHTML = `
-                <div class="progress-container">
-                    <div class="progress-fill" style="width:${percent}%;"></div>
-                </div>
-                <div class="user-info">
-                    <img src="${user.avatar}">
-                    <span>${index + 1}°</span>
-                    <span>${formatTime(user.time)}</span>
-                </div>
-            `;
+row.innerHTML = `
+    <div class="bar-container">
+        <img src="progress.png" class="bar-image" style="width:${percent}%">
+        <img src="${user.avatar}" class="avatar-end" style="left:${percent}%">
+        <span class="time" style="left:${percent + offset}%">${formatTime(user.time)}</span>
+    </div>
+    <div class="user-info">
+        <span>${index + 1}°  ${user.name}</span>
+    </div>
+`;
 
-            leaderboard.appendChild(row);
+leaderboard.appendChild(row);
+
         });
     })
     .catch(err => console.error("Errore caricamento dati Firebase:", err));
