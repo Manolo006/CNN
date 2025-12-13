@@ -1,19 +1,29 @@
 // Funzione per convertire secondi in giorni/ore/minuti/secondi
+// Funzione per convertire secondi in anni/mesi/settimane/giorni/ore/minuti/secondi
 function formatTime(totalSeconds) {
-    if (totalSeconds < 60) return `${totalSeconds}s`;
-
+    const years = Math.floor(totalSeconds / 31536000); // 365 giorni
+    totalSeconds %= 31536000;
+    const months = Math.floor(totalSeconds / 2592000); // 30 giorni
+    totalSeconds %= 2592000;
+    const weeks = Math.floor(totalSeconds / 604800); // 7 giorni
+    totalSeconds %= 604800;
     const days = Math.floor(totalSeconds / 86400);
-    const hours = Math.floor((totalSeconds % 86400) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    totalSeconds %= 86400;
+    const hours = Math.floor(totalSeconds / 3600);
+    totalSeconds %= 3600;
+    const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
 
     let result = '';
+    if (years > 0) result += `${years}y `;
+    if (months > 0) result += `${months}mo `;
+    if (weeks > 0) result += `${weeks}w `;
     if (days > 0) result += `${days}d `;
     if (hours > 0) result += `${hours}h `;
     if (minutes > 0) result += `${minutes}m `;
     if (seconds > 0) result += `${seconds}s`;
 
-    return result.trim();
+    return result.trim() || '0s';
 }
 
 // Caricamento dati da Firebase
@@ -60,3 +70,4 @@ leaderboard.appendChild(row);
         });
     })
     .catch(err => console.error("Errore caricamento dati Firebase:", err));
+
