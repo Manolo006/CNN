@@ -3,37 +3,53 @@ const overrideUser = params.get("user");
 const overrideTheme = params.get("theme");
 const overridePrimary = params.get("primary");
 
-function buildApiUrl() {
-  const query = new URLSearchParams();
-  if (overrideUser) query.set("user", overrideUser);
-  if (overrideTheme) query.set("theme", overrideTheme);
-  if (overridePrimary) query.set("primary", overridePrimary);
-  const qs = query.toString();
-  return qs ? `/api/player?${qs}` : "/api/player";
+const API_BASE = "https://api.mcsrranked.com";
+
+function buildApiUrl(username) {
+  const safeUser = encodeURIComponent(username);
+  return `${API_BASE}/users/${safeUser}`;
+}
+
+function applyTheme() {
+  const theme = overrideTheme === "light" ? "light" : "dark";
+  const widget = document.getElementById("widget");
+  widget.className = theme;
+  widget.style.setProperty("--accent", overridePrimary || "#7c3aed");
+}
+
+function resolveStats(records) {
+  const record = records?.["2"] || records?.["3"] || records?.["4"] || {};
+  const wins = record.win ?? record.wins ?? 0;
+  const losses = record.lose ?? record.losses ?? 0;
+  return { wins, losses };
 }
 
 async function updateWidget() {
-  const res = await fetch(buildApiUrl());
+  const username = overrideUser || "Dream";
+  applyTheme();
+
+  const res = await fetch(buildApiUrl(username));
   if (!res.ok) return;
-  const data = await res.json();
+  const payload = await res.json();
 
-  if (data.error) return;
+  const data = payload.data || payload;
+  if (!data) return;
 
-  document.getElementById("username").textContent = data.username;
-  document.getElementById("rank").textContent = data.rank || "-";
-  document.getElementById("elo").textContent = data.elo || 0;
-  document.getElementById("wl").textContent =
-    `${data.wins || 0}W / ${data.losses || 0}L`;
+  const nickname = data.nickname || username;
+  const elo = data.elo_rate ?? data.eloRate ?? 0;
+  const eloRank = data.elo_rank ?? data.eloRank;
+  const rankLabel = typeof eloRank === "number" ? `#${eloRank}` : "-";
+  const { wins, losses } = resolveStats(data.records);
 
-  // Tema
-  const widget = document.getElementById("widget");
-  widget.className = data.theme === "light" ? "light" : "dark";
-  widget.style.setProperty("--accent", data.primary || "#7c3aed");
+  document.getElementById("username").textContent = nickname;
+  document.getElementById("rank").textContent = rankLabel;
+  document.getElementById("elo").textContent = elo;
+  document.getElementById("wl").textContent = `${wins}W / ${losses}L`;
 
-  // Glow rank
+  // Glow rank (if available)
   const rankEl = document.getElementById("rank");
   rankEl.className = "";
-  const rankText = (data.rank || "").toLowerCase();
+  const rankText = (data.rank || data.rank_name || data.rankName || "").toLowerCase();
   if (rankText.includes("bronze")) rankEl.classList.add("rank-bronze");
   if (rankText.includes("silver")) rankEl.classList.add("rank-silver");
   if (rankText.includes("gold")) rankEl.classList.add("rank-gold");
