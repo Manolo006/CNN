@@ -1,0 +1,64 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap");
+
+body {
+  margin: 0;
+  background: transparent;
+  font-family: "Sora", system-ui, sans-serif;
+}
+
+#widget {
+  --accent: #7c3aed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-radius: 18px;
+  min-width: 320px;
+  background: rgba(15, 15, 20, 0.9);
+  color: white;
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+#widget.light {
+  background: rgba(245,245,245,0.95);
+  color: #0e0e11;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+}
+
+#username {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+#rank {
+  font-size: 14px;
+  opacity: .7;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.6);
+}
+
+.right {
+  text-align: right;
+}
+
+#elo {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+#wl {
+  font-size: 13px;
+  opacity: .75;
+}
+
+/* Rank glow colors */
+.rank-bronze { text-shadow: 0 0 8px #cd7f32; }
+.rank-silver { text-shadow: 0 0 8px #c0c0c0; }
+.rank-gold   { text-shadow: 0 0 8px #ffd700; }
+.rank-diamond{ text-shadow: 0 0 8px #00ffff; }

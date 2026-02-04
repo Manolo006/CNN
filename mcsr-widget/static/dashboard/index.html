@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCSR Widget Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="dashboard">
+  <div class="panel">
+    <h2>Widget Settings</h2>
+    <p class="subtle">Tune your widget and copy the shareable URL.</p>
+
+    <div class="control">
+      <label>Username</label>
+      <input id="username" placeholder="Nickname">
+    </div>
+
+    <div class="control">
+      <label>Theme</label>
+      <select id="theme">
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+      </select>
+    </div>
+
+    <div class="control">
+      <label>Primary Color</label>
+      <input type="color" id="primary">
+    </div>
+
+    <button id="saveBtn" type="button">Save</button>
+    <div id="status" class="status" aria-live="polite"></div>
+  </div>
+
+  <div class="preview">
+    <h3>Widget Preview</h3>
+    <iframe id="preview"></iframe>
+
+    <div class="output">
+      <input id="url" readonly>
+      <button id="copyBtn" type="button">Copy URL</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

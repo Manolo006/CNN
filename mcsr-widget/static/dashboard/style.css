@@ -1,0 +1,134 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap");
+
+:root {
+  --bg-1: #0d0f14;
+  --bg-2: #151827;
+  --panel: #141723;
+  --panel-2: #10131c;
+  --text: #eef1f7;
+  --muted: #96a0b5;
+  --accent: #7c3aed;
+  --accent-2: #4f46e5;
+}
+
+body {
+  margin: 0;
+  font-family: "Sora", sans-serif;
+  background:
+    radial-gradient(900px 400px at 80% -20%, rgba(124, 58, 237, 0.25), transparent 60%),
+    radial-gradient(700px 500px at 10% 0%, rgba(79, 70, 229, 0.25), transparent 65%),
+    linear-gradient(135deg, var(--bg-1), var(--bg-2));
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 24px;
+  padding: 24px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.panel, .preview {
+  background: var(--panel);
+  padding: 22px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+h2,h3 { margin-top: 0; }
+
+.subtle {
+  margin-top: -4px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.control {
+  margin-bottom: 16px;
+}
+
+.control label {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.control input, .control select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: #1b1f2b;
+  color: var(--text);
+  font-size: 14px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s;
+}
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(124,58,237,.45);
+}
+
+.status {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  min-height: 16px;
+}
+.status[data-tone="ok"] { color: #7ee787; }
+.status[data-tone="error"] { color: #ff7b72; }
+
+.preview iframe {
+  width: 100%;
+  height: 120px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  margin-bottom: 12px;
+}
+
+.output input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: var(--panel-2);
+  color: #b7c0d6;
+  font-size: 13px;
+}
+
+.output {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 10px;
+}
+
+.output button {
+  width: auto;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+  .output {
+    grid-template-columns: 1fr;
+  }
+}
