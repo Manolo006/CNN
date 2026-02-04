@@ -8,49 +8,51 @@ const usernameInput = document.getElementById("username");
 const themeSelect = document.getElementById("theme");
 const primaryInput = document.getElementById("primary");
 
+const STORAGE_KEY = "mcsrWidgetConfig";
+const DEFAULT_CONFIG = {
+  username: "Dream",
+  theme: "dark",
+  primary: "#7c3aed"
+};
+
 let liveUpdateTimer = null;
 
-async function loadConfig() {
+function loadConfig() {
+  let data = { ...DEFAULT_CONFIG };
   try {
-    const res = await fetch("/api/config");
-    if (!res.ok) throw new Error("Failed to load config");
-    const data = await res.json();
-
-    usernameInput.value = data.username || "";
-    themeSelect.value = data.theme || "dark";
-    primaryInput.value = data.primary || "#7c3aed";
-
-    updatePreview(data);
-    setStatus("Loaded.", "ok");
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      data = { ...data, ...parsed };
+    }
   } catch (err) {
-    setStatus("Could not load config.", "error");
+    setStatus("Local settings were reset.", "error");
   }
+
+  usernameInput.value = data.username || "";
+  themeSelect.value = data.theme || "dark";
+  primaryInput.value = data.primary || "#7c3aed";
+
+  updatePreview(data);
+  setStatus("Loaded.", "ok");
 }
 
 function updatePreview(data) {
-  const params = new URLSearchParams({
-    user: data.username || "",
-    theme: data.theme || "dark",
-    primary: data.primary || "#7c3aed"
-  });
-  const url = `/widget?${params.toString()}`;
-  preview.src = url;
-  urlInput.value = window.location.origin + url;
+  const widgetUrl = new URL("../widget/index.html", window.location.href);
+  widgetUrl.searchParams.set("user", data.username || "");
+  widgetUrl.searchParams.set("theme", data.theme || "dark");
+  widgetUrl.searchParams.set("primary", data.primary || "#7c3aed");
+
+  preview.src = widgetUrl.toString();
+  urlInput.value = widgetUrl.toString();
 }
 
 async function save() {
   const payload = getFormData();
 
   try {
-    const res = await fetch("/api/config", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error("Save failed");
-    const data = await res.json();
-
-    updatePreview(data);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    updatePreview(payload);
     setStatus("Saved.", "ok");
   } catch (err) {
     setStatus("Save failed.", "error");
