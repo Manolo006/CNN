@@ -1,44 +1,40 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>Discord Bot Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="dash.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Bot</title>
+<link rel="stylesheet" href="dash.css">
 </head>
 <body>
 
-<div class="app">
+<div class="container">
 
-  <!-- HEADER -->
-  <header class="topbar">
-    <h1>Bot Control Panel</h1>
-    <span id="status" class="badge offline">OFFLINE</span>
-  </header>
+    <!-- Barra bottoni schede -->
+    <div class="tab-buttons">
+        <button class="active" onclick="showTab('dashboard')">Dashboard</button>
+        <button onclick="showTab('fetch')">Fetch</button>
+        <button onclick="showTab('more')">More</button>
+    </div>
 
-  <!-- GRID -->
-  <main class="grid">
+    <!-- Schede principali -->
+    <div id="dashboard" class="tab-content active">
+        <div class="card">Online</div>
+        <div class="card">Server</div>
+        <div class="card">Utenti</div>
+        <div class="card">Log</div>
+        <div class="card">Info</div>
+        <div class="card">Altro</div>
+    </div>
 
-    <!-- SERVER -->
-    <section class="card">
-      <h2>Server Discord</h2>
-      <select id="guilds"></select>
-    </section>
+    <div id="fetch" class="tab-content">
+        <div class="card" id="fetch-box">Caricamento dati...</div>
+    </div>
 
-    <!-- LOG -->
-    <section class="card logs">
-      <h2>Log Essenziali</h2>
-      <div id="logs" class="log-box"></div>
-    </section>
-
-    <!-- FETCH ESTERNO -->
-    <section class="card">
-      <h2>Dati esterni</h2>
-      <p class="muted">Fetch da un altro GitHub Pages</p>
-      <pre id="externalData">Caricamento...</pre>
-    </section>
-
-  </main>
+    <div id="more" class="tab-content">
+        <div class="card">Altro contenuto</div>
+        <div class="card">Opzioni aggiuntive</div>
+    </div>
 
 </div>
 
