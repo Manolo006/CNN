@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Discord Bot Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <h1>Bot Control Panel</h1>
+    <span id="status" class="badge offline">OFFLINE</span>
+  </header>
+
+  <!-- GRID -->
+  <main class="grid">
+
+    <!-- SERVER -->
+    <section class="card">
+      <h2>Server Discord</h2>
+      <select id="guilds"></select>
+    </section>
+
+    <!-- LOG -->
+    <section class="card logs">
+      <h2>Log Essenziali</h2>
+      <div id="logs" class="log-box"></div>
+    </section>
+
+    <!-- FETCH ESTERNO -->
+    <section class="card">
+      <h2>Dati esterni</h2>
+      <p class="muted">Fetch da un altro GitHub Pages</p>
+      <pre id="externalData">Caricamento...</pre>
+    </section>
+
+  </main>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
