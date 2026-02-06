@@ -1,66 +1,32 @@
-const API = "http://localhost:8000";
+// Funzione per cambiare scheda
+function showTab(tabName) {
+    // Bottoni
+    const buttons = document.querySelectorAll('.tab-buttons button');
+    buttons.forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
 
-// STATUS
-async function loadStatus() {
-  const res = await fetch(API + "/status");
-  const data = await res.json();
-  const badge = document.getElementById("status");
+    // Contenuti
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.getElementById(tabName).classList.add('active');
 
-  if (data.bot_online) {
-    badge.textContent = "ONLINE";
-    badge.className = "badge online";
-  } else {
-    badge.textContent = "OFFLINE";
-    badge.className = "badge offline";
-  }
+    // Se si apre Fetch, carica dati
+    if(tabName === 'fetch') loadFetchData();
 }
 
-// GUILDS
-async function loadGuilds() {
-  const res = await fetch(API + "/guilds");
-  const data = await res.json();
-  const select = document.getElementById("guilds");
-  select.innerHTML = "";
-
-  Object.entries(data).forEach(([id, g]) => {
-    const opt = document.createElement("option");
-    opt.value = id;
-    opt.textContent = g.name;
-    select.appendChild(opt);
-  });
+// Fetch dati esterni (GitHub o altro endpoint)
+async function loadFetchData() {
+    const fetchBox = document.getElementById('fetch-box');
+    try {
+        const response = await fetch('https://raw.githubusercontent.com/tuo-username/tuo-repo/main/dati.txt');
+        if (!response.ok) throw new Error('Errore caricamento dati');
+        const data = await response.text();
+        fetchBox.textContent = data;
+    } catch (err) {
+        fetchBox.textContent = 'Errore: ' + err.message;
+    }
 }
-
-// LOGS
-async function loadLogs() {
-  const res = await fetch(API + "/logs");
-  const logs = await res.json();
-  const box = document.getElementById("logs");
-
-  box.innerHTML = logs
-    .slice()
-    .reverse()
-    .map(l =>
-      `<div>${new Date(l.time * 1000).toLocaleTimeString()} — ${l.message}</div>`
-    ).join("");
-}
-
-// FETCH DA ALTRO GITHUB PAGES
-async function loadExternal() {
-  try {
-    const res = await fetch(
-      "https://TUO_USERNAME.github.io/altro-repo/data.json"
-    );
-    const data = await res.json();
-    document.getElementById("externalData").textContent =
-      JSON.stringify(data, null, 2);
-  } catch (e) {
-    document.getElementById("externalData").textContent =
-      "Errore nel fetch esterno";
-  }
-}
-
-// INIT
-loadStatus();
-loadGuilds();
-loadExternal();
-setInterval(loadLogs, 3000);
