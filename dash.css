@@ -1,0 +1,113 @@
+:root {
+  --bg: #0b0e14;
+  --card: #111622;
+  --accent: #7c7cff;
+  --border: #1f2437;
+  --text: #e6e6eb;
+  --muted: #9aa0b4;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(900px 400px at 10% -10%, #1a1f3a, transparent),
+              var(--bg);
+  color: var(--text);
+}
+
+.app {
+  max-width: 1200px;
+  margin: auto;
+  padding: 24px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.online {
+  background: rgba(46, 204, 113, 0.15);
+  color: #2ecc71;
+}
+
+.offline {
+  background: rgba(231, 76, 60, 0.15);
+  color: #e74c3c;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: linear-gradient(180deg, #141a33, var(--card));
+  border-radius: 18px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  background: #0e1325;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.logs {
+  grid-column: span 2;
+}
+
+.log-box {
+  background: #0b0f20;
+  border-radius: 12px;
+  padding: 12px;
+  max-height: 260px;
+  overflow-y: auto;
+  font-size: 13px;
+}
+
+.log-box div {
+  margin-bottom: 6px;
+  color: var(--muted);
+}
+
+pre {
+  background: #0b0f20;
+  border-radius: 12px;
+  padding: 12px;
+  color: var(--accent);
+  overflow-x: auto;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
