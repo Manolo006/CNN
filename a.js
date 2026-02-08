@@ -30,49 +30,54 @@ function formatTime(totalSeconds) {
     return result.trim() || '0s';
 }
 
-// Caricamento dati da Firebase
-fetch("https://discord-live-stats-default-rtdb.firebaseio.com/voicetime.json")
-    .then(res => res.json())
-    .then(data => {
-        const users = [];
 
-        for (const [userId, info] of Object.entries(data)) {
-            users.push({
-                name: info.username || `User ${userId}`,
-                time: info.seconds || 0,
-                avatar: info.avatar || `https://i.pravatar.cc/50?img=${Math.floor(Math.random()*70)}`
+// Funzione per caricare e aggiornare la leaderboard
+function loadLeaderboard() {
+    fetch("https://discord-live-stats-default-rtdb.firebaseio.com/voicetime.json")
+        .then(res => res.json())
+        .then(data => {
+            const users = [];
+
+            for (const [userId, info] of Object.entries(data)) {
+                users.push({
+                    name: info.username || `User ${userId}`,
+                    time: info.seconds || 0,
+                    avatar: info.avatar || `https://i.pravatar.cc/50?img=${Math.floor(Math.random()*70)}`
+                });
+            }
+
+            users.sort((a, b) => b.time - a.time);
+
+            const maxTime = Math.max(...users.map(u => u.time));
+            const leaderboard = document.getElementById("leaderboard");
+            leaderboard.innerHTML = '';
+
+            users.forEach((user, index) => {
+                const percent = (user.time / maxTime) * 100;
+                const offset = 5;
+
+                const row = document.createElement("div");
+                row.classList.add("user-row");
+
+                row.innerHTML = `
+                    <div class="bar-container">
+                        <img src="progress.png" class="bar-image" style="width:${percent}%">
+                        <img src="${user.avatar}" class="avatar-end" style="left:${percent}%">
+                        <span class="time" style="left:${percent + offset}%">${formatTime(user.time)}</span>
+                    </div>
+                    <div class="user-info">
+                        <span>${index + 1}°  ${user.name}</span>
+                    </div>
+                `;
+
+                leaderboard.appendChild(row);
             });
-        }
+        })
+        .catch(err => console.error("Errore caricamento dati Firebase:", err));
+}
 
-        // Ordina per tempo decrescente
-        users.sort((a, b) => b.time - a.time);
+// Avvia subito
+loadLeaderboard();
 
-        const maxTime = Math.max(...users.map(u => u.time));
-        const leaderboard = document.getElementById("leaderboard");
-        leaderboard.innerHTML = '';
-
-        users.forEach((user, index) => {
-        const percent = (user.time / maxTime) * 100;
-        const offset = 5;
-
-const row = document.createElement("div");
-row.classList.add("user-row");
-
-row.innerHTML = `
-    <div class="bar-container">
-        <img src="progress.png" class="bar-image" style="width:${percent}%">
-        <img src="${user.avatar}" class="avatar-end" style="left:${percent}%">
-        <span class="time" style="left:${percent + offset}%">${formatTime(user.time)}</span>
-    </div>
-    <div class="user-info">
-        <span>${index + 1}°  ${user.name}</span>
-    </div>
-`;
-
-leaderboard.appendChild(row);
-
-        });
-    })
-    .catch(err => console.error("Errore caricamento dati Firebase:", err));
-
-
+// Aggiorna ogni 10 secondi (10000ms)
+setInterval(loadLeaderboard, 10000);

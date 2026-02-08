@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Bot</title>
+<link rel="stylesheet" href="dash.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Barra bottoni schede -->
+    <div class="tab-buttons">
+        <button class="active" data-label="DASH" onclick="showTab('dashboard')"></button>
+        <button data-label="FETCH"></button>
+        <button data-label="MORE" onclick="showTab('more')"></button>
+    </div>
+
+    <!-- Schede principali -->
+    <div id="dashboard" class="tab-content active">
+        <div class="dashboard-layout">
+            <div class="pills-vertical">
+                <div class="pill pill-online">
+                    <span class="pill-text">Online</span>
+                    <span class="status-dot status-online" aria-label="online"></span>
+                </div>
+                <div class="pill pill-server">Server</div>
+                <div class="pill pill-utenti">
+                    <input id="member-input" type="text" placeholder="Utente o ID" autocomplete="off">
+                    <button id="member-add" class="pill-add" type="button">+</button>
+                    <div id="member-suggest" class="suggest-box" aria-hidden="true"></div>
+                </div>
+            </div>
+
+            <div class="big-card card-fetch">Fetch</div>
+
+            <div class="big-card card-info">
+                <div class="targets-card">
+                    <div class="targets-title">Targets</div>
+                    <div class="targets-form">
+                        <input id="target-input">
+                        <button id="target-add"></button>
+                        <button id="target-save"></button>
+                    </div>
+                    <ul id="target-list" class="targets-list"></ul>
+                </div>
+            </div>
+
+            <div class="big-card card-log">Log</div>
+        </div>
+    </div>
+
+    <div id="more" class="tab-content grid">
+        <div class="card">Altro contenuto</div>
+        <div class="card">Opzioni aggiuntive</div>
+    </div>
+
+</div>
+
+<script src="dash.js"></script>
+</body>
+</html>
