@@ -22,8 +22,11 @@
         <div class="dashboard-layout">
             <div class="pills-vertical">
                 <div class="pill pill-online">
-                    <span class="pill-text">Online</span>
-                    <span class="status-dot status-online" aria-label="online"></span>
+                    <span class="pill-status">
+                        <span class="pill-text" id="bot-status-text">--</span>
+                        <span class="pill-subtext" id="bot-status-time"></span>
+                    </span>
+                    <span class="status-dot status-unknown" aria-label="unknown"></span>
                 </div>
                 <div class="pill pill-server">Server</div>
                 <div class="pill pill-utenti">

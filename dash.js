@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadBotStatus(statusDot);
         setInterval(() => loadBotStatus(statusDot), 10000);
     }
-
     const suggestBox = document.getElementById('member-suggest');
     const memberInput = document.getElementById('member-input');
     const memberAdd = document.getElementById('member-add');
@@ -164,18 +163,56 @@ async function loadTop5(target) {
 }
 
 const FIREBASE_STATUS_URL = 'https://discord-live-stats-default-rtdb.firebaseio.com/bot/status.json';
+const FIREBASE_HEARTBEAT_URL = 'https://discord-live-stats-default-rtdb.firebaseio.com/bot/heartbeat.json';
+const HEARTBEAT_MAX_AGE_MS = 70 * 1000;
 
 async function loadBotStatus(dotEl) {
     try {
-        const res = await fetch(FIREBASE_STATUS_URL);
-        if (!res.ok) throw new Error('Errore caricamento stato bot');
-        const status = await res.json();
-        const online = Boolean(status);
-        dotEl.classList.toggle('status-online', online);
-        dotEl.classList.toggle('status-offline', !online);
-        dotEl.setAttribute('aria-label', online ? 'online' : 'offline');
+        const [statusRes, hbRes] = await Promise.all([
+            fetch(`${FIREBASE_STATUS_URL}?_=${Date.now()}`, { cache: 'no-store' }),
+            fetch(`${FIREBASE_HEARTBEAT_URL}?_=${Date.now()}`, { cache: 'no-store' })
+        ]);
+        if (!statusRes.ok) throw new Error(`Errore caricamento stato bot (${statusRes.status})`);
+        if (!hbRes.ok) throw new Error(`Errore caricamento heartbeat (${hbRes.status})`);
+        const status = await statusRes.json();
+        const heartbeat = await hbRes.json();
+        const textEl = document.getElementById('bot-status-text');
+        const timeEl = document.getElementById('bot-status-time');
+
+        let state = 'unknown';
+        const hbSec = typeof heartbeat === 'number' ? heartbeat : null;
+        const hbMs = hbSec ? hbSec * 1000 : null;
+        const now = Date.now();
+        const stale = hbMs ? (now - hbMs > HEARTBEAT_MAX_AGE_MS) : true;
+
+        if (status === true && !stale) state = 'online';
+        if (status === false || stale) state = 'offline';
+
+        dotEl.classList.remove('status-online', 'status-offline', 'status-unknown');
+        dotEl.classList.add(
+            state === 'online' ? 'status-online' :
+            state === 'offline' ? 'status-offline' : 'status-unknown'
+        );
+        dotEl.setAttribute('aria-label', state);
+
+        if (textEl) {
+            textEl.textContent =
+                state === 'online' ? 'Online' :
+                state === 'offline' ? 'Offline' : 'Sconosciuto';
+        }
+        if (timeEl) {
+            const hbText = hbMs ? new Date(hbMs).toLocaleTimeString() : '--';
+            timeEl.textContent = `HB: ${hbText}`;
+        }
     } catch (err) {
         console.error(err);
+        const textEl = document.getElementById('bot-status-text');
+        const timeEl = document.getElementById('bot-status-time');
+        dotEl.classList.remove('status-online', 'status-unknown');
+        dotEl.classList.add('status-offline');
+        dotEl.setAttribute('aria-label', 'offline');
+        if (textEl) textEl.textContent = 'Errore';
+        if (timeEl) timeEl.textContent = '';
     }
 }
 
