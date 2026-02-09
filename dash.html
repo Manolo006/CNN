@@ -28,7 +28,17 @@
                     </span>
                     <span class="status-dot status-unknown" aria-label="unknown"></span>
                 </div>
-                <div class="pill pill-server">Server</div>
+                <div class="pill pill-server">
+                    <img id="server-icon" class="server-icon" alt="">
+                    <div class="server-box">
+                        <div class="server-name" id="server-name">Server</div>
+                        <div class="server-meta">
+                            <span id="server-members">--</span>
+                            <span id="server-text">--</span>
+                            <span id="server-voice">--</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="pill pill-utenti">
                     <input id="member-input" type="text" placeholder="Utente o ID" autocomplete="off">
                     <button id="member-add" class="pill-add" type="button">+</button>
@@ -41,16 +51,20 @@
             <div class="big-card card-info">
                 <div class="targets-card">
                     <div class="targets-title">Targets</div>
-                    <div class="targets-form">
-                        <input id="target-input">
-                        <button id="target-add"></button>
-                        <button id="target-save"></button>
-                    </div>
                     <ul id="target-list" class="targets-list"></ul>
                 </div>
             </div>
 
-            <div class="big-card card-log">Log</div>
+            <div class="big-card card-log">
+                <div class="log-card">
+                    <div class="log-title">Controlli</div>
+                    <div class="log-status" id="cmd-status">Stato: --</div>
+                    <div class="log-actions">
+                        <button id="btn-start" class="log-btn">Start</button>
+                        <button id="btn-stop" class="log-btn danger">Stop</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

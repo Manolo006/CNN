@@ -35,12 +35,33 @@ document.addEventListener('DOMContentLoaded', () => {
         setupMemberAutocomplete(memberInput, suggestBox);
     }
 
+    const serverName = document.getElementById('server-name');
+    const serverMembers = document.getElementById('server-members');
+    const serverText = document.getElementById('server-text');
+    const serverVoice = document.getElementById('server-voice');
+    const serverIcon = document.getElementById('server-icon');
+    if (serverName && serverMembers && serverText && serverVoice) {
+        loadServerInfo(serverName, serverMembers, serverText, serverVoice, serverIcon);
+        setInterval(() => loadServerInfo(serverName, serverMembers, serverText, serverVoice, serverIcon), 10000);
+    }
+
     const targetList = document.getElementById('target-list');
-    const targetInput = document.getElementById('target-input');
-    const targetAdd = document.getElementById('target-add');
-    const targetSave = document.getElementById('target-save');
-    if (targetList && targetInput && targetAdd && targetSave) {
-        setupTargets(targetList, targetInput, targetAdd, targetSave, memberInput, memberAdd);
+    if (targetList) {
+        setupTargets(targetList, memberInput, memberAdd);
+    }
+
+    const btnStart = document.getElementById('btn-start');
+    const btnStop = document.getElementById('btn-stop');
+    const cmdStatus = document.getElementById('cmd-status');
+    if (btnStart) {
+        btnStart.addEventListener('click', () => setStartState(true));
+    }
+    if (btnStop) {
+        btnStop.addEventListener('click', () => setStartState(false));
+    }
+    if (cmdStatus) {
+        loadStartState(cmdStatus, btnStart, btnStop);
+        setInterval(() => loadStartState(cmdStatus, btnStart, btnStop), 5000);
     }
 
     const usersInput = document.getElementById('user-input');
@@ -162,6 +183,32 @@ async function loadTop5(target) {
     }
 }
 
+const FIREBASE_GUILD_URL = 'https://discord-live-stats-default-rtdb.firebaseio.com/guild.json';
+
+async function loadServerInfo(nameEl, membersEl, textEl, voiceEl, iconEl) {
+    try {
+        const res = await fetch(FIREBASE_GUILD_URL);
+        if (!res.ok) throw new Error('Errore caricamento guild');
+        const data = await res.json();
+        const g = data?.guild || data;
+        nameEl.textContent = g?.name || 'Server';
+        membersEl.textContent = `👥 ${g?.member_count || '--'}`;
+        textEl.textContent = `💬 ${g?.text_channels || '--'}`;
+        voiceEl.textContent = `🎙️ ${g?.voice_channels || '--'}`;
+        if (iconEl) {
+            if (g?.icon) {
+                iconEl.src = g.icon;
+                iconEl.style.display = '';
+            } else {
+                iconEl.removeAttribute('src');
+                iconEl.style.display = 'none';
+            }
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 const FIREBASE_STATUS_URL = 'https://discord-live-stats-default-rtdb.firebaseio.com/bot/status.json';
 const FIREBASE_HEARTBEAT_URL = 'https://discord-live-stats-default-rtdb.firebaseio.com/bot/heartbeat.json';
 const HEARTBEAT_MAX_AGE_MS = 70 * 1000;
@@ -245,7 +292,7 @@ function escapeHtml(str) {
 
 const FIREBASE_TARGETS_URL = 'https://discord-live-stats-default-rtdb.firebaseio.com/targets.json';
 
-async function setupTargets(listEl, inputEl, addBtn, saveBtn, memberInput, memberAdd) {
+async function setupTargets(listEl, memberInput, memberAdd) {
     const [targetsData, guildData] = await Promise.all([
         fetchJson(FIREBASE_TARGETS_URL),
         fetchJson('https://discord-live-stats-default-rtdb.firebaseio.com/guild/members.json')
@@ -254,6 +301,7 @@ async function setupTargets(listEl, inputEl, addBtn, saveBtn, memberInput, membe
     const members = Array.isArray(guildData) ? guildData : (Array.isArray(guildData?.members) ? guildData.members : []);
     const idToName = new Map(members.map(m => [String(m.id), m.username]));
     const nameToId = new Map(members.map(m => [String(m.username), String(m.id)]));
+    const idToAvatar = new Map(members.map(m => [String(m.id), m.avatar]));
 
     let targets = Array.isArray(targetsData) ? targetsData : (Array.isArray(targetsData?.targets) ? targetsData.targets : []);
     // normalize to ids (string)
@@ -265,9 +313,13 @@ async function setupTargets(listEl, inputEl, addBtn, saveBtn, memberInput, membe
     const render = () => {
         listEl.innerHTML = ids.map((id, i) => {
             const name = idToName.get(String(id)) || String(id);
+            const avatar = idToAvatar.get(String(id));
             return `
             <li class="targets-item">
-                <span>${escapeHtml(name)}</span>
+                <span class="targets-main">
+                    ${avatar ? `<img class="targets-avatar" src="${avatar}" alt="">` : ''}
+                    <span>${escapeHtml(name)}</span>
+                </span>
                 <button class="targets-remove" data-index="${i}" title="Rimuovi">X</button>
             </li>
         `;
@@ -285,11 +337,6 @@ async function setupTargets(listEl, inputEl, addBtn, saveBtn, memberInput, membe
         render();
         saveTargets(ids);
     };
-
-    addBtn.addEventListener('click', () => addName(inputEl));
-    inputEl.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') addName(inputEl);
-    });
     if (memberAdd && memberInput) {
         memberAdd.addEventListener('click', () => addName(memberInput));
         memberInput.addEventListener('keydown', (e) => {
@@ -307,8 +354,6 @@ async function setupTargets(listEl, inputEl, addBtn, saveBtn, memberInput, membe
             saveTargets(ids);
         }
     });
-
-    if (saveBtn) saveBtn.style.display = 'none';
 
     render();
 }
@@ -336,6 +381,41 @@ async function saveTargets(names) {
     }
 }
 
+const FIREBASE_COMMANDS_URL = 'https://discord-live-stats-default-rtdb.firebaseio.com/commands/start.json';
+
+async function setStartState(value) {
+    try {
+        await fetch(FIREBASE_COMMANDS_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(Boolean(value))
+        });
+    } catch (err) {
+        console.error('Errore invio comando:', err);
+    }
+}
+
+async function loadStartState(labelEl, startBtn, stopBtn) {
+    try {
+        const res = await fetch(FIREBASE_COMMANDS_URL);
+        if (!res.ok) throw new Error('Errore stato comandi');
+        const state = await res.json();
+        const active = state === true;
+        labelEl.textContent = active ? 'Stato: Attivo' : 'Stato: Disattivo';
+        if (startBtn) {
+            startBtn.classList.toggle('active', active);
+            startBtn.classList.toggle('inactive', !active);
+        }
+        if (stopBtn) {
+            stopBtn.classList.toggle('active', !active);
+            stopBtn.classList.toggle('inactive', active);
+        }
+    } catch (err) {
+        labelEl.textContent = 'Stato: --';
+        console.error(err);
+    }
+}
+
 async function setupMemberAutocomplete(input, box) {
     let members = [];
     try {
@@ -357,7 +437,10 @@ async function setupMemberAutocomplete(input, box) {
         if (!items.length) return close();
         box.innerHTML = items.map((m, i) => `
             <div class="suggest-item ${i === activeIndex ? 'active' : ''}" data-value="${m.username}">
-                <span class="suggest-name">${m.username}</span>
+                <span class="suggest-main">
+                    ${m.avatar ? `<img class="suggest-avatar" src="${m.avatar}" alt="">` : ''}
+                    <span class="suggest-name">${m.username}</span>
+                </span>
                 <span class="suggest-id">${m.id}</span>
             </div>
         `).join('');
