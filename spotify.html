@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spotify Now Playing</title>
+  <style>
+    :root {
+      --bg: #0f0f12;
+      --muted: #b3b3b3;
+      --accent: #1db954;
+      --bar: #1e1e24;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: transparent;
+      font-family: "Inter", Arial, sans-serif;
+      color: white;
+    }
+    .widget {
+      width: 420px;
+      height: 110px;
+      background: var(--bg);
+      border-radius: 14px;
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      align-items: center;
+    }
+    .cover {
+      width: 86px;
+      height: 86px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #1a1a1f;
+    }
+    .info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .song {
+      font-size: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .artist {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .bar {
+      height: 6px;
+      background: var(--bar);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .progress {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.2s linear;
+    }
+    .status {
+      width: 420px;
+      padding: 8px 10px;
+      font-size: 13px;
+      color: var(--muted);
+      background: rgba(15, 15, 18, 0.7);
+      border-radius: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="widget" class="widget" style="display:none">
+    <img id="cover" class="cover" alt="" />
+    <div class="info">
+      <div id="song" class="song"></div>
+      <div id="artist" class="artist"></div>
+      <div class="bar">
+        <div id="progress" class="progress"></div>
+      </div>
+    </div>
+  </div>
+  <div id="status" class="status"></div>
+
+  <script>
+    const DISCORD_ID = "590163355839496192";
+    const widget = document.getElementById("widget");
+    const statusEl = document.getElementById("status");
+    const cover = document.getElementById("cover");
+    const song = document.getElementById("song");
+    const artist = document.getElementById("artist");
+    const progress = document.getElementById("progress");
+    const timeEl = document.createElement("div");
+    timeEl.style.fontSize = "12px";
+    timeEl.style.color = "var(--muted)";
+    timeEl.style.marginTop = "6px";
+    document.querySelector(".info").appendChild(timeEl);
+
+    let currentStart = 0;
+    let currentEnd = 0;
+    let hasTimestamps = false;
+
+    function showStatus(text) {
+      widget.style.display = "none";
+      statusEl.textContent = text;
+      statusEl.style.display = "block";
+    }
+
+    function showWidget() {
+      statusEl.style.display = "none";
+      widget.style.display = "flex";
+    }
+
+    function render(data) {
+      if (!data || !data.listening_to_spotify) {
+        showStatus("Non in ascolto su Spotify.");
+        return;
+      }
+
+      showWidget();
+      cover.src = data.spotify.album_art_url || "";
+      song.textContent = data.spotify.song || "";
+      artist.textContent = data.spotify.artist || "";
+
+      currentStart = Number(data.spotify.timestamps && data.spotify.timestamps.start) || 0;
+      currentEnd = Number(data.spotify.timestamps && data.spotify.timestamps.end) || 0;
+      hasTimestamps = Number.isFinite(currentStart) && Number.isFinite(currentEnd) && currentEnd > currentStart;
+      tick();
+    }
+
+    function fmt(ms) {
+      if (!ms || ms < 0) return "0:00";
+      const total = Math.floor(ms / 1000);
+      const m = Math.floor(total / 60);
+      const s = total % 60;
+      return m + ":" + String(s).padStart(2, "0");
+    }
+
+    function tick() {
+      if (!hasTimestamps) {
+        progress.style.width = "0%";
+        timeEl.textContent = "?:?? / ?:??";
+        return;
+      }
+      const now = Date.now();
+      const percent = ((now - currentStart) / (currentEnd - currentStart)) * 100;
+      progress.style.width = Math.max(0, Math.min(100, percent)) + "%";
+      const elapsed = now - currentStart;
+      const duration = currentEnd - currentStart;
+      timeEl.textContent = fmt(elapsed) + " / " + fmt(duration);
+    }
+
+    function startTicker() {
+      function loop() {
+        tick();
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+    }
+
+    function connect() {
+      showStatus("Connessione a Lanyard...");
+      const ws = new WebSocket("wss://api.lanyard.rest/socket");
+      let heartbeatTimer = null;
+
+      ws.onopen = () => {
+        ws.send(JSON.stringify({
+          op: 2,
+          d: { subscribe_to_id: DISCORD_ID }
+        }));
+      };
+
+      ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+
+        if (msg.op === 1 && msg.d && msg.d.heartbeat_interval) {
+          clearInterval(heartbeatTimer);
+          heartbeatTimer = setInterval(() => {
+            ws.send(JSON.stringify({ op: 3 }));
+          }, msg.d.heartbeat_interval);
+        }
+
+        if (msg.op === 0 && msg.t === "INIT_STATE") {
+          const data = msg.d && msg.d[DISCORD_ID];
+          render(data);
+        }
+
+        if (msg.op === 0 && msg.t === "PRESENCE_UPDATE") {
+          render(msg.d);
+        }
+      };
+
+      ws.onerror = (err) => {
+        console.error("Lanyard websocket error:", err);
+        showStatus("Errore websocket Lanyard (controlla la Console).");
+      };
+
+      ws.onclose = () => {
+        clearInterval(heartbeatTimer);
+        showStatus("Lanyard disconnesso. Riprovo...");
+        setTimeout(connect, 2000);
+      };
+    }
+
+    connect();
+    startTicker();
+  </script>
+</body>
+</html>
