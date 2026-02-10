@@ -79,11 +79,24 @@
       border-radius: 10px;
       display: none;
     }
+    .play-icon {
+      width: 0;
+      height: 0;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 10px solid white;
+      margin-left: 2px;
+    }
   </style>
 </head>
 <body>
   <div id="widget" class="widget" style="display:none">
-    <img id="cover" class="cover" alt="" />
+    <div style="position:relative;width:86px;height:86px">
+      <img id="cover" class="cover" alt="" />
+      <div id="pauseBadge" style="display:none;position:absolute;right:6px;bottom:6px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center">
+        <span class="play-icon"></span>
+      </div>
+    </div>
     <div class="info">
       <div id="song" class="song"></div>
       <div id="artist" class="artist"></div>
@@ -102,6 +115,7 @@
     const song = document.getElementById("song");
     const artist = document.getElementById("artist");
     const progress = document.getElementById("progress");
+    const pauseBadge = document.getElementById("pauseBadge");
     const timeEl = document.createElement("div");
     timeEl.style.fontSize = "12px";
     timeEl.style.color = "var(--muted)";
@@ -111,6 +125,11 @@
     let currentStart = 0;
     let currentEnd = 0;
     let hasTimestamps = false;
+    let lastSpotify = null;
+    let lastElapsed = 0;
+    let lastDuration = 0;
+    let lastPercent = 0;
+    let isPaused = false;
 
     function showStatus(text) {
       widget.style.display = "none";
@@ -124,20 +143,63 @@
     }
 
     function render(data) {
-      if (!data || !data.listening_to_spotify) {
-        showStatus("Non in ascolto su Spotify.");
+      if (!data) {
+        showStatus("Nessun dato presenza.");
         return;
       }
 
-      showWidget();
-      cover.src = data.spotify.album_art_url || "";
-      song.textContent = data.spotify.song || "";
-      artist.textContent = data.spotify.artist || "";
+      if (data.spotify) {
+        lastSpotify = data.spotify;
+        showWidget();
+        cover.src = data.spotify.album_art_url || "";
+        song.textContent = data.spotify.song || "";
+        artist.textContent = data.spotify.artist || "";
 
-      currentStart = Number(data.spotify.timestamps && data.spotify.timestamps.start) || 0;
-      currentEnd = Number(data.spotify.timestamps && data.spotify.timestamps.end) || 0;
-      hasTimestamps = Number.isFinite(currentStart) && Number.isFinite(currentEnd) && currentEnd > currentStart;
-      tick();
+        currentStart = Number(data.spotify.timestamps && data.spotify.timestamps.start) || 0;
+        currentEnd = Number(data.spotify.timestamps && data.spotify.timestamps.end) || 0;
+        hasTimestamps = Number.isFinite(currentStart) && Number.isFinite(currentEnd) && currentEnd > currentStart;
+
+        if (data.listening_to_spotify) {
+          isPaused = false;
+          pauseBadge.style.display = "none";
+          tick();
+          return;
+        }
+
+        isPaused = true;
+        pauseBadge.style.display = "flex";
+        if (hasTimestamps) {
+          const now = Date.now();
+          const elapsed = Math.max(0, Math.min(currentEnd - currentStart, now - currentStart));
+          const duration = currentEnd - currentStart;
+          lastElapsed = elapsed;
+          lastDuration = duration;
+          lastPercent = (elapsed / duration) * 100;
+          progress.style.width = Math.max(0, Math.min(100, lastPercent)) + "%";
+          timeEl.textContent = fmt(elapsed) + " / " + fmt(duration);
+        } else {
+          progress.style.width = "0%";
+        }
+        return;
+      }
+
+      if (lastSpotify) {
+        showWidget();
+        cover.src = lastSpotify.album_art_url || "";
+        song.textContent = lastSpotify.song || "";
+        artist.textContent = lastSpotify.artist || "";
+        isPaused = true;
+        pauseBadge.style.display = "flex";
+        if (lastDuration > 0) {
+          progress.style.width = Math.max(0, Math.min(100, lastPercent)) + "%";
+          timeEl.textContent = fmt(lastElapsed) + " / " + fmt(lastDuration);
+        } else {
+          progress.style.width = "0%";
+        }
+        return;
+      }
+
+      showStatus("Spotify non connesso.");
     }
 
     function fmt(ms) {
@@ -149,6 +211,7 @@
     }
 
     function tick() {
+      if (isPaused) return;
       if (!hasTimestamps) {
         progress.style.width = "0%";
         timeEl.textContent = "?:?? / ?:??";
@@ -156,9 +219,13 @@
       }
       const now = Date.now();
       const percent = ((now - currentStart) / (currentEnd - currentStart)) * 100;
-      progress.style.width = Math.max(0, Math.min(100, percent)) + "%";
+      const clamped = Math.max(0, Math.min(100, percent));
+      progress.style.width = clamped + "%";
       const elapsed = now - currentStart;
       const duration = currentEnd - currentStart;
+      lastElapsed = elapsed;
+      lastDuration = duration;
+      lastPercent = clamped;
       timeEl.textContent = fmt(elapsed) + " / " + fmt(duration);
     }
 
