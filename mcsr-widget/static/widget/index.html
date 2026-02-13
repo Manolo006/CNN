@@ -7,14 +7,43 @@
 </head>
 <body>
   <div id="widget" class="dark">
-    <div class="left">
-      <div id="username">Loading...</div>
-      <div id="rank">-</div>
+    <div class="left" id="leftCol">
+      <img id="head" alt="Minecraft head">
+      <div class="identity">
+        <div id="username">Loading...</div>
+        <div class="rank-line" id="rankLine">
+          <img id="rankIcon" class="rank-icon" alt="Rank icon">
+          <span id="rankName">Coal</span>
+          <span id="rank">#-</span>
+        </div>
+      </div>
     </div>
 
-    <div class="right">
-      <div id="elo">0</div>
-      <div id="wl">0W / 0L</div>
+    <div class="right stats" id="rightCol">
+      <div class="stat" id="statElo">
+        <span class="label">ELO</span>
+        <span id="elo">0</span>
+      </div>
+      <div class="stat" id="statSessionElo">
+        <span class="label">Session ELO</span>
+        <span id="sessionElo">+0</span>
+      </div>
+      <div class="stat" id="statWL">
+        <span class="label">Session W/L</span>
+        <span id="wl">0W / 0L</span>
+      </div>
+      <div class="stat" id="statWinrate">
+        <span class="label">Session Winrate</span>
+        <span id="winrate">0%</span>
+      </div>
+      <div class="stat" id="statAvgTime">
+        <span class="label">Avg Completion</span>
+        <span id="avgTime">--:--</span>
+      </div>
+      <div class="stat" id="statPersonalBest">
+        <span class="label">Personal Best</span>
+        <span id="personalBest">--:--</span>
+      </div>
     </div>
   </div>
 

@@ -28,7 +28,51 @@
 
     <div class="control">
       <label>Primary Color</label>
-      <input type="color" id="primary">
+      <div class="color-card">
+        <input type="color" id="primary" class="primary-native" aria-label="Choose primary color">
+        <button type="button" id="primaryTrigger" class="primary-trigger">
+          <span id="primarySwatch" class="primary-swatch"></span>
+          <span class="primary-trigger-text">Open color picker</span>
+        </button>
+        <div class="custom-picker" id="customPicker">
+          <div class="picker-spectrum" id="pickerSpectrum" aria-label="Color spectrum">
+            <span class="picker-knob" id="pickerKnob"></span>
+          </div>
+          <label class="picker-hue-line">
+            <span>Hue</span>
+            <input id="pickerHue" type="range" min="0" max="360" step="1" value="270">
+          </label>
+          <label class="picker-hex-line">
+            <span>HEX</span>
+            <input id="primaryHexInput" type="text" maxlength="7" value="#7C3AED">
+          </label>
+        </div>
+        <div class="color-meta">
+          <div id="primaryHex">#7C3AED</div>
+          <div class="color-hint">Drag in the panel or choose a preset</div>
+        </div>
+        <div class="preset-row" id="presetRow">
+          <button type="button" class="preset" data-color="#06B6D4" aria-label="Preset cyan"></button>
+          <button type="button" class="preset" data-color="#10B981" aria-label="Preset emerald"></button>
+          <button type="button" class="preset" data-color="#F59E0B" aria-label="Preset amber"></button>
+          <button type="button" class="preset" data-color="#EF4444" aria-label="Preset red"></button>
+          <button type="button" class="preset" data-color="#7C3AED" aria-label="Preset violet"></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="control toggles-control">
+      <label>Extra stats</label>
+      <label class="checkline"><input type="checkbox" id="showName"> Show player name</label>
+      <label class="checkline"><input type="checkbox" id="showRank"> Show rank</label>
+      <label class="checkline"><input type="checkbox" id="showElo"> Show elo</label>
+      <label class="checkline"><input type="checkbox" id="head"> Show player head</label>
+      <label class="checkline"><input type="checkbox" id="sessionElo"> Show session elo</label>
+      <label class="checkline"><input type="checkbox" id="avgTime"> Show average completion time</label>
+      <label class="checkline"><input type="checkbox" id="personalBest"> Show personal best</label>
+      <label class="checkline"><input type="checkbox" id="sessionWinrate"> Show session winrate</label>
+      <label class="checkline"><input type="checkbox" id="sessionWL"> Show session W/L</label>
+      <label class="checkline"><input type="checkbox" id="rankLogo"> Show rank logo</label>
     </div>
 
     <button id="saveBtn" type="button">Save</button>
