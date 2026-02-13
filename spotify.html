@@ -28,12 +28,41 @@
       padding: 12px;
       align-items: center;
     }
+    .cover-wrap {
+      position: relative;
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #1a1a1f 0 10px, #101014 10px 100%);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.06);
+    }
+    .cover-wrap::after {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #0b0b0d;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      pointer-events: none;
+    }
     .cover {
       width: 86px;
       height: 86px;
-      border-radius: 10px;
+      border-radius: 50%;
       object-fit: cover;
       background: #1a1a1f;
+      animation: spinDisc 4s linear infinite;
+      animation-play-state: paused;
+      transform-origin: center;
+    }
+    .cover.spinning {
+      animation-play-state: running;
     }
     .info {
       flex: 1;
@@ -87,11 +116,15 @@
       border-left: 10px solid white;
       margin-left: 2px;
     }
+    @keyframes spinDisc {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
   <div id="widget" class="widget" style="display:none">
-    <div style="position:relative;width:86px;height:86px">
+    <div class="cover-wrap">
       <img id="cover" class="cover" alt="" />
       <div id="pauseBadge" style="display:none;position:absolute;right:6px;bottom:6px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center">
         <span class="play-icon"></span>
@@ -142,6 +175,12 @@
       widget.style.display = "flex";
     }
 
+    function setPlaybackUI(paused) {
+      isPaused = paused;
+      pauseBadge.style.display = paused ? "flex" : "none";
+      cover.classList.toggle("spinning", !paused);
+    }
+
     function render(data) {
       if (!data) {
         showStatus("Nessun dato presenza.");
@@ -160,14 +199,12 @@
         hasTimestamps = Number.isFinite(currentStart) && Number.isFinite(currentEnd) && currentEnd > currentStart;
 
         if (data.listening_to_spotify) {
-          isPaused = false;
-          pauseBadge.style.display = "none";
+          setPlaybackUI(false);
           tick();
           return;
         }
 
-        isPaused = true;
-        pauseBadge.style.display = "flex";
+        setPlaybackUI(true);
         if (hasTimestamps) {
           const now = Date.now();
           const elapsed = Math.max(0, Math.min(currentEnd - currentStart, now - currentStart));
@@ -188,8 +225,7 @@
         cover.src = lastSpotify.album_art_url || "";
         song.textContent = lastSpotify.song || "";
         artist.textContent = lastSpotify.artist || "";
-        isPaused = true;
-        pauseBadge.style.display = "flex";
+        setPlaybackUI(true);
         if (lastDuration > 0) {
           progress.style.width = Math.max(0, Math.min(100, lastPercent)) + "%";
           timeEl.textContent = fmt(lastElapsed) + " / " + fmt(lastDuration);
@@ -200,6 +236,7 @@
       }
 
       showStatus("Spotify non connesso.");
+      setPlaybackUI(true);
     }
 
     function fmt(ms) {
