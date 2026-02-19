@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: py script
 
 # Controls when the workflow will run
 on:
@@ -27,10 +27,8 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo Hello, world!
+        run: pyhton .github/workflows/main.py
 
       # Runs a set of commands using the runners shell
       - name: Run a python script
         run: pyhton .github/workflows/main.py
-          echo Add other actions to build,
-          echo test, and deploy your project.
