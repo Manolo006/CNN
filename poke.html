@@ -24,7 +24,6 @@ function changeColumns() {
 function addCard() {
   const name = document.getElementById('name').value;
   const number = document.getElementById('number').value;
-  const set = document.getElementById('set').value;
   const price = document.getElementById('price').value;
 
   if (!name || !number) return;
@@ -38,7 +37,6 @@ function addCard() {
   // reset input
   document.getElementById('name').value = '';
   document.getElementById('number').value = '';
-  document.getElementById('set').value = '';
   document.getElementById('price').value = '';
 }
 
@@ -53,7 +51,6 @@ function renderCard(data) {
     <img src="${imgUrl}">
     <h3>${data.name}</h3>
     <p>#${data.number}</p>
-    <p>${data.set}</p>
     <p>€ ${data.price}</p>
   `;
 
