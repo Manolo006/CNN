@@ -183,18 +183,8 @@
     </aside>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getDatabase, ref, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
-
-    const firebaseConfig = {
-      databaseURL: "https://pokeparadosso-default-rtdb.europe-west1.firebasedatabase.app"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const cardsRef = ref(db, "cards");
-
+  <script>
+    const FIREBASE_DB_URL = "https://pokeparadosso-default-rtdb.europe-west1.firebasedatabase.app";
     const STORAGE_CART_KEY = "poke_cart_v2";
 
     let cards = [];
@@ -212,8 +202,10 @@
     init();
 
     function init() {
-      subscribeCardsRealtime();
+      fetchCards();
       renderCart();
+      // refresh automatico ogni 8 secondi (simile realtime)
+      setInterval(fetchCards, 8000);
     }
 
     function setStatus(text, isError = false) {
@@ -221,11 +213,37 @@
       statusEl.style.color = isError ? "#fca5a5" : "#cbd5e1";
     }
 
-    function subscribeCardsRealtime() {
-      setStatus("Connessione realtime a Firebase...");
+    function loadCartFromStorage() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(STORAGE_CART_KEY));
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
 
-      onValue(cardsRef, (snapshot) => {
-        const data = snapshot.val();
+    function saveCartToStorage() {
+      localStorage.setItem(STORAGE_CART_KEY, JSON.stringify(cart));
+    }
+
+    async function firebaseRequest(path, options = {}) {
+      const url = `${FIREBASE_DB_URL}${path}`;
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+        const body = await response.text();
+        throw new Error(`HTTP ${response.status} ${response.statusText} - ${body || "nessun dettaglio"}`);
+      }
+
+      if (response.status === 204) return null;
+      return response.json();
+    }
+
+    async function fetchCards() {
+      setStatus("Carico carte da Firebase...");
+
+      try {
+        const data = await firebaseRequest(`/cards.json?t=${Date.now()}`, { cache: "no-store" });
 
         cards = data
           ? Object.entries(data).map(([id, value]) => ({
@@ -238,11 +256,11 @@
 
         cards.sort((a, b) => Number(a.number) - Number(b.number));
         renderCards();
-        setStatus(`Carte sincronizzate: ${cards.length}`);
-      }, (error) => {
-        console.error(error);
-        setStatus("Errore connessione Firebase. Controlla regole/databaseURL.", true);
-      });
+        setStatus(`Carte caricate: ${cards.length}`);
+      } catch (err) {
+        console.error(err);
+        setStatus(`Errore Firebase: ${err.message}`, true);
+      }
     }
 
     async function onSubmitCard(event) {
@@ -260,12 +278,18 @@
       setStatus("Salvataggio carta su Firebase...");
 
       try {
-        await push(cardsRef, { name, number, price });
+        await firebaseRequest(`/cards.json`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, number, price })
+        });
+
         event.target.reset();
+        await fetchCards();
         setStatus("Carta aggiunta con successo.");
       } catch (err) {
         console.error(err);
-        setStatus("Errore durante il salvataggio su Firebase.", true);
+        setStatus(`Salvataggio fallito: ${err.message}`, true);
       }
     }
 
@@ -276,17 +300,18 @@
       setStatus("Eliminazione carta...");
 
       try {
-        await remove(ref(db, `cards/${cardId}`));
+        await firebaseRequest(`/cards/${cardId}.json`, { method: "DELETE" });
 
         // rimuove anche dal carrello eventuali riferimenti
         cart = cart.filter(item => item.id !== cardId);
         saveCartToStorage();
         renderCart();
 
+        await fetchCards();
         setStatus("Carta eliminata.");
       } catch (err) {
         console.error(err);
-        setStatus("Errore durante l'eliminazione.", true);
+        setStatus(`Eliminazione fallita: ${err.message}`, true);
       }
     }
 
