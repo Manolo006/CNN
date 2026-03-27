@@ -1,7 +1,111 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Grid Mobile</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
+}
+
+/* PANEL TOP */
+.panel {
+  position: sticky;
+  top: 0;
+  background: #1e293b;
+  padding: 12px;
+  border-left: 3px solid #3b82f6;
+  border-right: 3px solid #3b82f6;
+  z-index: 10;
+}
+
+/* INPUT COMPATTI */
+.panel input, .panel select {
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+}
+
+/* BUTTON */
+.panel button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #3b82f6;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* GRID */
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+/* CARD */
+.card {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 8px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.card img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.card h3 {
+  font-size: 13px;
+  margin: 6px 0 2px;
+}
+
+.card p {
+  font-size: 11px;
+  margin: 1px 0;
+  opacity: 0.8;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PANEL SOPRA -->
+<div class="panel">
+  <select id="columns" onchange="changeColumns()">
+    <option value="1">1 colonna</option>
+    <option value="2" selected>2 colonne</option>
+    <option value="3">3 colonne</option>
+    <option value="4">4 colonne</option>
+  </select>
+
+  <input type="text" id="name" placeholder="Nome Pokémon">
+  <input type="number" id="number" placeholder="Numero">
+  <input type="text" id="price" placeholder="Prezzo">
+
+  <button onclick="addCard()">Aggiungi</button>
+</div>
+
+<!-- GRID -->
+<div class="container" id="grid"></div>
+
 <script>
 let cards = JSON.parse(localStorage.getItem("cards")) || [];
 
-/* CARICA DATI ALL'AVVIO */
+/* LOAD */
 window.onload = () => {
   loadCards();
 
@@ -12,15 +116,14 @@ window.onload = () => {
   }
 };
 
-/* CAMBIO COLONNE + SALVATAGGIO */
+/* COLONNE */
 function changeColumns() {
   const cols = document.getElementById('columns').value;
   document.getElementById('grid').style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-
   localStorage.setItem("columns", cols);
 }
 
-/* AGGIUNTA CARD */
+/* ADD */
 function addCard() {
   const name = document.getElementById('name').value;
   const number = document.getElementById('number').value;
@@ -28,19 +131,18 @@ function addCard() {
 
   if (!name || !number) return;
 
-  const newCard = { name, number, set, price };
+  const newCard = { name, number, price };
   cards.push(newCard);
 
   saveCards();
   renderCard(newCard);
 
-  // reset input
   document.getElementById('name').value = '';
   document.getElementById('number').value = '';
   document.getElementById('price').value = '';
 }
 
-/* RENDER SINGOLA CARD */
+/* RENDER */
 function renderCard(data) {
   const imgUrl = `https://dz3we2x72f7ol.cloudfront.net/expansions/paradox-rift/it-it/SV04_IT_${data.number}-2x.png`;
 
@@ -57,14 +159,17 @@ function renderCard(data) {
   document.getElementById('grid').appendChild(card);
 }
 
-/* CARICA TUTTE LE CARD */
+/* LOAD ALL */
 function loadCards() {
   document.getElementById('grid').innerHTML = "";
   cards.forEach(renderCard);
 }
 
-/* SALVA IN LOCALSTORAGE */
+/* SAVE */
 function saveCards() {
   localStorage.setItem("cards", JSON.stringify(cards));
 }
 </script>
+
+</body>
+</html>
