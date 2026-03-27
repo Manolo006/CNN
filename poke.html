@@ -1,95 +1,119 @@
-<!DOCTYPE html><html lang="it">
+<!DOCTYPE html>
+<html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Card Grid</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-    }.container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  padding: 20px;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Grid Mobile</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
 }
 
+/* GRID DINAMICO */
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* default */
+  gap: 10px;
+  padding: 10px;
+}
+
+/* CARD COMPATTE */
 .card {
   background: #1e293b;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: transform 0.2s;
-}
-
-.card:hover {
-  transform: scale(1.03);
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  text-align: center;
 }
 
 .card img {
   width: 100%;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .card h3 {
-  margin: 10px 0 5px;
+  font-size: 13px;
+  margin: 6px 0 2px;
 }
 
+.card p {
+  font-size: 11px;
+  margin: 1px 0;
+  opacity: 0.8;
+}
+
+/* PANEL */
 .panel {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   background: #1e293b;
-  border-radius: 16px;
-  padding: 16px;
-  width: 250px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  padding: 12px;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
 }
 
-.panel input {
+/* INPUT */
+.panel input, .panel select {
   width: 100%;
-  margin-bottom: 8px;
-  padding: 8px;
+  margin-bottom: 6px;
+  padding: 10px;
   border-radius: 8px;
   border: none;
+  font-size: 14px;
 }
 
+/* BUTTON */
 .panel button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border: none;
   border-radius: 8px;
   background: #3b82f6;
   color: white;
-  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
 }
 
-@media(max-width: 900px) {
-  .container {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* SPAZIO PER SCROLL */
+.spacer {
+  height: 220px;
 }
-
-@media(max-width: 500px) {
-  .container {
-    grid-template-columns: 1fr;
-  }
-}
-
-  </style>
+</style>
 </head>
-<body><div class="container" id="grid"></div><div class="panel">
+
+<body>
+
+<div class="container" id="grid"></div>
+<div class="spacer"></div>
+
+<div class="panel">
+  <select id="columns" onchange="changeColumns()">
+    <option value="1">1 colonna</option>
+    <option value="2" selected>2 colonne</option>
+    <option value="3">3 colonne</option>
+    <option value="4">4 colonne</option>
+  </select>
+
   <input type="text" id="name" placeholder="Nome Pokémon">
   <input type="number" id="number" placeholder="Numero">
   <input type="text" id="set" placeholder="Set">
   <input type="text" id="price" placeholder="Prezzo">
+
   <button onclick="addCard()">Aggiungi</button>
-</div><script>
+</div>
+
+<script>
+function changeColumns() {
+  const cols = document.getElementById('columns').value;
+  document.getElementById('grid').style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+}
+
 function addCard() {
   const name = document.getElementById('name').value;
   const number = document.getElementById('number').value;
@@ -104,7 +128,7 @@ function addCard() {
   card.className = 'card';
 
   card.innerHTML = `
-    <img src="${imgUrl}" alt="${name}">
+    <img src="${imgUrl}">
     <h3>${name}</h3>
     <p>#${number}</p>
     <p>${set}</p>
@@ -113,10 +137,13 @@ function addCard() {
 
   document.getElementById('grid').appendChild(card);
 
+  // reset input
   document.getElementById('name').value = '';
   document.getElementById('number').value = '';
   document.getElementById('set').value = '';
   document.getElementById('price').value = '';
 }
-</script></body>
+</script>
+
+</body>
 </html>
