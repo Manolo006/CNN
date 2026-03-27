@@ -156,9 +156,12 @@ body {
 </div>
 
 <script>
-// CARDS & CART
-let cards = JSON.parse(localStorage.getItem("cards")) || [];
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// CARDS & CART - caricamento sicuro
+let cards = [];
+let cart = [];
+
+try { cards = JSON.parse(localStorage.getItem("cards")) || []; } catch(e){ cards = []; }
+try { cart = JSON.parse(localStorage.getItem("cart")) || []; } catch(e){ cart = []; }
 
 // INIT
 window.onload = () => {
