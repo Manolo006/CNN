@@ -83,7 +83,7 @@
 
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
     }
 
@@ -103,9 +103,45 @@
 
     .card-title { font-weight: 700; font-size: 14px; }
     .card-sub { font-size: 12px; opacity: .9; margin-top: 2px; }
+    .card-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 2px;
+    }
+    .card-live-price {
+      font-size: 12px;
+      font-weight: 700;
+      min-height: 16px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .card-price-edit {
+      margin-top: 2px;
+      font-size: 12px;
+      opacity: .95;
+      cursor: pointer;
+      user-select: none;
+      display: inline-block;
+    }
+    .card-price-edit:hover { color: #7dd3fc; }
     .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
 
     .btn-info { background: #0ea5e9; }
+
+    .columns-control {
+      background: #0b1220;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .columns-control input[type="range"] {
+      width: 100%;
+      margin-top: 8px;
+    }
 
     .cart-summary {
       background: #0b1220;
@@ -150,32 +186,6 @@
       font-size: 12px;
     }
 
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(2, 6, 23, 0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 20;
-    }
-
-    .modal.open { display: flex; }
-
-    .modal-content {
-      width: min(560px, 100%);
-      background: var(--panel);
-      border-radius: 12px;
-      padding: 14px;
-      border: 1px solid #475569;
-    }
-
-    .modal-title {
-      margin: 0 0 10px 0;
-      font-size: 18px;
-    }
-
     .info-box {
       background: #0b1220;
       border-radius: 10px;
@@ -187,10 +197,22 @@
     .delta.up { color: #34d399; }
     .delta.down { color: #f87171; }
     .delta.neutral { color: #cbd5e1; }
+    .pnl-positive { color: #34d399; font-weight: 700; }
+    .pnl-negative { color: #f87171; font-weight: 700; }
+    .pnl-neutral { color: #cbd5e1; font-weight: 700; }
 
     @media (max-width: 980px) {
       .layout { grid-template-columns: 1fr; }
       .form-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .layout { padding: 8px; gap: 8px; }
+      .left-column,
+      .right-column { padding: 10px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .card-actions button { padding: 8px; font-size: 12px; }
+      .card-meta-row { gap: 6px; }
     }
   </style>
 </head>
@@ -206,16 +228,27 @@
         <button type="submit" class="btn-primary">Aggiungi</button>
       </form>
 
+      <div class="columns-control">
+        Colonne griglia: <strong><span id="colsValue">4</span></strong>
+        <input id="colsSlider" type="range" min="1" max="10" value="4">
+      </div>
+
       <p class="status" id="status">Caricamento dati...</p>
       <div id="cardsGrid" class="cards-grid"></div>
     </section>
 
     <aside class="right-column">
+      <h2>Analisi Prezzo</h2>
+      <div id="priceInsight" class="info-box">Clicca sulla foto di una carta per vedere confronto prezzo registrato vs Cardmarket.</div>
+      <a id="priceInsightLink" href="#" target="_blank" rel="noopener noreferrer" style="display:none; color:#7dd3fc; margin-bottom:12px;">Apri pagina Cardmarket</a>
+
       <h2>Carrello</h2>
       <div class="cart-summary">
         <div>Articoli: <strong id="cartItems">0</strong></div>
         <div>Totale: <strong>€ <span id="cartTotal">0.00</span></strong></div>
       </div>
+
+      <div id="cartPnlSummary" class="info-box">P/L carrello: in attesa dati...</div>
 
       <div id="cartList" class="cart-list"></div>
 
@@ -223,40 +256,39 @@
     </aside>
   </div>
 
-  <div id="detailsModal" class="modal" aria-hidden="true">
-    <div class="modal-content">
-      <h3 id="detailsTitle" class="modal-title">Dettagli carta</h3>
-      <div id="detailsBody" class="info-box">Caricamento...</div>
-      <button id="closeDetailsBtn" class="btn-primary" style="width:100%; margin-top:10px;">Chiudi</button>
-    </div>
-  </div>
-
   <script>
     const FIREBASE_DB_URL = "https://pokeparadosso-default-rtdb.europe-west1.firebasedatabase.app";
     const CART_PATH = "/cart.json";
+    const DEFAULT_SET_PTCGO = "PAR";
+    const DEFAULT_SET_ID = "sv4";
+    const MARKET_CACHE_TTL_MS = 5 * 60 * 1000;
 
     let cards = [];
     let cart = [];
+    let pnlComputeToken = 0;
+    let cardsPriceComputeToken = 0;
+    const marketPriceCacheByKey = new Map();
+    let cartItemPnlElements = new Map();
 
     const cardsGrid = document.getElementById("cardsGrid");
     const cartList = document.getElementById("cartList");
     const cartItemsEl = document.getElementById("cartItems");
     const cartTotalEl = document.getElementById("cartTotal");
+    const cartPnlSummaryEl = document.getElementById("cartPnlSummary");
     const statusEl = document.getElementById("status");
-    const detailsModal = document.getElementById("detailsModal");
-    const detailsTitle = document.getElementById("detailsTitle");
-    const detailsBody = document.getElementById("detailsBody");
+    const priceInsightEl = document.getElementById("priceInsight");
+    const priceInsightLinkEl = document.getElementById("priceInsightLink");
+    const colsSliderEl = document.getElementById("colsSlider");
+    const colsValueEl = document.getElementById("colsValue");
 
     document.getElementById("cardForm").addEventListener("submit", onSubmitCard);
     document.getElementById("clearCartBtn").addEventListener("click", clearCart);
-    document.getElementById("closeDetailsBtn").addEventListener("click", closeDetails);
-    detailsModal.addEventListener("click", (e) => {
-      if (e.target === detailsModal) closeDetails();
-    });
+    colsSliderEl.addEventListener("input", applyColumnsFromSlider);
 
     init();
 
     function init() {
+      applyColumnsFromSlider();
       fetchCards();
       fetchCart();
       // refresh automatico ogni 8 secondi (simile realtime)
@@ -264,6 +296,12 @@
         fetchCards();
         fetchCart();
       }, 8000);
+    }
+
+    function applyColumnsFromSlider() {
+      const cols = Math.max(1, Math.min(10, Number(colsSliderEl.value) || 4));
+      colsValueEl.textContent = String(cols);
+      cardsGrid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
     }
 
     function setStatus(text, isError = false) {
@@ -285,6 +323,7 @@
           .map(item => ({
             id: item.id,
             name: item.name,
+            number: item.number || "",
             price: Number(item.price) || 0,
             qty: Math.max(1, Number(item.qty) || 1)
           }))
@@ -302,6 +341,7 @@
         payload[item.id] = {
           id: item.id,
           name: item.name,
+          number: item.number || "",
           price: Number(item.price) || 0,
           qty: Math.max(1, Number(item.qty) || 1)
         };
@@ -338,7 +378,13 @@
               id,
               name: value.name || "Senza nome",
               number: value.number || "000",
-              price: Number(value.price) || 0
+              price: Number(value.price) || 0,
+              marketCurrentPrice: Number(value?.market?.currentPrice),
+              marketSourceLabel: String(value?.market?.sourceLabel || ""),
+              marketAvg30: Number(value?.market?.avg30),
+              marketTrendPrice: Number(value?.market?.trendPrice),
+              marketUrl: String(value?.market?.cardmarketUrl || ""),
+              marketUpdatedAt: Number(value?.market?.updatedAt)
             }))
           : [];
 
@@ -403,45 +449,160 @@
       }
     }
 
+    async function updateCardPrice(cardId) {
+      const card = cards.find(c => c.id === cardId);
+      if (!card) return;
+
+      const input = prompt(`Nuovo prezzo registrato per ${card.name} #${card.number}`, card.price.toFixed(2));
+      if (input === null) return;
+
+      const normalized = String(input).replace(",", ".").trim();
+      const newPrice = Number(normalized);
+
+      if (!Number.isFinite(newPrice) || newPrice < 0) {
+        setStatus("Prezzo non valido. Inserisci un numero >= 0.", true);
+        return;
+      }
+
+      setStatus("Aggiorno prezzo registrato...");
+
+      try {
+        await firebaseRequest(`/cards/${cardId}.json`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ price: newPrice })
+        });
+
+        const local = cards.find(c => c.id === cardId);
+        if (local) local.price = newPrice;
+
+        renderCards();
+        setStatus("Prezzo registrato aggiornato.");
+      } catch (err) {
+        console.error(err);
+        setStatus(`Aggiornamento prezzo fallito: ${err.message}`, true);
+      }
+    }
+
+    async function saveCardMarketData(cardId, marketData) {
+      await firebaseRequest(`/cards/${cardId}.json`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          market: {
+            currentPrice: Number(marketData.currentPrice) || null,
+            sourceLabel: String(marketData.sourceLabel || ""),
+            avg30: Number.isFinite(Number(marketData.avg30)) ? Number(marketData.avg30) : null,
+            trendPrice: Number.isFinite(Number(marketData.trendPrice)) ? Number(marketData.trendPrice) : null,
+            cardmarketUrl: String(marketData.cardmarketUrl || ""),
+            updatedAt: Date.now()
+          }
+        })
+      });
+    }
+
     function getCardImage(number) {
       return `https://dz3we2x72f7ol.cloudfront.net/expansions/paradox-rift/it-it/SV04_IT_${number}-2x.png`;
     }
 
-    async function fetchCardmarketData(card) {
-      // Usiamo PokéTCG API che espone dati Cardmarket e URL prodotto
-      const query = encodeURIComponent(`name:\"${card.name}\" number:${card.number}`);
-      const url = `https://api.pokemontcg.io/v2/cards?q=${query}`;
+    function normalizeNumber(rawNumber) {
+      const cleaned = String(rawNumber ?? "")
+        .replace(/#/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
 
+      // prende l'ultima parte utile (es: "PAR 210" -> "210")
+      const pieces = cleaned.split(" ");
+      const candidate = pieces[pieces.length - 1] || cleaned;
+      return candidate.toUpperCase();
+    }
+
+    async function fetchPokemonTcgCardsByQuery(query) {
+      const url = `https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(query)}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error(`API prezzo non disponibile (${res.status})`);
-
       const payload = await res.json();
-      const list = Array.isArray(payload?.data) ? payload.data : [];
-      if (!list.length) throw new Error("Carta non trovata su Cardmarket/PokéTCG API");
+      return Array.isArray(payload?.data) ? payload.data : [];
+    }
 
-      const match = list.find(c =>
-        String(c?.name || "").toLowerCase() === String(card.name).toLowerCase() &&
-        String(c?.number || "") === String(card.number)
-      ) || list[0];
+    function pickBestCardMatch(cardsList, cardName, cardNumber) {
+      const num = String(cardNumber).toUpperCase();
+      const nameNorm = String(cardName || "").trim().toLowerCase();
+
+      let best = null;
+      let bestScore = -1;
+
+      for (const c of cardsList) {
+        let score = 0;
+        const cNum = String(c?.number || "").toUpperCase();
+        const cName = String(c?.name || "").trim().toLowerCase();
+        const cSetCode = String(c?.set?.ptcgoCode || "").toUpperCase();
+        const cSetId = String(c?.set?.id || "").toLowerCase();
+
+        if (cNum === num) score += 5;
+        if (cSetCode === DEFAULT_SET_PTCGO) score += 4;
+        if (cSetId === DEFAULT_SET_ID) score += 4;
+        if (nameNorm && cName === nameNorm) score += 3;
+        if (nameNorm && cName.includes(nameNorm)) score += 1;
+
+        if (score > bestScore) {
+          bestScore = score;
+          best = c;
+        }
+      }
+
+      return best || cardsList[0] || null;
+    }
+
+    async function fetchCardmarketData(card) {
+      const normalizedNumber = normalizeNumber(card.number);
+
+      // Strategia robusta: prima set+numero (evita mismatch nomi ITA/ENG), poi fallback su nome
+      const queries = [
+        `set.ptcgoCode:${DEFAULT_SET_PTCGO} number:${normalizedNumber}`,
+        `set.id:${DEFAULT_SET_ID} number:${normalizedNumber}`,
+        `number:${normalizedNumber} name:"${card.name}"`,
+        `name:"${card.name}"`
+      ];
+
+      let list = [];
+      for (const q of queries) {
+        try {
+          const result = await fetchPokemonTcgCardsByQuery(q);
+          if (result.length) {
+            list = result;
+            break;
+          }
+        } catch {
+          // continua sui fallback
+        }
+      }
+
+      if (!list.length) throw new Error("Carta non trovata su Cardmarket/PokéTCG API (prova con numero/set corretti)");
+
+      const match = pickBestCardMatch(list, card.name, normalizedNumber);
+      if (!match) throw new Error("Carta trovata ma non selezionabile");
 
       const cm = match?.cardmarket || {};
       const prices = cm?.prices || {};
 
-      const candidates = [
-        { key: "avg30", label: "Media 30 giorni" },
-        { key: "trendPrice", label: "Trend price" },
-        { key: "averageSellPrice", label: "Prezzo medio vendita" }
-      ];
+      // "oggi" -> preferiamo trendPrice, poi averageSellPrice, mentre avg30 lo mostriamo come extra
+      const trendPrice = Number(prices.trendPrice);
+      const averageSellPrice = Number(prices.averageSellPrice);
+      const avg30 = Number(prices.avg30);
 
       let currentPrice = null;
-      let sourceLabel = "Prezzo corrente";
-      for (const c of candidates) {
-        const val = Number(prices[c.key]);
-        if (Number.isFinite(val) && val > 0) {
-          currentPrice = val;
-          sourceLabel = c.label;
-          break;
-        }
+      let sourceLabel = "Prezzo medio oggi";
+
+      if (Number.isFinite(trendPrice) && trendPrice > 0) {
+        currentPrice = trendPrice;
+        sourceLabel = "Prezzo medio oggi (Trend)";
+      } else if (Number.isFinite(averageSellPrice) && averageSellPrice > 0) {
+        currentPrice = averageSellPrice;
+        sourceLabel = "Prezzo medio oggi (Average sell)";
+      } else if (Number.isFinite(avg30) && avg30 > 0) {
+        currentPrice = avg30;
+        sourceLabel = "Media 30 giorni (fallback)";
       }
 
       if (!Number.isFinite(currentPrice)) {
@@ -451,6 +612,8 @@
       return {
         currentPrice,
         sourceLabel,
+        avg30: Number.isFinite(avg30) && avg30 > 0 ? avg30 : null,
+        trendPrice: Number.isFinite(trendPrice) && trendPrice > 0 ? trendPrice : null,
         cardmarketUrl: cm?.url || `https://www.cardmarket.com/it/Pokemon/Products/Search?searchString=${encodeURIComponent(card.name)}`
       };
     }
@@ -480,44 +643,72 @@
       };
     }
 
-    async function openDetails(cardId) {
+    function renderCardDeltaBadge(savedPrice, marketPrice) {
+      const diff = marketPrice - savedPrice;
+      const abs = Math.abs(diff).toFixed(2);
+
+      if (diff > 0) {
+        return {
+          klass: "pnl-positive",
+          text: `▲ +€ ${abs}`
+        };
+      }
+
+      if (diff < 0) {
+        return {
+          klass: "pnl-negative",
+          text: `▼ -€ ${abs}`
+        };
+      }
+
+      return {
+        klass: "pnl-neutral",
+        text: "■ € 0.00"
+      };
+    }
+
+    async function showPriceInsight(cardId) {
       const card = cards.find(c => c.id === cardId);
       if (!card) return;
 
-      detailsTitle.textContent = `${card.name} #${card.number}`;
-      detailsBody.innerHTML = `
-        <div>Prezzo registrato: <strong>€ ${card.price.toFixed(2)}</strong></div>
+      priceInsightLinkEl.style.display = "none";
+      priceInsightEl.innerHTML = `
+        <div><strong>${card.name} #${card.number}</strong></div>
+        <div style="margin-top:8px;">Prezzo registrato: <strong>€ ${card.price.toFixed(2)}</strong></div>
         <div style="margin-top:8px;">Carico prezzo attuale da Cardmarket...</div>
       `;
-
-      detailsModal.classList.add("open");
-      detailsModal.setAttribute("aria-hidden", "false");
 
       try {
         const market = await fetchCardmarketData(card);
         const delta = renderDelta(card.price, market.currentPrice);
 
-        detailsBody.innerHTML = `
-          <div>Prezzo registrato: <strong>€ ${card.price.toFixed(2)}</strong></div>
+        const extraLines = [];
+        if (market.trendPrice !== null) {
+          extraLines.push(`<div style="margin-top:6px;">Trend: <strong>€ ${market.trendPrice.toFixed(2)}</strong></div>`);
+        }
+        if (market.avg30 !== null) {
+          extraLines.push(`<div style="margin-top:6px;">Media 30 giorni: <strong>€ ${market.avg30.toFixed(2)}</strong></div>`);
+        }
+
+        priceInsightEl.innerHTML = `
+          <div><strong>${card.name} #${card.number}</strong></div>
+          <div style="margin-top:8px;">Prezzo registrato: <strong>€ ${card.price.toFixed(2)}</strong></div>
           <div style="margin-top:8px;">${market.sourceLabel}: <strong>€ ${market.currentPrice.toFixed(2)}</strong></div>
+          ${extraLines.join("")}
           <div class="delta ${delta.klass}" style="margin-top:10px; font-weight:700;">
             ${delta.icon} ${delta.text}
           </div>
-          <div style="margin-top:10px;">
-            <a href="${market.cardmarketUrl}" target="_blank" rel="noopener noreferrer" style="color:#7dd3fc;">Apri pagina Cardmarket</a>
-          </div>
         `;
+
+        priceInsightLinkEl.href = market.cardmarketUrl;
+        priceInsightLinkEl.style.display = "inline-block";
       } catch (err) {
-        detailsBody.innerHTML = `
-          <div>Prezzo registrato: <strong>€ ${card.price.toFixed(2)}</strong></div>
+        priceInsightEl.innerHTML = `
+          <div><strong>${card.name} #${card.number}</strong></div>
+          <div style="margin-top:8px;">Prezzo registrato: <strong>€ ${card.price.toFixed(2)}</strong></div>
           <div style="margin-top:8px; color:#fca5a5;">${err.message}</div>
         `;
       }
-    }
-
-    function closeDetails() {
-      detailsModal.classList.remove("open");
-      detailsModal.setAttribute("aria-hidden", "true");
     }
 
     function renderCards() {
@@ -529,20 +720,25 @@
       }
 
       for (const card of cards) {
+        const hasSavedMarket = Number.isFinite(card.marketCurrentPrice) && card.marketCurrentPrice > 0;
+        const savedDelta = hasSavedMarket ? renderCardDeltaBadge(card.price, card.marketCurrentPrice) : null;
+        const savedMarketClass = savedDelta ? savedDelta.klass : "pnl-neutral";
+        const savedMarketText = savedDelta ? savedDelta.text : "...";
+
         const article = document.createElement("article");
         article.className = "card";
 
         article.innerHTML = `
-          <img src="${getCardImage(card.number)}" alt="${card.name}" loading="lazy">
+          <img src="${getCardImage(card.number)}" alt="${card.name}" loading="lazy" data-action="price" data-id="${card.id}" style="cursor:pointer;">
           <div class="card-title">${card.name}</div>
-          <div class="card-sub">#${card.number}</div>
-          <div class="card-sub">€ ${card.price.toFixed(2)}</div>
+          <div class="card-meta-row">
+            <div class="card-sub">#${card.number}</div>
+            <div class="card-live-price ${savedMarketClass}" data-live-price="${card.id}">${savedMarketText}</div>
+          </div>
+          <div class="card-price-edit" data-action="edit-price" data-id="${card.id}" title="Clicca per modificare il prezzo registrato">€ ${card.price.toFixed(2)} ✎</div>
           <div class="card-actions">
             <button class="btn-success" data-action="add" data-id="${card.id}">+ Carrello</button>
             <button class="btn-danger" data-action="delete" data-id="${card.id}">Elimina</button>
-          </div>
-          <div class="card-actions" style="margin-top:6px; grid-template-columns:1fr;">
-            <button class="btn-info" data-action="details" data-id="${card.id}">Dettagli prezzo</button>
           </div>
         `;
 
@@ -557,9 +753,65 @@
         btn.addEventListener("click", () => deleteCard(btn.dataset.id));
       });
 
-      cardsGrid.querySelectorAll("button[data-action='details']").forEach(btn => {
-        btn.addEventListener("click", () => openDetails(btn.dataset.id));
+      cardsGrid.querySelectorAll("img[data-action='price']").forEach(img => {
+        img.addEventListener("click", () => showPriceInsight(img.dataset.id));
       });
+
+      cardsGrid.querySelectorAll("[data-action='edit-price']").forEach(el => {
+        el.addEventListener("click", () => updateCardPrice(el.dataset.id));
+      });
+
+      updateCardsMarketPriceBadges();
+    }
+
+    async function getMarketDataForDisplayCard(card) {
+      const number = card.number || "";
+      const cacheKey = `${card.id}|${card.name}|${number}`;
+      const now = Date.now();
+
+      const cached = marketPriceCacheByKey.get(cacheKey);
+      if (cached && now - cached.ts < MARKET_CACHE_TTL_MS) {
+        return { data: cached.data, fromCache: true };
+      }
+
+      const data = await fetchCardmarketData({
+        name: card.name,
+        number
+      });
+
+      marketPriceCacheByKey.set(cacheKey, { ts: now, data });
+      return { data, fromCache: false };
+    }
+
+    async function updateCardsMarketPriceBadges() {
+      const token = ++cardsPriceComputeToken;
+
+      for (const card of cards) {
+        const badgeEl = cardsGrid.querySelector(`[data-live-price="${card.id}"]`);
+        if (!badgeEl) continue;
+
+        try {
+          const marketResult = await getMarketDataForDisplayCard(card);
+          if (token !== cardsPriceComputeToken) return;
+
+          const market = marketResult.data;
+          const liveDelta = renderCardDeltaBadge(card.price, market.currentPrice);
+          badgeEl.className = `card-live-price ${liveDelta.klass}`;
+          badgeEl.textContent = liveDelta.text;
+
+          const savedPrice = Number(card.marketCurrentPrice);
+          const hasMeaningfulChange = !Number.isFinite(savedPrice) || Math.abs(savedPrice - market.currentPrice) >= 0.01;
+          if (!marketResult.fromCache && hasMeaningfulChange) {
+            saveCardMarketData(card.id, market).catch(err => {
+              console.error("Errore salvataggio prezzo medio Firebase:", err);
+            });
+          }
+        } catch {
+          if (token !== cardsPriceComputeToken) return;
+          badgeEl.className = "card-live-price pnl-neutral";
+          badgeEl.textContent = "n.d.";
+        }
+      }
     }
 
     function addToCart(cardId) {
@@ -573,6 +825,7 @@
         cart.push({
           id: card.id,
           name: card.name,
+          number: card.number || "",
           price: card.price,
           qty: 1
         });
@@ -615,6 +868,7 @@
 
     function renderCart() {
       cartList.innerHTML = "";
+      cartItemPnlElements = new Map();
 
       let itemsCount = 0;
       let total = 0;
@@ -637,12 +891,21 @@
             <div class="cart-row" style="margin-top:4px; opacity:.9;">
               <span>€ ${item.price.toFixed(2)} x ${item.qty}</span>
             </div>
+            <div class="cart-row" style="margin-top:4px; opacity:.95;">
+              <span class="item-pnl">P/L: calcolo...</span>
+            </div>
             <div class="qty-actions">
               <button class="btn-warning" data-qty="-1" data-id="${item.id}">-1</button>
               <button class="btn-success" data-qty="1" data-id="${item.id}">+1</button>
               <button class="btn-danger" data-qty="remove" data-id="${item.id}">Rimuovi</button>
             </div>
           `;
+
+          const itemPnlEl = div.querySelector(".item-pnl");
+          if (itemPnlEl) {
+            cartItemPnlElements.set(item.id, itemPnlEl);
+          }
+
           cartList.appendChild(div);
         }
 
@@ -667,6 +930,101 @@
 
       cartItemsEl.textContent = String(itemsCount);
       cartTotalEl.textContent = total.toFixed(2);
+
+      updateCartProfitLossUI();
+    }
+
+    function resolveCartItemNumber(item) {
+      if (item.number) return item.number;
+      const linkedCard = cards.find(c => c.id === item.id);
+      return linkedCard?.number || "";
+    }
+
+    async function getMarketDataForCartItem(item) {
+      const number = resolveCartItemNumber(item);
+      const cacheKey = `${item.id}|${item.name}|${number}`;
+      const now = Date.now();
+
+      const cached = marketPriceCacheByKey.get(cacheKey);
+      if (cached && now - cached.ts < MARKET_CACHE_TTL_MS) {
+        return cached.data;
+      }
+
+      const data = await fetchCardmarketData({
+        name: item.name,
+        number
+      });
+
+      marketPriceCacheByKey.set(cacheKey, { ts: now, data });
+      return data;
+    }
+
+    function formatSignedEuro(value) {
+      const abs = Math.abs(value).toFixed(2);
+      return `${value >= 0 ? "+" : "-"}€ ${abs}`;
+    }
+
+    async function updateCartProfitLossUI() {
+      const token = ++pnlComputeToken;
+
+      if (!cart.length) {
+        cartPnlSummaryEl.innerHTML = `
+          <div><strong>Profit/Loss carrello</strong></div>
+          <div style="margin-top:6px;">Carrello vuoto.</div>
+        `;
+        return;
+      }
+
+      let buyKnownTotal = 0;
+      let marketKnownTotal = 0;
+      let missingCount = 0;
+
+      for (const item of cart) {
+        const buySubtotal = item.price * item.qty;
+        const itemPnlEl = cartItemPnlElements.get(item.id);
+
+        try {
+          const market = await getMarketDataForCartItem(item);
+          if (token !== pnlComputeToken) return;
+
+          const marketSubtotal = market.currentPrice * item.qty;
+          const delta = marketSubtotal - buySubtotal;
+
+          buyKnownTotal += buySubtotal;
+          marketKnownTotal += marketSubtotal;
+
+          if (itemPnlEl) {
+            const klass = delta > 0 ? "pnl-positive" : delta < 0 ? "pnl-negative" : "pnl-neutral";
+            itemPnlEl.className = `item-pnl ${klass}`;
+            itemPnlEl.textContent = `P/L: ${formatSignedEuro(delta)}`;
+          }
+        } catch {
+          if (token !== pnlComputeToken) return;
+          missingCount += 1;
+          if (itemPnlEl) {
+            itemPnlEl.className = "item-pnl pnl-neutral";
+            itemPnlEl.textContent = "P/L: n.d. (prezzo non trovato)";
+          }
+        }
+      }
+
+      if (token !== pnlComputeToken) return;
+
+      const pnlTotal = marketKnownTotal - buyKnownTotal;
+      const pnlClass = pnlTotal > 0 ? "pnl-positive" : pnlTotal < 0 ? "pnl-negative" : "pnl-neutral";
+
+      const budgetLine = pnlTotal >= 0
+        ? `<div class="pnl-positive" style="margin-top:8px;">Budget disponibile: +€ ${pnlTotal.toFixed(2)}</div>`
+        : `<div class="pnl-negative" style="margin-top:8px;">Budget mancante: -€ ${Math.abs(pnlTotal).toFixed(2)}</div>`;
+
+      cartPnlSummaryEl.innerHTML = `
+        <div><strong>Profit/Loss carrello</strong></div>
+        <div style="margin-top:6px;">Costo registrato (carte con prezzo trovato): <strong>€ ${buyKnownTotal.toFixed(2)}</strong></div>
+        <div style="margin-top:4px;">Valore oggi Cardmarket: <strong>€ ${marketKnownTotal.toFixed(2)}</strong></div>
+        <div class="${pnlClass}" style="margin-top:6px;">P/L totale: ${formatSignedEuro(pnlTotal)}</div>
+        ${budgetLine}
+        ${missingCount > 0 ? `<div style="margin-top:8px; opacity:.85;">Carte senza prezzo trovato: ${missingCount}</div>` : ""}
+      `;
     }
   </script>
 </body>
