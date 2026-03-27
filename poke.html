@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Card Grid Mobile</title>
+<title>Card Mobile</title>
 
 <style>
 body {
@@ -13,7 +13,7 @@ body {
   color: white;
 }
 
-/* PANEL TOP */
+/* PANEL */
 .panel {
   position: sticky;
   top: 0;
@@ -24,7 +24,6 @@ body {
   z-index: 10;
 }
 
-/* INPUT COMPATTI */
 .panel input, .panel select {
   width: 100%;
   margin-bottom: 6px;
@@ -34,7 +33,6 @@ body {
   font-size: 14px;
 }
 
-/* BUTTON */
 .panel button {
   width: 100%;
   padding: 12px;
@@ -42,7 +40,6 @@ body {
   border-radius: 8px;
   background: #3b82f6;
   color: white;
-  font-size: 14px;
   font-weight: bold;
 }
 
@@ -60,12 +57,14 @@ body {
   border-radius: 12px;
   padding: 8px;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
 
 .card img {
   width: 100%;
   border-radius: 8px;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  cursor: pointer;
 }
 
 .card h3 {
@@ -78,12 +77,44 @@ body {
   margin: 1px 0;
   opacity: 0.8;
 }
+
+/* DELETE */
+.delete-btn {
+  margin-top: 6px;
+  width: 100%;
+  padding: 6px;
+  border: none;
+  border-radius: 6px;
+  background: #ef4444;
+  color: white;
+  font-size: 12px;
+}
+
+/* FULLSCREEN IMAGE */
+.viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.viewer img {
+  max-width: 95%;
+  max-height: 95%;
+  border-radius: 10px;
+}
 </style>
 </head>
 
 <body>
 
-<!-- PANEL SOPRA -->
+<!-- PANEL -->
 <div class="panel">
   <select id="columns" onchange="changeColumns()">
     <option value="1">1 colonna</option>
@@ -101,6 +132,11 @@ body {
 
 <!-- GRID -->
 <div class="container" id="grid"></div>
+
+<!-- VIEWER -->
+<div class="viewer" id="viewer" onclick="closeViewer()">
+  <img id="viewerImg">
+</div>
 
 <script>
 let cards = JSON.parse(localStorage.getItem("cards")) || [];
@@ -131,54 +167,28 @@ function addCard() {
 
   if (!name || !number) return;
 
-  const newCard = { name, number, price };
-  cards.push(newCard);
-
+  cards.push({ name, number, price });
   saveCards();
-  renderCard(newCard);
+  loadCards();
 
   document.getElementById('name').value = '';
   document.getElementById('number').value = '';
   document.getElementById('price').value = '';
 }
 
-function renderCard(data) {
+/* RENDER */
+function renderCard(data, index) {
   const imgUrl = `https://dz3we2x72f7ol.cloudfront.net/expansions/paradox-rift/it-it/SV04_IT_${data.number}-2x.png`;
 
   const card = document.createElement('div');
   card.className = 'card';
 
-  const img = document.createElement('img');
-
-  // placeholder iniziale (blur + grigio)
-  img.style.background = "#334155";
-  img.style.minHeight = "120px";
-  img.style.filter = "blur(10px)";
-  img.style.transition = "0.3s";
-
-  // lazy loading manuale
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        img.src = imgUrl;
-
-        img.onload = () => {
-          img.style.filter = "blur(0)";
-        };
-
-        obs.unobserve(img);
-      }
-    });
-  });
-
-  observer.observe(img);
-
-  card.appendChild(img);
-
-  card.innerHTML += `
+  card.innerHTML = `
+    <img src="${imgUrl}" loading="lazy" onclick="openViewer('${imgUrl}')">
     <h3>${data.name}</h3>
     <p>#${data.number}</p>
     <p>€ ${data.price}</p>
+    <button class="delete-btn" onclick="deleteCard(${index})">🗑️</button>
   `;
 
   document.getElementById('grid').appendChild(card);
@@ -187,12 +197,31 @@ function renderCard(data) {
 /* LOAD ALL */
 function loadCards() {
   document.getElementById('grid').innerHTML = "";
-  cards.forEach(renderCard);
+  cards.forEach((c, i) => renderCard(c, i));
+}
+
+/* DELETE */
+function deleteCard(index) {
+  if (!confirm("Vuoi eliminare questa carta?")) return;
+
+  cards.splice(index, 1);
+  saveCards();
+  loadCards();
 }
 
 /* SAVE */
 function saveCards() {
   localStorage.setItem("cards", JSON.stringify(cards));
+}
+
+/* VIEWER */
+function openViewer(src) {
+  document.getElementById("viewer").style.display = "flex";
+  document.getElementById("viewerImg").src = src;
+}
+
+function closeViewer() {
+  document.getElementById("viewer").style.display = "none";
 }
 </script>
 
