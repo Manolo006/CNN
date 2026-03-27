@@ -105,6 +105,8 @@
     .card-sub { font-size: 12px; opacity: .9; margin-top: 2px; }
     .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
 
+    .btn-info { background: #0ea5e9; }
+
     .cart-summary {
       background: #0b1220;
       border-radius: 10px;
@@ -148,6 +150,44 @@
       font-size: 12px;
     }
 
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 20;
+    }
+
+    .modal.open { display: flex; }
+
+    .modal-content {
+      width: min(560px, 100%);
+      background: var(--panel);
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid #475569;
+    }
+
+    .modal-title {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+    }
+
+    .info-box {
+      background: #0b1220;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    .delta.up { color: #34d399; }
+    .delta.down { color: #f87171; }
+    .delta.neutral { color: #cbd5e1; }
+
     @media (max-width: 980px) {
       .layout { grid-template-columns: 1fr; }
       .form-grid { grid-template-columns: 1fr 1fr; }
@@ -183,29 +223,47 @@
     </aside>
   </div>
 
+  <div id="detailsModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <h3 id="detailsTitle" class="modal-title">Dettagli carta</h3>
+      <div id="detailsBody" class="info-box">Caricamento...</div>
+      <button id="closeDetailsBtn" class="btn-primary" style="width:100%; margin-top:10px;">Chiudi</button>
+    </div>
+  </div>
+
   <script>
     const FIREBASE_DB_URL = "https://pokeparadosso-default-rtdb.europe-west1.firebasedatabase.app";
-    const STORAGE_CART_KEY = "poke_cart_v2";
+    const CART_PATH = "/cart.json";
 
     let cards = [];
-    let cart = loadCartFromStorage();
+    let cart = [];
 
     const cardsGrid = document.getElementById("cardsGrid");
     const cartList = document.getElementById("cartList");
     const cartItemsEl = document.getElementById("cartItems");
     const cartTotalEl = document.getElementById("cartTotal");
     const statusEl = document.getElementById("status");
+    const detailsModal = document.getElementById("detailsModal");
+    const detailsTitle = document.getElementById("detailsTitle");
+    const detailsBody = document.getElementById("detailsBody");
 
     document.getElementById("cardForm").addEventListener("submit", onSubmitCard);
     document.getElementById("clearCartBtn").addEventListener("click", clearCart);
+    document.getElementById("closeDetailsBtn").addEventListener("click", closeDetails);
+    detailsModal.addEventListener("click", (e) => {
+      if (e.target === detailsModal) closeDetails();
+    });
 
     init();
 
     function init() {
       fetchCards();
-      renderCart();
+      fetchCart();
       // refresh automatico ogni 8 secondi (simile realtime)
-      setInterval(fetchCards, 8000);
+      setInterval(() => {
+        fetchCards();
+        fetchCart();
+      }, 8000);
     }
 
     function setStatus(text, isError = false) {
@@ -213,17 +271,47 @@
       statusEl.style.color = isError ? "#fca5a5" : "#cbd5e1";
     }
 
-    function loadCartFromStorage() {
+    async function fetchCart() {
       try {
-        const parsed = JSON.parse(localStorage.getItem(STORAGE_CART_KEY));
-        return Array.isArray(parsed) ? parsed : [];
-      } catch {
-        return [];
+        const data = await firebaseRequest(`${CART_PATH}?t=${Date.now()}`, { cache: "no-store" });
+
+        if (!data) {
+          cart = [];
+          renderCart();
+          return;
+        }
+
+        cart = Object.values(data)
+          .map(item => ({
+            id: item.id,
+            name: item.name,
+            price: Number(item.price) || 0,
+            qty: Math.max(1, Number(item.qty) || 1)
+          }))
+          .filter(item => item.id && item.name);
+
+        renderCart();
+      } catch (err) {
+        console.error("Errore caricamento carrello Firebase:", err);
       }
     }
 
-    function saveCartToStorage() {
-      localStorage.setItem(STORAGE_CART_KEY, JSON.stringify(cart));
+    async function saveCartToFirebase() {
+      const payload = {};
+      for (const item of cart) {
+        payload[item.id] = {
+          id: item.id,
+          name: item.name,
+          price: Number(item.price) || 0,
+          qty: Math.max(1, Number(item.qty) || 1)
+        };
+      }
+
+      await firebaseRequest(CART_PATH, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
     }
 
     async function firebaseRequest(path, options = {}) {
@@ -304,7 +392,7 @@
 
         // rimuove anche dal carrello eventuali riferimenti
         cart = cart.filter(item => item.id !== cardId);
-        saveCartToStorage();
+        await saveCartToFirebase();
         renderCart();
 
         await fetchCards();
@@ -317,6 +405,119 @@
 
     function getCardImage(number) {
       return `https://dz3we2x72f7ol.cloudfront.net/expansions/paradox-rift/it-it/SV04_IT_${number}-2x.png`;
+    }
+
+    async function fetchCardmarketData(card) {
+      // Usiamo PokéTCG API che espone dati Cardmarket e URL prodotto
+      const query = encodeURIComponent(`name:\"${card.name}\" number:${card.number}`);
+      const url = `https://api.pokemontcg.io/v2/cards?q=${query}`;
+
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`API prezzo non disponibile (${res.status})`);
+
+      const payload = await res.json();
+      const list = Array.isArray(payload?.data) ? payload.data : [];
+      if (!list.length) throw new Error("Carta non trovata su Cardmarket/PokéTCG API");
+
+      const match = list.find(c =>
+        String(c?.name || "").toLowerCase() === String(card.name).toLowerCase() &&
+        String(c?.number || "") === String(card.number)
+      ) || list[0];
+
+      const cm = match?.cardmarket || {};
+      const prices = cm?.prices || {};
+
+      const candidates = [
+        { key: "avg30", label: "Media 30 giorni" },
+        { key: "trendPrice", label: "Trend price" },
+        { key: "averageSellPrice", label: "Prezzo medio vendita" }
+      ];
+
+      let currentPrice = null;
+      let sourceLabel = "Prezzo corrente";
+      for (const c of candidates) {
+        const val = Number(prices[c.key]);
+        if (Number.isFinite(val) && val > 0) {
+          currentPrice = val;
+          sourceLabel = c.label;
+          break;
+        }
+      }
+
+      if (!Number.isFinite(currentPrice)) {
+        throw new Error("Prezzo Cardmarket non disponibile per questa carta");
+      }
+
+      return {
+        currentPrice,
+        sourceLabel,
+        cardmarketUrl: cm?.url || `https://www.cardmarket.com/it/Pokemon/Products/Search?searchString=${encodeURIComponent(card.name)}`
+      };
+    }
+
+    function renderDelta(savedPrice, marketPrice) {
+      const diff = marketPrice - savedPrice;
+      const abs = Math.abs(diff).toFixed(2);
+
+      if (diff > 0) {
+        return {
+          klass: "up",
+          icon: "▲",
+          text: `+€ ${abs} (Conviene: prezzo attuale più alto del tuo prezzo registrato)`
+        };
+      }
+      if (diff < 0) {
+        return {
+          klass: "down",
+          icon: "▼",
+          text: `-€ ${abs} (Non conviene: prezzo attuale più basso del tuo prezzo registrato)`
+        };
+      }
+      return {
+        klass: "neutral",
+        icon: "■",
+        text: "€ 0.00 (Parità)"
+      };
+    }
+
+    async function openDetails(cardId) {
+      const card = cards.find(c => c.id === cardId);
+      if (!card) return;
+
+      detailsTitle.textContent = `${card.name} #${card.number}`;
+      detailsBody.innerHTML = `
+        <div>Prezzo registrato: <strong>€ ${card.price.toFixed(2)}</strong></div>
+        <div style="margin-top:8px;">Carico prezzo attuale da Cardmarket...</div>
+      `;
+
+      detailsModal.classList.add("open");
+      detailsModal.setAttribute("aria-hidden", "false");
+
+      try {
+        const market = await fetchCardmarketData(card);
+        const delta = renderDelta(card.price, market.currentPrice);
+
+        detailsBody.innerHTML = `
+          <div>Prezzo registrato: <strong>€ ${card.price.toFixed(2)}</strong></div>
+          <div style="margin-top:8px;">${market.sourceLabel}: <strong>€ ${market.currentPrice.toFixed(2)}</strong></div>
+          <div class="delta ${delta.klass}" style="margin-top:10px; font-weight:700;">
+            ${delta.icon} ${delta.text}
+          </div>
+          <div style="margin-top:10px;">
+            <a href="${market.cardmarketUrl}" target="_blank" rel="noopener noreferrer" style="color:#7dd3fc;">Apri pagina Cardmarket</a>
+          </div>
+        `;
+      } catch (err) {
+        detailsBody.innerHTML = `
+          <div>Prezzo registrato: <strong>€ ${card.price.toFixed(2)}</strong></div>
+          <div style="margin-top:8px; color:#fca5a5;">${err.message}</div>
+        `;
+      }
+    }
+
+    function closeDetails() {
+      detailsModal.classList.remove("open");
+      detailsModal.setAttribute("aria-hidden", "true");
     }
 
     function renderCards() {
@@ -340,6 +541,9 @@
             <button class="btn-success" data-action="add" data-id="${card.id}">+ Carrello</button>
             <button class="btn-danger" data-action="delete" data-id="${card.id}">Elimina</button>
           </div>
+          <div class="card-actions" style="margin-top:6px; grid-template-columns:1fr;">
+            <button class="btn-info" data-action="details" data-id="${card.id}">Dettagli prezzo</button>
+          </div>
         `;
 
         cardsGrid.appendChild(article);
@@ -351,6 +555,10 @@
 
       cardsGrid.querySelectorAll("button[data-action='delete']").forEach(btn => {
         btn.addEventListener("click", () => deleteCard(btn.dataset.id));
+      });
+
+      cardsGrid.querySelectorAll("button[data-action='details']").forEach(btn => {
+        btn.addEventListener("click", () => openDetails(btn.dataset.id));
       });
     }
 
@@ -370,7 +578,10 @@
         });
       }
 
-      saveCartToStorage();
+      saveCartToFirebase().catch(err => {
+        console.error(err);
+        setStatus(`Errore salvataggio carrello: ${err.message}`, true);
+      });
       renderCart();
     }
 
@@ -383,7 +594,10 @@
         cart = cart.filter(c => c.id !== cardId);
       }
 
-      saveCartToStorage();
+      saveCartToFirebase().catch(err => {
+        console.error(err);
+        setStatus(`Errore salvataggio carrello: ${err.message}`, true);
+      });
       renderCart();
     }
 
@@ -392,7 +606,10 @@
       if (!confirm("Svuotare tutto il carrello?")) return;
 
       cart = [];
-      saveCartToStorage();
+      saveCartToFirebase().catch(err => {
+        console.error(err);
+        setStatus(`Errore salvataggio carrello: ${err.message}`, true);
+      });
       renderCart();
     }
 
@@ -435,7 +652,10 @@
             const action = btn.dataset.qty;
             if (action === "remove") {
               cart = cart.filter(c => c.id !== id);
-              saveCartToStorage();
+              saveCartToFirebase().catch(err => {
+                console.error(err);
+                setStatus(`Errore salvataggio carrello: ${err.message}`, true);
+              });
               renderCart();
               return;
             }
