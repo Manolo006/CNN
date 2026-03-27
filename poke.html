@@ -102,8 +102,21 @@
       margin-bottom: 6px;
     }
 
-    .card-title { font-weight: 700; font-size: 14px; }
-    .card-sub { font-size: 12px; opacity: .9; margin-top: 2px; }
+    .card-title {
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-sub {
+      font-size: 12px;
+      opacity: .9;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .card-meta-row {
       display: flex;
       align-items: center;
@@ -117,6 +130,8 @@
       min-height: 16px;
       text-align: right;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .card-price-edit {
       margin-top: 2px;
@@ -125,6 +140,10 @@
       cursor: pointer;
       user-select: none;
       display: inline-block;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .card-price-edit:hover { color: #7dd3fc; }
     .card-actions {
@@ -138,12 +157,12 @@
       width: 100%;
       min-width: 0;
       max-width: 100%;
-      white-space: normal;
-      overflow-wrap: anywhere;
-      word-break: break-word;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       line-height: 1.2;
       text-align: center;
-      font-size: clamp(10px, 0.85vw, 14px);
+      font-size: clamp(9px, 0.75vw, 14px);
       padding: clamp(6px, 0.7vw, 10px);
     }
 
