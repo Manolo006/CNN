@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Card Mobile</title>
+<title>Card Mobile + Carrello</title>
 
 <style>
 body {
@@ -13,7 +13,7 @@ body {
   color: white;
 }
 
-/* PANEL */
+/* PANEL TOP */
 .panel {
   position: sticky;
   top: 0;
@@ -41,6 +41,7 @@ body {
   background: #3b82f6;
   color: white;
   font-weight: bold;
+  margin-bottom: 6px;
 }
 
 /* GRID */
@@ -78,17 +79,18 @@ body {
   opacity: 0.8;
 }
 
-/* DELETE */
-.delete-btn {
+/* BUTTONS */
+.delete-btn, .add-cart-btn {
   margin-top: 6px;
   width: 100%;
   padding: 6px;
   border: none;
   border-radius: 6px;
-  background: #ef4444;
-  color: white;
   font-size: 12px;
 }
+
+.delete-btn { background: #ef4444; color: white; }
+.add-cart-btn { background: #10b981; color: white; }
 
 /* FULLSCREEN IMAGE */
 .viewer {
@@ -109,6 +111,14 @@ body {
   max-height: 95%;
   border-radius: 10px;
 }
+
+/* TOTAL CARRELLO */
+.cart-total {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
 </style>
 </head>
 
@@ -120,14 +130,15 @@ body {
     <option value="1">1 colonna</option>
     <option value="2">2 colonne</option>
     <option value="3">3 colonne</option>
-    <option value="4" selected>4 colonne</option>
+    <option value="4"selected>4 colonne</option>
   </select>
 
   <input type="text" id="name" placeholder="Nome Pokémon">
   <input type="number" id="number" placeholder="Numero">
-  <input type="number" id="price" placeholder="Prezzo">
+  <input type="number" id="price" placeholder="Prezzo" step="0.01" min="0">
 
   <button onclick="addCard()">Aggiungi</button>
+  <div class="cart-total">Totale Carrello: € <span id="cartTotal">0.00</span></div>
 </div>
 
 <!-- GRID -->
@@ -140,6 +151,7 @@ body {
 
 <script>
 let cards = JSON.parse(localStorage.getItem("cards")) || [];
+let cart = [];
 
 /* LOAD */
 window.onload = () => {
@@ -150,6 +162,8 @@ window.onload = () => {
     document.getElementById("columns").value = savedCols;
     changeColumns();
   }
+
+  updateCartTotal();
 };
 
 /* COLONNE */
@@ -159,15 +173,15 @@ function changeColumns() {
   localStorage.setItem("columns", cols);
 }
 
-/* ADD */
+/* ADD CARD */
 function addCard() {
   const name = document.getElementById('name').value;
   const number = document.getElementById('number').value;
   const price = document.getElementById('price').value;
 
-  if (!name || !number) return;
+  if (!name || !number || !price) return;
 
-  cards.push({ name, number, price });
+  cards.push({ name, number, price: parseFloat(price) });
   saveCards();
   loadCards();
 
@@ -176,7 +190,7 @@ function addCard() {
   document.getElementById('price').value = '';
 }
 
-/* RENDER */
+/* RENDER CARD */
 function renderCard(data, index) {
   const imgUrl = `https://dz3we2x72f7ol.cloudfront.net/expansions/paradox-rift/it-it/SV04_IT_${data.number}-2x.png`;
 
@@ -187,20 +201,21 @@ function renderCard(data, index) {
     <img src="${imgUrl}" loading="lazy" onclick="openViewer('${imgUrl}')">
     <h3>${data.name}</h3>
     <p>#${data.number}</p>
-    <p>€ ${data.price}</p>
-    <button class="delete-btn" onclick="deleteCard(${index})">🗑️</button>
+    <p>€ ${data.price.toFixed(2)}</p>
+    <button class="add-cart-btn" onclick="addToCart(${index})">Aggiungi al carrello</button>
+    <button class="delete-btn" onclick="deleteCard(${index})">🗑️ Elimina</button>
   `;
 
   document.getElementById('grid').appendChild(card);
 }
 
-/* LOAD ALL */
+/* LOAD ALL CARDS */
 function loadCards() {
   document.getElementById('grid').innerHTML = "";
   cards.forEach((c, i) => renderCard(c, i));
 }
 
-/* DELETE */
+/* DELETE CARD */
 function deleteCard(index) {
   if (!confirm("Vuoi eliminare questa carta?")) return;
 
@@ -209,7 +224,7 @@ function deleteCard(index) {
   loadCards();
 }
 
-/* SAVE */
+/* SAVE CARDS */
 function saveCards() {
   localStorage.setItem("cards", JSON.stringify(cards));
 }
@@ -219,9 +234,20 @@ function openViewer(src) {
   document.getElementById("viewer").style.display = "flex";
   document.getElementById("viewerImg").src = src;
 }
-
 function closeViewer() {
   document.getElementById("viewer").style.display = "none";
+}
+
+/* CARRELLO */
+function addToCart(index) {
+  const card = cards[index];
+  cart.push(card.price);
+  updateCartTotal();
+}
+
+function updateCartTotal() {
+  const total = cart.reduce((sum, p) => sum + p, 0);
+  document.getElementById("cartTotal").textContent = total.toFixed(2);
 }
 </script>
 
