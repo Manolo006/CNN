@@ -1,243 +1,428 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Carte + Carrello Persistente</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poke Paradosso - Firebase</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --panel-2: #334155;
+      --text: #e2e8f0;
+      --primary: #3b82f6;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+    }
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: white;
-}
+    * { box-sizing: border-box; }
 
-.panel {
-  position: sticky;
-  top: 0;
-  background: #1e293b;
-  padding: 12px;
-  border-left: 3px solid #3b82f6;
-  border-right: 3px solid #3b82f6;
-  z-index: 10;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
 
-.panel input, .panel select {
-  width: 100%;
-  margin-bottom: 6px;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  font-size: 14px;
-}
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 12px;
+      min-height: 100vh;
+      padding: 12px;
+    }
 
-.panel button {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  background: #3b82f6;
-  color: white;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
+    .left-column,
+    .right-column {
+      background: var(--panel);
+      border-radius: 12px;
+      padding: 12px;
+    }
 
-.container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  padding: 10px;
-}
+    h1, h2 { margin: 0 0 12px 0; }
+    h1 { font-size: 20px; }
+    h2 { font-size: 16px; }
 
-.card {
-  background: #1e293b;
-  border-radius: 12px;
-  padding: 8px;
-  text-align: center;
-}
+    .form-grid {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 1fr 120px 120px auto;
+      margin-bottom: 12px;
+    }
 
-.card img {
-  width: 100%;
-  border-radius: 8px;
-  aspect-ratio: 3/4;
-  object-fit: cover;
-  cursor: pointer;
-}
+    input, button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 14px;
+    }
 
-.card h3 { font-size: 13px; margin: 6px 0 2px; }
-.card p { font-size: 11px; margin: 1px 0; opacity: 0.8; }
+    input {
+      background: #0b1220;
+      color: var(--text);
+      outline: 1px solid #475569;
+    }
 
-.delete-btn, .add-cart-btn {
-  margin-top: 6px;
-  width: 100%;
-  padding: 6px;
-  border: none;
-  border-radius: 6px;
-  font-size: 12px;
-}
+    button {
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-.delete-btn { background: #ef4444; color: white; }
-.add-cart-btn { background: #10b981; color: white; }
+    .btn-primary { background: var(--primary); }
+    .btn-danger { background: var(--danger); }
+    .btn-success { background: var(--success); }
+    .btn-warning { background: var(--warning); }
 
-.viewer {
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.9);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
+    .status {
+      font-size: 13px;
+      opacity: .9;
+      margin: 0 0 10px 0;
+    }
 
-.viewer img {
-  max-width: 95%;
-  max-height: 95%;
-  border-radius: 10px;
-}
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 10px;
+    }
 
-.cart-total { margin-top:6px; font-size:14px; font-weight:bold; text-align:center; }
-.cart-clear { margin-top:4px; background: #f59e0b; }
-</style>
+    .card {
+      background: var(--panel-2);
+      border-radius: 10px;
+      padding: 8px;
+    }
+
+    .card img {
+      width: 100%;
+      border-radius: 8px;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      margin-bottom: 6px;
+    }
+
+    .card-title { font-weight: 700; font-size: 14px; }
+    .card-sub { font-size: 12px; opacity: .9; margin-top: 2px; }
+    .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+
+    .cart-summary {
+      background: #0b1220;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .cart-list {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 10px;
+      max-height: 55vh;
+      overflow: auto;
+    }
+
+    .cart-item {
+      background: var(--panel-2);
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 13px;
+    }
+
+    .cart-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .qty-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .qty-actions button {
+      flex: 1;
+      padding: 6px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
 </head>
 <body>
+  <div class="layout">
+    <section class="left-column">
+      <h1>Carte Pokémon (Firebase)</h1>
 
-<div class="panel">
-  <select id="columns" onchange="changeColumns()">
-    <option value="1">1 colonna</option>
-    <option value="2">2 colonne</option>
-    <option value="3">3 colonne</option>
-    <option value="4" selected>4 colonne</option>
-  </select>
+      <form id="cardForm" class="form-grid">
+        <input id="name" type="text" placeholder="Nome carta" required>
+        <input id="number" type="text" placeholder="Numero" required>
+        <input id="price" type="number" step="0.01" min="0" placeholder="Prezzo" required>
+        <button type="submit" class="btn-primary">Aggiungi</button>
+      </form>
 
-  <input type="text" id="name" placeholder="Nome Pokémon">
-  <input type="number" id="number" placeholder="Numero">
-  <input type="number" id="price" placeholder="Prezzo" step="0.01" min="0">
+      <p class="status" id="status">Caricamento dati...</p>
+      <div id="cardsGrid" class="cards-grid"></div>
+    </section>
 
-  <button onclick="addCard()">Aggiungi</button>
-  <div class="cart-total">Totale Carrello: € <span id="cartTotal">0.00</span></div>
-  <button class="cart-clear" onclick="clearCart()">Svuota Carrello</button>
-</div>
+    <aside class="right-column">
+      <h2>Carrello</h2>
+      <div class="cart-summary">
+        <div>Articoli: <strong id="cartItems">0</strong></div>
+        <div>Totale: <strong>€ <span id="cartTotal">0.00</span></strong></div>
+      </div>
 
-<div class="container" id="grid"></div>
+      <div id="cartList" class="cart-list"></div>
 
-<div class="viewer" id="viewer" onclick="closeViewer()">
-  <img id="viewerImg">
-</div>
+      <button id="clearCartBtn" class="btn-warning" style="width:100%;">Svuota carrello</button>
+    </aside>
+  </div>
 
-<script>
-// ===================
-// LOCAL STORAGE SAFETY
-// ===================
-let cards = [];
-let cart = [];
-try { cards = JSON.parse(localStorage.getItem("cards")) || []; } catch(e){ cards = []; }
-try { cart = JSON.parse(localStorage.getItem("cart")) || []; } catch(e){ cart = []; }
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getDatabase, ref, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
-// ===================
-// INIT
-// ===================
-window.onload = () => {
-  const savedCols = localStorage.getItem("columns") || 4;
-  document.getElementById("columns").value = savedCols;
-  changeColumns();
-  loadCards();
-  updateCartTotal();
-};
+    const firebaseConfig = {
+      databaseURL: "https://pokeparadosso-default-rtdb.europe-west1.firebasedatabase.app"
+    };
 
-// ===================
-// COLONNE
-// ===================
-function changeColumns() {
-  const cols = document.getElementById('columns').value;
-  document.getElementById('grid').style.gridTemplateColumns = `repeat(${cols},1fr)`;
-  localStorage.setItem("columns", cols);
-}
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const cardsRef = ref(db, "cards");
 
-// ===================
-// CARTE
-// ===================
-function addCard() {
-  const name = document.getElementById('name').value;
-  const number = document.getElementById('number').value;
-  const price = parseFloat(document.getElementById('price').value);
+    const STORAGE_CART_KEY = "poke_cart_v2";
 
-  if(!name || !number || isNaN(price)) return;
+    let cards = [];
+    let cart = loadCartFromStorage();
 
-  cards.push({ name, number, price });
-  saveCards();
-  loadCards();
+    const cardsGrid = document.getElementById("cardsGrid");
+    const cartList = document.getElementById("cartList");
+    const cartItemsEl = document.getElementById("cartItems");
+    const cartTotalEl = document.getElementById("cartTotal");
+    const statusEl = document.getElementById("status");
 
-  document.getElementById('name').value='';
-  document.getElementById('number').value='';
-  document.getElementById('price').value='';
-}
+    document.getElementById("cardForm").addEventListener("submit", onSubmitCard);
+    document.getElementById("clearCartBtn").addEventListener("click", clearCart);
 
-function renderCard(data, index) {
-  const imgUrl = `https://dz3we2x72f7ol.cloudfront.net/expansions/paradox-rift/it-it/SV04_IT_${data.number}-2x.png`;
+    init();
 
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <img src="${imgUrl}" loading="lazy" onclick="openViewer('${imgUrl}')">
-    <h3>${data.name}</h3>
-    <p>#${data.number}</p>
-    <p>€ ${data.price.toFixed(2)}</p>
-    <button class="add-cart-btn" onclick="addToCart(${index})">Aggiungi al carrello</button>
-    <button class="delete-btn" onclick="deleteCard(${index})">🗑️ Elimina</button>
-  `;
-  document.getElementById('grid').appendChild(card);
-}
+    function init() {
+      subscribeCardsRealtime();
+      renderCart();
+    }
 
-function loadCards() {
-  document.getElementById('grid').innerHTML='';
-  cards.forEach((c,i)=>renderCard(c,i));
-}
+    function setStatus(text, isError = false) {
+      statusEl.textContent = text;
+      statusEl.style.color = isError ? "#fca5a5" : "#cbd5e1";
+    }
 
-function deleteCard(index) {
-  if(!confirm("Vuoi eliminare questa carta?")) return;
-  cards.splice(index,1);
-  saveCards();
-  loadCards();
-}
+    function subscribeCardsRealtime() {
+      setStatus("Connessione realtime a Firebase...");
 
-function saveCards() {
-  localStorage.setItem("cards",JSON.stringify(cards));
-}
+      onValue(cardsRef, (snapshot) => {
+        const data = snapshot.val();
 
-// ===================
-// VIEWER
-// ===================
-function openViewer(src) {
-  document.getElementById("viewer").style.display="flex";
-  document.getElementById("viewerImg").src=src;
-}
-function closeViewer() {
-  document.getElementById("viewer").style.display="none";
-}
+        cards = data
+          ? Object.entries(data).map(([id, value]) => ({
+              id,
+              name: value.name || "Senza nome",
+              number: value.number || "000",
+              price: Number(value.price) || 0
+            }))
+          : [];
 
-// ===================
-// CARRELLO
-// ===================
-function addToCart(index) {
-  const card = cards[index];
-  cart.push(card);
-  localStorage.setItem("cart",JSON.stringify(cart));
-  updateCartTotal();
-}
+        cards.sort((a, b) => Number(a.number) - Number(b.number));
+        renderCards();
+        setStatus(`Carte sincronizzate: ${cards.length}`);
+      }, (error) => {
+        console.error(error);
+        setStatus("Errore connessione Firebase. Controlla regole/databaseURL.", true);
+      });
+    }
 
-function updateCartTotal() {
-  const total = cart.reduce((sum,c)=>sum+c.price,0);
-  document.getElementById("cartTotal").textContent=total.toFixed(2);
-}
+    async function onSubmitCard(event) {
+      event.preventDefault();
 
-function clearCart() {
-  if(!confirm("Vuoi svuotare tutto il carrello?")) return;
-  cart=[];
-  localStorage.setItem("cart",JSON.stringify(cart));
-  updateCartTotal();
-}
-</script>
+      const name = document.getElementById("name").value.trim();
+      const number = document.getElementById("number").value.trim();
+      const price = Number(document.getElementById("price").value);
+
+      if (!name || !number || !Number.isFinite(price) || price < 0) {
+        setStatus("Inserisci dati validi per la carta.", true);
+        return;
+      }
+
+      setStatus("Salvataggio carta su Firebase...");
+
+      try {
+        await push(cardsRef, { name, number, price });
+        event.target.reset();
+        setStatus("Carta aggiunta con successo.");
+      } catch (err) {
+        console.error(err);
+        setStatus("Errore durante il salvataggio su Firebase.", true);
+      }
+    }
+
+    async function deleteCard(cardId) {
+      const ok = confirm("Eliminare questa carta?");
+      if (!ok) return;
+
+      setStatus("Eliminazione carta...");
+
+      try {
+        await remove(ref(db, `cards/${cardId}`));
+
+        // rimuove anche dal carrello eventuali riferimenti
+        cart = cart.filter(item => item.id !== cardId);
+        saveCartToStorage();
+        renderCart();
+
+        setStatus("Carta eliminata.");
+      } catch (err) {
+        console.error(err);
+        setStatus("Errore durante l'eliminazione.", true);
+      }
+    }
+
+    function getCardImage(number) {
+      return `https://dz3we2x72f7ol.cloudfront.net/expansions/paradox-rift/it-it/SV04_IT_${number}-2x.png`;
+    }
+
+    function renderCards() {
+      cardsGrid.innerHTML = "";
+
+      if (!cards.length) {
+        cardsGrid.innerHTML = "<p>Nessuna carta disponibile.</p>";
+        return;
+      }
+
+      for (const card of cards) {
+        const article = document.createElement("article");
+        article.className = "card";
+
+        article.innerHTML = `
+          <img src="${getCardImage(card.number)}" alt="${card.name}" loading="lazy">
+          <div class="card-title">${card.name}</div>
+          <div class="card-sub">#${card.number}</div>
+          <div class="card-sub">€ ${card.price.toFixed(2)}</div>
+          <div class="card-actions">
+            <button class="btn-success" data-action="add" data-id="${card.id}">+ Carrello</button>
+            <button class="btn-danger" data-action="delete" data-id="${card.id}">Elimina</button>
+          </div>
+        `;
+
+        cardsGrid.appendChild(article);
+      }
+
+      cardsGrid.querySelectorAll("button[data-action='add']").forEach(btn => {
+        btn.addEventListener("click", () => addToCart(btn.dataset.id));
+      });
+
+      cardsGrid.querySelectorAll("button[data-action='delete']").forEach(btn => {
+        btn.addEventListener("click", () => deleteCard(btn.dataset.id));
+      });
+    }
+
+    function addToCart(cardId) {
+      const card = cards.find(c => c.id === cardId);
+      if (!card) return;
+
+      const existing = cart.find(item => item.id === card.id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          id: card.id,
+          name: card.name,
+          price: card.price,
+          qty: 1
+        });
+      }
+
+      saveCartToStorage();
+      renderCart();
+    }
+
+    function changeQty(cardId, delta) {
+      const item = cart.find(c => c.id === cardId);
+      if (!item) return;
+
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(c => c.id !== cardId);
+      }
+
+      saveCartToStorage();
+      renderCart();
+    }
+
+    function clearCart() {
+      if (!cart.length) return;
+      if (!confirm("Svuotare tutto il carrello?")) return;
+
+      cart = [];
+      saveCartToStorage();
+      renderCart();
+    }
+
+    function renderCart() {
+      cartList.innerHTML = "";
+
+      let itemsCount = 0;
+      let total = 0;
+
+      if (!cart.length) {
+        cartList.innerHTML = "<p>Carrello vuoto.</p>";
+      } else {
+        for (const item of cart) {
+          const subtotal = item.price * item.qty;
+          itemsCount += item.qty;
+          total += subtotal;
+
+          const div = document.createElement("div");
+          div.className = "cart-item";
+          div.innerHTML = `
+            <div class="cart-row">
+              <strong>${item.name}</strong>
+              <span>€ ${subtotal.toFixed(2)}</span>
+            </div>
+            <div class="cart-row" style="margin-top:4px; opacity:.9;">
+              <span>€ ${item.price.toFixed(2)} x ${item.qty}</span>
+            </div>
+            <div class="qty-actions">
+              <button class="btn-warning" data-qty="-1" data-id="${item.id}">-1</button>
+              <button class="btn-success" data-qty="1" data-id="${item.id}">+1</button>
+              <button class="btn-danger" data-qty="remove" data-id="${item.id}">Rimuovi</button>
+            </div>
+          `;
+          cartList.appendChild(div);
+        }
+
+        cartList.querySelectorAll("button[data-qty]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const id = btn.dataset.id;
+            const action = btn.dataset.qty;
+            if (action === "remove") {
+              cart = cart.filter(c => c.id !== id);
+              saveCartToStorage();
+              renderCart();
+              return;
+            }
+
+            changeQty(id, Number(action));
+          });
+        });
+      }
+
+      cartItemsEl.textContent = String(itemsCount);
+      cartTotalEl.textContent = total.toFixed(2);
+    }
+  </script>
 </body>
 </html>
