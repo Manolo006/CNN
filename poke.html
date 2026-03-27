@@ -143,6 +143,8 @@
       word-break: break-word;
       line-height: 1.2;
       text-align: center;
+      font-size: clamp(10px, 0.85vw, 14px);
+      padding: clamp(6px, 0.7vw, 10px);
     }
 
     .btn-info { background: #0ea5e9; }
@@ -223,6 +225,9 @@
       .form-grid { grid-template-columns: 1fr 1fr; }
       .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .right-column { margin-top: 0; }
+      .card-actions button {
+        font-size: clamp(10px, 1.8vw, 13px);
+      }
     }
 
     @media (max-width: 600px) {
@@ -256,6 +261,10 @@
       .card-live-price,
       .card-price-edit { font-size: 11px; }
       .card-actions { grid-template-columns: 1fr; }
+      .card-actions button {
+        font-size: 11px;
+        padding: 7px;
+      }
       .qty-actions button { flex: 1 1 100%; }
     }
   </style>
