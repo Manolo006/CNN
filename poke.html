@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Card Mobile + Carrello</title>
+<title>Card Mobile + Carrello Persistente</title>
 
 <style>
 body {
@@ -47,7 +47,7 @@ body {
 /* GRID */
 .container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   padding: 10px;
 }
@@ -119,6 +119,11 @@ body {
   font-weight: bold;
   text-align: center;
 }
+
+.cart-clear {
+  margin-top: 4px;
+  background: #f59e0b;
+}
 </style>
 </head>
 
@@ -130,7 +135,7 @@ body {
     <option value="1">1 colonna</option>
     <option value="2">2 colonne</option>
     <option value="3">3 colonne</option>
-    <option value="4"selected>4 colonne</option>
+    <option value="4" selected>4 colonne</option>
   </select>
 
   <input type="text" id="name" placeholder="Nome Pokémon">
@@ -139,6 +144,7 @@ body {
 
   <button onclick="addCard()">Aggiungi</button>
   <div class="cart-total">Totale Carrello: € <span id="cartTotal">0.00</span></div>
+  <button class="cart-clear" onclick="clearCart()">Svuota Carrello</button>
 </div>
 
 <!-- GRID -->
@@ -150,19 +156,17 @@ body {
 </div>
 
 <script>
+// CARDS & CART
 let cards = JSON.parse(localStorage.getItem("cards")) || [];
-let cart = [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-/* LOAD */
+// INIT
 window.onload = () => {
+  const savedCols = localStorage.getItem("columns") || 4;
+  document.getElementById("columns").value = savedCols;
+  changeColumns();
+
   loadCards();
-
-  const savedCols = localStorage.getItem("columns");
-  if (savedCols) {
-    document.getElementById("columns").value = savedCols;
-    changeColumns();
-  }
-
   updateCartTotal();
 };
 
@@ -177,11 +181,11 @@ function changeColumns() {
 function addCard() {
   const name = document.getElementById('name').value;
   const number = document.getElementById('number').value;
-  const price = document.getElementById('price').value;
+  const price = parseFloat(document.getElementById('price').value);
 
-  if (!name || !number || !price) return;
+  if (!name || !number || isNaN(price)) return;
 
-  cards.push({ name, number, price: parseFloat(price) });
+  cards.push({ name, number, price });
   saveCards();
   loadCards();
 
@@ -218,7 +222,6 @@ function loadCards() {
 /* DELETE CARD */
 function deleteCard(index) {
   if (!confirm("Vuoi eliminare questa carta?")) return;
-
   cards.splice(index, 1);
   saveCards();
   loadCards();
@@ -241,13 +244,21 @@ function closeViewer() {
 /* CARRELLO */
 function addToCart(index) {
   const card = cards[index];
-  cart.push(card.price);
+  cart.push(card);
+  localStorage.setItem("cart", JSON.stringify(cart));
   updateCartTotal();
 }
 
 function updateCartTotal() {
-  const total = cart.reduce((sum, p) => sum + p, 0);
+  const total = cart.reduce((sum, c) => sum + c.price, 0);
   document.getElementById("cartTotal").textContent = total.toFixed(2);
+}
+
+function clearCart() {
+  if (!confirm("Vuoi svuotare tutto il carrello?")) return;
+  cart = [];
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartTotal();
 }
 </script>
 
