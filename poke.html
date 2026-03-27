@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Grid</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }.container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 20px;
+}
+
+.card {
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.card img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.card h3 {
+  margin: 10px 0 5px;
+}
+
+.panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 16px;
+  width: 250px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.panel input {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+}
+
+.panel button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #3b82f6;
+  color: white;
+  cursor: pointer;
+}
+
+@media(max-width: 900px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(max-width: 500px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+
+  </style>
+</head>
+<body><div class="container" id="grid"></div><div class="panel">
+  <input type="text" id="name" placeholder="Nome Pokémon">
+  <input type="number" id="number" placeholder="Numero">
+  <input type="text" id="set" placeholder="Set">
+  <input type="text" id="price" placeholder="Prezzo">
+  <button onclick="addCard()">Aggiungi</button>
+</div><script>
+function addCard() {
+  const name = document.getElementById('name').value;
+  const number = document.getElementById('number').value;
+  const set = document.getElementById('set').value;
+  const price = document.getElementById('price').value;
+
+  if (!name || !number) return;
+
+  const imgUrl = `https://dz3we2x72f7ol.cloudfront.net/expansions/paradox-rift/it-it/SV04_IT_${number}-2x.png`;
+
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  card.innerHTML = `
+    <img src="${imgUrl}" alt="${name}">
+    <h3>${name}</h3>
+    <p>#${number}</p>
+    <p>${set}</p>
+    <p>€ ${price}</p>
+  `;
+
+  document.getElementById('grid').appendChild(card);
+
+  document.getElementById('name').value = '';
+  document.getElementById('number').value = '';
+  document.getElementById('set').value = '';
+  document.getElementById('price').value = '';
+}
+</script></body>
+</html>
