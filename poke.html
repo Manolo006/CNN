@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Card Mobile + Carrello Persistente</title>
+<title>Carte + Carrello Persistente</title>
 
 <style>
 body {
@@ -13,7 +13,6 @@ body {
   color: white;
 }
 
-/* PANEL TOP */
 .panel {
   position: sticky;
   top: 0;
@@ -44,7 +43,6 @@ body {
   margin-bottom: 6px;
 }
 
-/* GRID */
 .container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -52,7 +50,6 @@ body {
   padding: 10px;
 }
 
-/* CARD */
 .card {
   background: #1e293b;
   border-radius: 12px;
@@ -68,18 +65,9 @@ body {
   cursor: pointer;
 }
 
-.card h3 {
-  font-size: 13px;
-  margin: 6px 0 2px;
-}
+.card h3 { font-size: 13px; margin: 6px 0 2px; }
+.card p { font-size: 11px; margin: 1px 0; opacity: 0.8; }
 
-.card p {
-  font-size: 11px;
-  margin: 1px 0;
-  opacity: 0.8;
-}
-
-/* BUTTONS */
 .delete-btn, .add-cart-btn {
   margin-top: 6px;
   width: 100%;
@@ -92,13 +80,10 @@ body {
 .delete-btn { background: #ef4444; color: white; }
 .add-cart-btn { background: #10b981; color: white; }
 
-/* FULLSCREEN IMAGE */
 .viewer {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top:0; left:0;
+  width:100%; height:100%;
   background: rgba(0,0,0,0.9);
   display: none;
   align-items: center;
@@ -112,24 +97,12 @@ body {
   border-radius: 10px;
 }
 
-/* TOTAL CARRELLO */
-.cart-total {
-  margin-top: 6px;
-  font-size: 14px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.cart-clear {
-  margin-top: 4px;
-  background: #f59e0b;
-}
+.cart-total { margin-top:6px; font-size:14px; font-weight:bold; text-align:center; }
+.cart-clear { margin-top:4px; background: #f59e0b; }
 </style>
 </head>
-
 <body>
 
-<!-- PANEL -->
 <div class="panel">
   <select id="columns" onchange="changeColumns()">
     <option value="1">1 colonna</option>
@@ -147,63 +120,65 @@ body {
   <button class="cart-clear" onclick="clearCart()">Svuota Carrello</button>
 </div>
 
-<!-- GRID -->
 <div class="container" id="grid"></div>
 
-<!-- VIEWER -->
 <div class="viewer" id="viewer" onclick="closeViewer()">
   <img id="viewerImg">
 </div>
 
 <script>
-// CARDS & CART - caricamento sicuro
+// ===================
+// LOCAL STORAGE SAFETY
+// ===================
 let cards = [];
 let cart = [];
-
 try { cards = JSON.parse(localStorage.getItem("cards")) || []; } catch(e){ cards = []; }
 try { cart = JSON.parse(localStorage.getItem("cart")) || []; } catch(e){ cart = []; }
 
+// ===================
 // INIT
+// ===================
 window.onload = () => {
   const savedCols = localStorage.getItem("columns") || 4;
   document.getElementById("columns").value = savedCols;
   changeColumns();
-
   loadCards();
   updateCartTotal();
 };
 
-/* COLONNE */
+// ===================
+// COLONNE
+// ===================
 function changeColumns() {
   const cols = document.getElementById('columns').value;
-  document.getElementById('grid').style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  document.getElementById('grid').style.gridTemplateColumns = `repeat(${cols},1fr)`;
   localStorage.setItem("columns", cols);
 }
 
-/* ADD CARD */
+// ===================
+// CARTE
+// ===================
 function addCard() {
   const name = document.getElementById('name').value;
   const number = document.getElementById('number').value;
   const price = parseFloat(document.getElementById('price').value);
 
-  if (!name || !number || isNaN(price)) return;
+  if(!name || !number || isNaN(price)) return;
 
   cards.push({ name, number, price });
   saveCards();
   loadCards();
 
-  document.getElementById('name').value = '';
-  document.getElementById('number').value = '';
-  document.getElementById('price').value = '';
+  document.getElementById('name').value='';
+  document.getElementById('number').value='';
+  document.getElementById('price').value='';
 }
 
-/* RENDER CARD */
 function renderCard(data, index) {
   const imgUrl = `https://dz3we2x72f7ol.cloudfront.net/expansions/paradox-rift/it-it/SV04_IT_${data.number}-2x.png`;
 
   const card = document.createElement('div');
-  card.className = 'card';
-
+  card.className='card';
   card.innerHTML = `
     <img src="${imgUrl}" loading="lazy" onclick="openViewer('${imgUrl}')">
     <h3>${data.name}</h3>
@@ -212,58 +187,57 @@ function renderCard(data, index) {
     <button class="add-cart-btn" onclick="addToCart(${index})">Aggiungi al carrello</button>
     <button class="delete-btn" onclick="deleteCard(${index})">🗑️ Elimina</button>
   `;
-
   document.getElementById('grid').appendChild(card);
 }
 
-/* LOAD ALL CARDS */
 function loadCards() {
-  document.getElementById('grid').innerHTML = "";
-  cards.forEach((c, i) => renderCard(c, i));
+  document.getElementById('grid').innerHTML='';
+  cards.forEach((c,i)=>renderCard(c,i));
 }
 
-/* DELETE CARD */
 function deleteCard(index) {
-  if (!confirm("Vuoi eliminare questa carta?")) return;
-  cards.splice(index, 1);
+  if(!confirm("Vuoi eliminare questa carta?")) return;
+  cards.splice(index,1);
   saveCards();
   loadCards();
 }
 
-/* SAVE CARDS */
 function saveCards() {
-  localStorage.setItem("cards", JSON.stringify(cards));
+  localStorage.setItem("cards",JSON.stringify(cards));
 }
 
-/* VIEWER */
+// ===================
+// VIEWER
+// ===================
 function openViewer(src) {
-  document.getElementById("viewer").style.display = "flex";
-  document.getElementById("viewerImg").src = src;
+  document.getElementById("viewer").style.display="flex";
+  document.getElementById("viewerImg").src=src;
 }
 function closeViewer() {
-  document.getElementById("viewer").style.display = "none";
+  document.getElementById("viewer").style.display="none";
 }
 
-/* CARRELLO */
+// ===================
+// CARRELLO
+// ===================
 function addToCart(index) {
   const card = cards[index];
   cart.push(card);
-  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("cart",JSON.stringify(cart));
   updateCartTotal();
 }
 
 function updateCartTotal() {
-  const total = cart.reduce((sum, c) => sum + c.price, 0);
-  document.getElementById("cartTotal").textContent = total.toFixed(2);
+  const total = cart.reduce((sum,c)=>sum+c.price,0);
+  document.getElementById("cartTotal").textContent=total.toFixed(2);
 }
 
 function clearCart() {
-  if (!confirm("Vuoi svuotare tutto il carrello?")) return;
-  cart = [];
-  localStorage.setItem("cart", JSON.stringify(cart));
+  if(!confirm("Vuoi svuotare tutto il carrello?")) return;
+  cart=[];
+  localStorage.setItem("cart",JSON.stringify(cart));
   updateCartTotal();
 }
 </script>
-
 </body>
 </html>
