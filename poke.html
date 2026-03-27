@@ -142,15 +142,40 @@ function addCard() {
   document.getElementById('price').value = '';
 }
 
-/* RENDER */
 function renderCard(data) {
   const imgUrl = `https://dz3we2x72f7ol.cloudfront.net/expansions/paradox-rift/it-it/SV04_IT_${data.number}-2x.png`;
 
   const card = document.createElement('div');
   card.className = 'card';
 
-  card.innerHTML = `
-    <img src="${imgUrl}">
+  const img = document.createElement('img');
+
+  // placeholder iniziale (blur + grigio)
+  img.style.background = "#334155";
+  img.style.minHeight = "120px";
+  img.style.filter = "blur(10px)";
+  img.style.transition = "0.3s";
+
+  // lazy loading manuale
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        img.src = imgUrl;
+
+        img.onload = () => {
+          img.style.filter = "blur(0)";
+        };
+
+        obs.unobserve(img);
+      }
+    });
+  });
+
+  observer.observe(img);
+
+  card.appendChild(img);
+
+  card.innerHTML += `
     <h3>${data.name}</h3>
     <p>#${data.number}</p>
     <p>€ ${data.price}</p>
