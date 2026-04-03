@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat UI</title><style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 30%;
+  background: #020617;
+  border-right: 1px solid #1e293b;
+  overflow-y: auto;
+}
+
+.chat-item {
+  padding: 15px;
+  border-bottom: 1px solid #1e293b;
+  cursor: pointer;
+}
+
+.chat-item:hover {
+  background: #0f172a;
+}
+
+.chat-item.active {
+  background: #1e293b;
+}
+
+.chat-name {
+  font-weight: bold;
+}
+
+.chat-last {
+  font-size: 0.85em;
+  color: #94a3b8;
+}
+
+/* Main Chat */
+.chat {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  padding: 15px;
+  border-bottom: 1px solid #1e293b;
+  background: #020617;
+}
+
+.messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message {
+  max-width: 60%;
+  padding: 10px 15px;
+  border-radius: 12px;
+}
+
+.received {
+  background: #1e293b;
+  align-self: flex-start;
+}
+
+.sent {
+  background: #2563eb;
+  align-self: flex-end;
+}
+
+.input-area {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #1e293b;
+  background: #020617;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  background: #1e293b;
+  color: white;
+}
+
+.input-area button {
+  margin-left: 10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.input-area button:hover {
+  background: #1d4ed8;
+}
+
+</style></head><body><div class="sidebar">
+  <div class="chat-item active">
+    <div class="chat-name">Gruppo Amici</div>
+    <div class="chat-last">Ultimo messaggio...</div>
+  </div>
+  <div class="chat-item">
+    <div class="chat-name">Luca</div>
+    <div class="chat-last">Ci vediamo dopo</div>
+  </div>
+</div><div class="chat">
+  <div class="chat-header">Gruppo Amici</div>  <div class="messages" id="messages">
+    <div class="message received">Ciao ragazzi</div>
+    <div class="message sent">Ciao!</div>
+  </div>  <div class="input-area">
+    <input type="text" id="input" placeholder="Scrivi un messaggio...">
+    <button onclick="sendMessage()">Invia</button>
+  </div>
+</div><script>
+function sendMessage() {
+  const input = document.getElementById('input');
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  const msg = document.createElement('div');
+  msg.classList.add('message', 'sent');
+  msg.innerText = text;
+
+  document.getElementById('messages').appendChild(msg);
+  input.value = '';
+}
+</script></body>
+</html>
